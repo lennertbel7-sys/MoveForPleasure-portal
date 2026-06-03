@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="nl">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="theme-color" content="#0d1f17" />
+    <meta name="description" content="MoveForPleasure - Klantportaal" />
+    <title>MoveForPleasure</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,500;1,400&display=swap" rel="stylesheet" />
+  </head>
+  <body>
+    <noscript>Je hebt JavaScript nodig om deze app te gebruiken.</noscript>
+    <div id="root"></div>
+  </body>
+</html>
+
+import { useState } from "react";
+
+const s = {
+  app: {
+    fontFamily: "'DM Sans', sans-serif",
+    background: "#0d1f17",
+    minHeight: "100vh",
+    color: "#e8f0eb",
+    maxWidth: 430,
+    margin: "0 auto",
+    position: "relative",
+    paddingBottom: 80,
+  },
+  header: {
+    padding: "24px 20px 16px",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  logo: {
+    fontFamily: "'Playfair Display', serif",
+    fontSize: 20,
+    color: "#7dcea0",
+    letterSpacing: "-0.3px",
+  },
+  logoSpan: { fontStyle: "italic", color: "#b8e0c5" },
+  avatar: (color) => ({
+    width: 36,
+    height: 36,
+    borderRadius: "50%",
+    background: color,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    fontSize: 13,
+    fontWeight: 600,
+    color: "#fff",
+  }),
+  nav: {
+    position: "fixed",
+    bottom: 0,
+    left: "50%",
+    transform: "translateX(-50%)",
+    width: "100%",
+    maxWidth: 430,
+    background: "#0d1f17",
+    borderTop: "1px solid #1e3828",
+    display: "flex",
+    padding: "8px 0 12px",
+    zIndex: 100,
+  },
+  navItem: (active) => ({
+    flex: 1,
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    gap: 4,
+    cursor: "pointer",
+    color: active ? "#7dcea0" : "#3a5c46",
+    fontSize: 10,
+    fontWeight: active ? 600 : 400,
+    letterSpacing: "0.5px",
+    textTransform: "uppercase",
+    border: "none",
+    background: "none",
+    padding: "6px 0",
+  }),
+  card: {
+    background: "#111f18",
+    border: "1px solid #1e3828",
+    borderRadius: 16,
+    padding: 20,
+    marginBottom: 12,
+  },
+  cardTitle: {
+    fontSize: 11,
+    fontWeight: 600,
+    color: "#3a8c56",
+    letterSpacing: "1.5px",
+    textTransform: "uppercase",
+    marginBottom: 12,
+  },
+  btn: (bg, full) => ({
+    background: bg,
+    color: bg === "transparent" ? "#7dcea0" : "#0d1f17",
+    border: bg === "transparent" ? "1px solid #2a4d35" : "none",
+    borderRadius: 12,
+    padding: "12px 20px",
+    fontSize: 14,
+    fontWeight: 600,
+    cursor: "pointer",
+    width: full ? "100%" : "auto",
+    textAlign: "center",
+  }),
+  row: { display: "flex", gap: 10 },
+  label: { fontSize: 12, color: "#4a7c5a", marginBottom: 6, display: "block", fontWeight: 500 },
+  input: {
+    width: "100%",
+    background: "#0d1f17",
+    border: "1px solid #1e3828",
+    borderRadius: 10,
+    color: "#e8f0eb",
+    padding: "10px 12px",
+    fontSize: 14,
+    fontFamily: "'DM Sans', sans-serif",
+    boxSizing: "border-box",
+  },
+  outlineBtn: {
+    background: "transparent",
+    color: "#7dcea0",
+    border: "1px solid #2a4d35",
+    borderRadius: 12,
+    padding: "12px 20px",
+    fontSize: 14,
+    fontWeight: 600,
+    cursor: "pointer",
+    flex: 1,
+    fontFamily: "'DM Sans', sans-serif",
+  },
+};
+
+const initialData = {
+  name: "Thomas Janssen",
+  goal: "Gewicht verliezen",
+  weight: 84,
+  targetWeight: 75,
+  color: "#3a8c56",
+  avatar: "TJ",
+  todayPlan: {
+    training: { type: "Push", exercises: ["Bench Press", "Shoulder Press", "Tricep Dips"] },
+    nutrition: { kcal: 2100, protein: 165, carbs: 210, fat: 65 },
+  },
+  recentTrainings: [
+    { date: "28/05", type: "Push", duration: 55, completed: true },
+    { date: "26/05", type: "Pull", duration: 50, completed: true },
+    { date: "24/05", type: "Legs", duration: 60, completed: true },
+  ],
+  nutritionToday: { kcal: 0, protein: 0, carbs: 0, fat: 0 },
+};
+
+function Ring({ value, max, color, size = 80, label, sublabel }) {
+  const r = (size - 12) / 2;
+  const circ = 2 * Math.PI * r;
+  const pct = Math.min(1, value / max);
+  return (
+    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 6 }}>
+      <svg width={size} height={size}>
+        <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="#1a2e1f" strokeWidth={10} />
+        <circle
+          cx={size / 2} cy={size / 2} r={r} fill="none"
+          stroke={color} strokeWidth={10}
+          strokeDasharray={circ}
+          strokeDashoffset={circ * (1 - pct)}
+          strokeLinecap="round"
+          transform={`rotate(-90 ${size / 2} ${size / 2})`}
+        />
+        <text x={size / 2} y={size / 2 + 5} textAnchor="middle" fill="#e8f0eb" fontSize={13} fontWeight="600" fontFamily="DM Sans">{value}</text>
+      </svg>
+      <div style={{ textAlign: "center" }}>
+        <div style={{ fontSize: 11, color: "#7dcea0", fontWeight: 600 }}>{label}</div>
+        {sublabel && <div style={{ fontSize: 10, color: "#3a5c46" }}>{sublabel}</div>}
+      </div>
+    </div>
+  );
+}
+
+function HomeTab({ data, setData, setTab }) {
+  const [showLogTraining, setShowLogTraining] = useState(false);
+  const [showLogFood, setShowLogFood] = useState(false);
+  const [trainingForm, setTrainingForm] = useState({ type: "", duration: "", notes: "" });
+  const [foodForm, setFoodForm] = useState({ meal: "", kcal: "", protein: "", carbs: "", fat: "" });
+
+  const progressPct = Math.round(((data.weight - data.targetWeight) / (90 - data.targetWeight)) * 100);
+
+  const submitTraining = () => {
+    if (!trainingForm.type) return;
+    const newTraining = {
+      date: new Date().toLocaleDateString("nl-BE", { day: "2-digit", month: "2-digit" }),
+      type: trainingForm.type,
+      duration: parseInt(trainingForm.duration) || 45,
+      completed: true,
+    };
+    setData((d) => ({ ...d, recentTrainings: [newTraining, ...d.recentTrainings.slice(0, 4)] }));
+    setShowLogTraining(false);
+    setTrainingForm({ type: "", duration: "", notes: "" });
+  };
+
+  const submitFood = () => {
+    if (!foodForm.kcal) return;
+    setData((d) => ({
+      ...d,
+      nutritionToday: {
+        kcal: d.nutritionToday.kcal + parseInt(foodForm.kcal || 0),
+        protein: d.nutritionToday.protein + parseInt(foodForm.protein || 0),
+        carbs: d.nutritionToday.carbs + parseInt(foodForm.carbs || 0),
+        fat: d.nutritionToday.fat + parseInt(foodForm.fat || 0),
+      },
+    }));
+    setShowLogFood(false);
+    setFoodForm({ meal: "", kcal: "", protein: "", carbs: "", fat: "" });
+  };
+
+  return (
+    <div style={{ padding: "0 16px" }}>
+      {/* Greeting */}
+      <div style={{ marginBottom: 20 }}>
+        <div style={{ fontSize: 22, fontWeight: 300, color: "#b8e0c5", fontFamily: "'Playfair Display', serif" }}>
+          Hallo, <em>{data.name.split(" ")[0]}</em> 👋
+        </div>
+        <div style={{ fontSize: 13, color: "#3a5c46", marginTop: 4 }}>Doel: {data.goal}</div>
+      </div>
+
+      {/* Progress */}
+      <div style={s.card}>
+        <div style={s.cardTitle}>Voortgang</div>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
+          <span style={{ fontSize: 13, color: "#7dcea0" }}>Gewicht</span>
+          <span style={{ fontSize: 13, color: "#e8f0eb" }}>{data.weight} kg → {data.targetWeight} kg</span>
+        </div>
+        <div style={{ background: "#0d1f17", borderRadius: 8, height: 8, overflow: "hidden" }}>
+          <div style={{ width: `${Math.max(0, 100 - progressPct)}%`, height: "100%", background: "linear-gradient(90deg, #3a8c56, #7dcea0)", borderRadius: 8, transition: "width 0.5s" }} />
+        </div>
+        <div style={{ fontSize: 11, color: "#3a5c46", marginTop: 6 }}>
+          Nog {data.weight - data.targetWeight} kg te gaan
+        </div>
+      </div>
+
+      {/* Nutrition rings */}
+      <div style={s.card}>
+        <div style={s.cardTitle}>Voeding vandaag</div>
+        <div style={{ display: "flex", justifyContent: "space-around" }}>
+          <Ring value={data.nutritionToday.kcal} max={data.todayPlan.nutrition.kcal} color="#7dcea0" label="kcal" sublabel={`/ ${data.todayPlan.nutrition.kcal}`} />
+          <Ring value={data.nutritionToday.protein} max={data.todayPlan.nutrition.protein} color="#5bc08a" size={70} label="eiwit" sublabel="g" />
+          <Ring value={data.nutritionToday.carbs} max={data.todayPlan.nutrition.carbs} color="#3a9e6a" size={70} label="KH" sublabel="g" />
+          <Ring value={data.nutritionToday.fat} max={data.todayPlan.nutrition.fat} color="#2a7a50" size={70} label="vet" sublabel="g" />
+        </div>
+      </div>
+
+      {/* Today's training */}
+      <div style={s.card}>
+        <div style={s.cardTitle}>Training vandaag</div>
+        <div style={{ fontSize: 16, fontWeight: 600, color: "#b8e0c5", marginBottom: 8 }}>
+          {data.todayPlan.training.type} dag
+        </div>
+        {data.todayPlan.training.exercises.map((ex, i) => (
+          <div key={i} style={{ fontSize: 13, color: "#7dcea0", padding: "4px 0", borderBottom: i < data.todayPlan.training.exercises.length - 1 ? "1px solid #1a2e1f" : "none" }}>
+            • {ex}
+          </div>
+        ))}
+      </div>
+
+      {/* Action buttons */}
+      <div style={{ ...s.row, marginBottom: 12 }}>
+        <button style={{ ...s.btn("#7dcea0", false), flex: 1 }} onClick={() => setShowLogTraining(true)}>
+          💪 Training loggen
+        </button>
+        <button style={{ ...s.btn("#3a8c56", false), flex: 1 }} onClick={() => setShowLogFood(true)}>
+          🥗 Maaltijd toevoegen
+        </button>
+      </div>
+
+      {/* Recent trainings */}
+      <div style={s.card}>
+        <div style={s.cardTitle}>Recente trainingen</div>
+        {data.recentTrainings.map((t, i) => (
+          <div key={i} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "8px 0", borderBottom: i < data.recentTrainings.length - 1 ? "1px solid #1a2e1f" : "none" }}>
+            <div>
+              <span style={{ fontSize: 13, color: "#b8e0c5", fontWeight: 500 }}>{t.type}</span>
+              <span style={{ fontSize: 11, color: "#3a5c46", marginLeft: 8 }}>{t.date}</span>
+            </div>
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <span style={{ fontSize: 11, color: "#3a8c56" }}>{t.duration} min</span>
+              <span style={{ fontSize: 14 }}>✅</span>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Log Training Modal */}
+      {showLogTraining && (
+        <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.7)", display: "flex", alignItems: "flex-end", zIndex: 200 }}>
+          <div style={{ background: "#111f18", borderRadius: "20px 20px 0 0", padding: 24, width: "100%", maxWidth: 430, margin: "0 auto" }}>
+            <div style={{ fontSize: 18, fontWeight: 600, marginBottom: 20, color: "#b8e0c5" }}>Training loggen</div>
+            <div style={{ marginBottom: 14 }}>
+              <label style={s.label}>Type training</label>
+              <input style={s.input} type="text" placeholder="bijv. Push, Pull, Legs..." value={trainingForm.type} onChange={e => setTrainingForm(f => ({ ...f, type: e.target.value }))} />
+            </div>
+            <div style={{ marginBottom: 14 }}>
+              <label style={s.label}>Duur (minuten)</label>
+              <input style={s.input} type="number" placeholder="bijv. 45" value={trainingForm.duration} onChange={e => setTrainingForm(f => ({ ...f, duration: e.target.value }))} />
+            </div>
+            <div style={{ marginBottom: 14 }}>
+              <label style={s.label}>Notities (optioneel)</label>
+              <input style={s.input} type="text" placeholder="Hoe was de training?" value={trainingForm.notes} onChange={e => setTrainingForm(f => ({ ...f, notes: e.target.value }))} />
+            </div>
+            <div style={{ display: "flex", gap: 10, marginTop: 20 }}>
+              <button style={s.outlineBtn} onClick={() => setShowLogTraining(false)}>Annuleren</button>
+              <button style={{ ...s.btn("#7dcea0", false), flex: 1, fontFamily: "'DM Sans', sans-serif" }} onClick={submitTraining}>Opslaan</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Log Food Modal */}
+      {showLogFood && (
+        <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.7)", display: "flex", alignItems: "flex-end", zIndex: 200 }}>
+          <div style={{ background: "#111f18", borderRadius: "20px 20px 0 0", padding: 24, width: "100%", maxWidth: 430, margin: "0 auto" }}>
+            <div style={{ fontSize: 18, fontWeight: 600, marginBottom: 20, color: "#b8e0c5" }}>Maaltijd toevoegen</div>
+            <div style={{ marginBottom: 14 }}>
+              <label style={s.label}>Maaltijd naam</label>
+              <input style={s.input} type="text" placeholder="bijv. Ontbijt, Lunch, Diner..." value={foodForm.meal} onChange={e => setFoodForm(f => ({ ...f, meal: e.target.value }))} />
+            </div>
+            <div style={{ marginBottom: 14 }}>
+              <label style={s.label}>Calorieën (kcal)</label>
+              <input style={s.input} type="number" placeholder="bijv. 600" value={foodForm.kcal} onChange={e => setFoodForm(f => ({ ...f, kcal: e.target.value }))} />
+            </div>
+            <div style={s.row}>
+              <div style={{ flex: 1, marginBottom: 14 }}>
+                <label style={s.label}>Eiwitten (g)</label>
+                <input style={s.input} type="number" placeholder="bijv. 45" value={foodForm.protein} onChange={e => setFoodForm(f => ({ ...f, protein: e.target.value }))} />
+              </div>
+              <div style={{ flex: 1, marginBottom: 14 }}>
+                <label style={s.label}>Koolhydraten (g)</label>
+                <input style={s.input} type="number" placeholder="bijv. 70" value={foodForm.carbs} onChange={e => setFoodForm(f => ({ ...f, carbs: e.target.value }))} />
+              </div>
+            </div>
+            <div style={{ marginBottom: 14 }}>
+              <label style={s.label}>Vetten (g)</label>
+              <input style={s.input} type="number" placeholder="bijv. 20" value={foodForm.fat} onChange={e => setFoodForm(f => ({ ...f, fat: e.target.value }))} />
+            </div>
+            <div style={{ display: "flex", gap: 10, marginTop: 20 }}>
+              <button style={s.outlineBtn} onClick={() => setShowLogFood(false)}>Annuleren</button>
+              <button style={{ ...s.btn("#7dcea0", false), flex: 1, fontFamily: "'DM Sans', sans-serif" }} onClick={submitFood}>Opslaan</button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function ProgressTab({ data }) {
+  return (
+    <div style={{ padding: "0 16px" }}>
+      <div style={{ fontSize: 22, fontWeight: 300, color: "#b8e0c5", fontFamily: "'Playfair Display', serif", marginBottom: 20 }}>
+        <em>Voortgang</em>
+      </div>
+
+      <div style={s.card}>
+        <div style={s.cardTitle}>Gewicht</div>
+        <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 16 }}>
+          <div style={{ textAlign: "center" }}>
+            <div style={{ fontSize: 28, fontWeight: 600, color: "#7dcea0" }}>{data.weight}</div>
+            <div style={{ fontSize: 11, color: "#3a5c46" }}>huidig (kg)</div>
+          </div>
+          <div style={{ textAlign: "center" }}>
+            <div style={{ fontSize: 28, fontWeight: 600, color: "#3a8c56" }}>{data.targetWeight}</div>
+            <div style={{ fontSize: 11, color: "#3a5c46" }}>doel (kg)</div>
+          </div>
+          <div style={{ textAlign: "center" }}>
+            <div style={{ fontSize: 28, fontWeight: 600, color: "#b8e0c5" }}>{data.weight - data.targetWeight}</div>
+            <div style={{ fontSize: 11, color: "#3a5c46" }}>te gaan (kg)</div>
+          </div>
+        </div>
+        <div style={{ background: "#0d1f17", borderRadius: 8, height: 10, overflow: "hidden" }}>
+          <div style={{ width: `${Math.max(5, Math.round(((90 - data.weight) / (90 - data.targetWeight)) * 100))}%`, height: "100%", background: "linear-gradient(90deg, #3a8c56, #7dcea0)", borderRadius: 8 }} />
+        </div>
+      </div>
+
+      <div style={s.card}>
+        <div style={s.cardTitle}>Weekoverzicht</div>
+        {[
+          { label: "Trainingen voltooid", value: "3 / 3", emoji: "💪" },
+          { label: "Gem. eiwitten", value: "158 g", emoji: "🥩" },
+          { label: "Gem. calorieën", value: "2.050 kcal", emoji: "🔥" },
+          { label: "Actieve dagen", value: "5 / 7", emoji: "📅" },
+        ].map((item, i) => (
+          <div key={i} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 0", borderBottom: i < 3 ? "1px solid #1a2e1f" : "none" }}>
+            <span style={{ fontSize: 13, color: "#7dcea0" }}>{item.emoji} {item.label}</span>
+            <span style={{ fontSize: 13, fontWeight: 600, color: "#b8e0c5" }}>{item.value}</span>
+          </div>
+        ))}
+      </div>
+
+      <div style={s.card}>
+        <div style={s.cardTitle}>Persoonlijke records</div>
+        {[
+          { ex: "Squat", weight: "80 kg", date: "28/05" },
+          { ex: "Bench Press", weight: "60 kg", date: "26/05" },
+          { ex: "Deadlift", weight: "100 kg", date: "20/05" },
+        ].map((pr, i) => (
+          <div key={i} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 0", borderBottom: i < 2 ? "1px solid #1a2e1f" : "none" }}>
+            <span style={{ fontSize: 13, color: "#7dcea0" }}>🏆 {pr.ex}</span>
+            <div style={{ textAlign: "right" }}>
+              <div style={{ fontSize: 13, fontWeight: 600, color: "#b8e0c5" }}>{pr.weight}</div>
+              <div style={{ fontSize: 10, color: "#3a5c46" }}>{pr.date}</div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function PlanTab({ data }) {
+  const days = ["Ma", "Di", "Wo", "Do", "Vr", "Za", "Zo"];
+  const schedule = ["Push", "Rest", "Pull", "Legs", "Push", "Rest", "Rest"];
+
+  return (
+    <div style={{ padding: "0 16px" }}>
+      <div style={{ fontSize: 22, fontWeight: 300, color: "#b8e0c5", fontFamily: "'Playfair Display', serif", marginBottom: 20 }}>
+        Jouw <em>plan</em>
+      </div>
+
+      <div style={s.card}>
+        <div style={s.cardTitle}>Trainingsschema deze week</div>
+        <div style={{ display: "flex", gap: 6, justifyContent: "space-between" }}>
+          {days.map((day, i) => (
+            <div key={i} style={{ textAlign: "center", flex: 1 }}>
+              <div style={{ fontSize: 10, color: "#3a5c46", marginBottom: 6 }}>{day}</div>
+              <div style={{
+                background: schedule[i] === "Rest" ? "#0d1f17" : "#1a3d28",
+                border: `1px solid ${schedule[i] === "Rest" ? "#1a2e1f" : "#3a8c56"}`,
+                borderRadius: 8,
+                padding: "8px 2px",
+                fontSize: 9,
+                color: schedule[i] === "Rest" ? "#2a4d35" : "#7dcea0",
+                fontWeight: schedule[i] === "Rest" ? 400 : 600,
+              }}>
+                {schedule[i]}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div style={s.card}>
+        <div style={s.cardTitle}>Dagelijkse doelen</div>
+        {[
+          { label: "Calorieën", value: `${data.todayPlan.nutrition.kcal} kcal`, icon: "🔥" },
+          { label: "Eiwitten", value: `${data.todayPlan.nutrition.protein} g`, icon: "💪" },
+          { label: "Koolhydraten", value: `${data.todayPlan.nutrition.carbs} g`, icon: "🌾" },
+          { label: "Vetten", value: `${data.todayPlan.nutrition.fat} g`, icon: "🫒" },
+          { label: "Water", value: "2.5 L", icon: "💧" },
+        ].map((item, i) => (
+          <div key={i} style={{ display: "flex", justifyContent: "space-between", padding: "10px 0", borderBottom: i < 4 ? "1px solid #1a2e1f" : "none" }}>
+            <span style={{ fontSize: 13, color: "#7dcea0" }}>{item.icon} {item.label}</span>
+            <span style={{ fontSize: 13, fontWeight: 600, color: "#b8e0c5" }}>{item.value}</span>
+          </div>
+        ))}
+      </div>
+
+      <div style={{ ...s.card, borderColor: "#2a5a3a", background: "#0d2a1a" }}>
+        <div style={{ fontSize: 13, color: "#7dcea0", lineHeight: 1.6 }}>
+          📩 <strong>Bericht van je coach (Lennert):</strong><br />
+          <span style={{ color: "#4a9c6a", fontStyle: "italic" }}>
+            "Super bezig deze week! Vergeet niet je eiwitdoel te halen — dat is key voor herstel. Tot volgende sessie! 💪"
+          </span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default function App() {
+  const [tab, setTab] = useState("home");
+  const [data, setData] = useState(initialData);
+
+  const navItems = [
+    { id: "home", label: "Home", icon: "🏠" },
+    { id: "progress", label: "Voortgang", icon: "📈" },
+    { id: "plan", label: "Plan", icon: "📋" },
+  ];
+
+  return (
+    <div style={s.app}>
+      <div style={s.header}>
+        <div style={s.logo}>
+          Move<span style={s.logoSpan}>for</span>Pleasure
+        </div>
+        <div style={s.avatar(data.color)}>{data.avatar}</div>
+      </div>
+
+      {tab === "home" && <HomeTab data={data} setData={setData} setTab={setTab} />}
+      {tab === "progress" && <ProgressTab data={data} />}
+      {tab === "plan" && <PlanTab data={data} />}
+
+      <nav style={s.nav}>
+        {navItems.map((item) => (
+          <button key={item.id} style={s.navItem(tab === item.id)} onClick={() => setTab(item.id)}>
+            <span style={{ fontSize: 20 }}>{item.icon}</span>
+            {item.label}
+          </button>
+        ))}
+      </nav>
+    </div>
+  );
+}
+
+import React from "react";
+import ReactDOM from "react-dom/client";
+import App from "./App";
+
+const root = ReactDOM.createRoot(document.getElementById("root"));
+root.render(<React.StrictMode><App /></React.StrictMode>);
+
+node_modules/
+build/
+.env
+.DS_Store
