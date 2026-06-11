@@ -1,0 +1,167 @@
+/* ===== Algemene opmaak ===== */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  background: linear-gradient(160deg, #1a1a2e 0%, #16213e 100%);
+  color: #eaeaea;
+  min-height: 100vh;
+  /* Ruimte onderaan zodat de navigatiebalk niets overlapt */
+  padding-bottom: 80px;
+}
+
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+h1 {
+  font-size: 1.5rem;
+  background: linear-gradient(90deg, #4ecca3, #6fd6ff);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.streak-badge { color: #ffb347; font-weight: 600; }
+
+main { max-width: 640px; margin: 0 auto; padding: 0 16px; }
+
+h2 { font-size: 1.2rem; margin-bottom: 14px; }
+h3 { font-size: 1rem; margin-bottom: 8px; }
+
+.gedempt { color: #8a8aa3; font-size: 0.9rem; line-height: 1.5; }
+
+.verborgen { display: none; }
+
+/* ===== Kaarten ===== */
+.kaart {
+  background: #20203a;
+  border: 1px solid #2e2e4a;
+  border-radius: 14px;
+  padding: 16px;
+  margin-bottom: 14px;
+}
+
+/* ===== Formulieren ===== */
+input, select, textarea {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid #2e2e4a;
+  border-radius: 10px;
+  background: #2a2a48;
+  color: #eaeaea;
+  font-size: 1rem;
+  font-family: inherit;
+  outline: none;
+  margin-bottom: 10px;
+}
+
+input:focus, select:focus, textarea:focus { border-color: #4ecca3; }
+
+.rij { display: flex; gap: 8px; }
+
+button[type="submit"] {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 10px;
+  background: #4ecca3;
+  color: #16213e;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+button[type="submit"]:hover { background: #3db38d; }
+
+.doel-instelling { font-size: 0.9rem; color: #8a8aa3; }
+
+.doel-instelling input {
+  width: 56px;
+  padding: 6px 8px;
+  margin: 0 4px;
+  text-align: center;
+}
+
+/* ===== Voortgangsbalk weekdoel ===== */
+.balk {
+  height: 10px;
+  background: #2a2a48;
+  border-radius: 5px;
+  overflow: hidden;
+  margin: 10px 0;
+}
+
+.balk-vulling {
+  height: 100%;
+  background: linear-gradient(90deg, #4ecca3, #6fd6ff);
+  border-radius: 5px;
+  transition: width 0.3s;
+}
+
+/* ===== Lijsten met gelogde items ===== */
+.lijst { list-style: none; }
+
+.lijst li {
+  background: #20203a;
+  border: 1px solid #2e2e4a;
+  border-radius: 10px;
+  padding: 12px 14px;
+  margin-bottom: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+
+.lijst .datum { color: #8a8aa3; font-size: 0.8rem; white-space: nowrap; }
+
+.lijst .wissen {
+  background: none;
+  border: none;
+  color: #8a8aa3;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.lijst .wissen:hover { color: #ff6b6b; }
+
+/* ===== Schema-velden ===== */
+.schema-dag { margin-bottom: 4px; }
+.schema-dag label { display: block; font-size: 0.85rem; color: #8a8aa3; margin-bottom: 4px; }
+
+/* ===== Navigatiebalk onderaan ===== */
+nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-around;
+  background: #20203a;
+  border-top: 1px solid #2e2e4a;
+  padding: 8px 0 max(8px, env(safe-area-inset-bottom));
+}
+
+.nav-knop {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  background: none;
+  border: none;
+  color: #8a8aa3;
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 4px 12px;
+  border-radius: 10px;
+}
+
+.nav-knop span { font-size: 0.7rem; }
+
+.nav-knop.actief { color: #4ecca3; }
