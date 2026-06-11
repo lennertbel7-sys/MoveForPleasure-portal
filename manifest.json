@@ -1,6 +1,6 @@
 {
-  "name": "SportLog",
-  "short_name": "SportLog",
+  "name": "MoveForPleasure",
+  "short_name": "Move",
   "description": "Jouw workouts, cardio en schema's op één plek",
   "start_url": ".",
   "display": "standalone",
