@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#16213e">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Admin | MoveForPleasure</title>
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="app/style.css">
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body class="admin">
+  <header>
+    <h1>MoveForPleasure <span class="admin-label">Admin</span></h1>
+    <button id="uitloggen" class="knop-klein" hidden>Uitloggen</button>
+  </header>
+
+  <main>
+    <!-- ===== Inloggen ===== -->
+    <section id="scherm-login" hidden>
+      <form id="login-formulier" class="kaart login">
+        <h2>Inloggen</h2>
+        <p class="gedempt">Alleen voor beheerders van MoveForPleasure.</p>
+        <label for="login-email">E-mailadres</label>
+        <input type="email" id="login-email" required autocomplete="username">
+        <label for="login-wachtwoord">Wachtwoord</label>
+        <input type="password" id="login-wachtwoord" required autocomplete="current-password">
+        <button type="submit" id="login-knop">Inloggen</button>
+        <p id="login-fout" class="fout"></p>
+      </form>
+    </section>
+
+    <!-- ===== Geen rechten ===== -->
+    <section id="scherm-geen-rechten" hidden>
+      <div class="kaart">
+        <h2>Geen toegang</h2>
+        <p class="gedempt">Je bent ingelogd, maar dit account heeft geen adminrechten.</p>
+      </div>
+    </section>
+
+    <!-- ===== Beheer ===== -->
+    <section id="scherm-beheer" hidden>
+      <div class="admin-raster">
+        <form id="bericht-formulier" class="kaart">
+          <h2 id="formulier-titel">Nieuw bericht</h2>
+
+          <label>Soort bericht</label>
+          <div class="categorie-keuze" role="radiogroup">
+            <label><input type="radio" name="categorie" value="motivatie" checked><span>💪 Motivatie</span></label>
+            <label><input type="radio" name="categorie" value="weetje"><span>💡 Weetje</span></label>
+            <label><input type="radio" name="categorie" value="tip"><span>🎯 Tip</span></label>
+            <label><input type="radio" name="categorie" value="nieuws"><span>📣 Nieuws</span></label>
+          </div>
+
+          <label for="b-titel">Titel <span class="teller" id="titel-teller">0/120</span></label>
+          <input type="text" id="b-titel" maxlength="120" required placeholder="Bijvoorbeeld: Geen zin? Doe 10 minuten.">
+
+          <label for="b-tekst">Tekst <span class="teller" id="tekst-teller">0/2000</span></label>
+          <textarea id="b-tekst" rows="7" maxlength="2000" required placeholder="Schrijf je bericht. Enters blijven behouden."></textarea>
+
+          <label class="vinkje"><input type="checkbox" id="b-vastgepind"> 📌 Vastpinnen (blijft bovenaan staan)</label>
+
+          <label for="b-moment">Publiceren</label>
+          <div class="rij">
+            <select id="b-wanneer">
+              <option value="nu">Meteen</option>
+              <option value="later">Inplannen…</option>
+            </select>
+            <input type="datetime-local" id="b-moment" hidden>
+          </div>
+
+          <div class="knoppen-rij">
+            <button type="submit" id="opslaan-knop">Publiceren</button>
+            <button type="button" id="annuleer-knop" class="knop-rand" hidden>Annuleren</button>
+          </div>
+          <p id="formulier-melding" class="melding"></p>
+        </form>
+
+        <div>
+          <h3 class="voorbeeld-kop">Voorbeeld in de app</h3>
+          <div id="voorbeeld"></div>
+        </div>
+      </div>
+
+      <h2 class="lijst-kop">Alle berichten</h2>
+      <div id="admin-lijst"></div>
+    </section>
+  </main>
+
+  <!-- Supabase-bibliotheek voor het inloggen -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="config.js"></script>
+  <script src="admin.js"></script>
+</body>
+</html>

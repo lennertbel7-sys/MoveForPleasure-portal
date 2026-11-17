@@ -1,0 +1,311 @@
+/* ===== Algemene opmaak ===== */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  background: linear-gradient(160deg, #1a1a2e 0%, #16213e 100%);
+  color: #eaeaea;
+  min-height: 100vh;
+  /* Ruimte onderaan zodat de navigatiebalk niets overlapt */
+  padding-bottom: 80px;
+}
+
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+h1 {
+  font-size: 1.5rem;
+  background: linear-gradient(90deg, #4ecca3, #6fd6ff);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.streak-badge { color: #ffb347; font-weight: 600; }
+
+main { max-width: 640px; margin: 0 auto; padding: 0 16px; }
+
+h2 { font-size: 1.2rem; margin-bottom: 14px; }
+h3 { font-size: 1rem; margin-bottom: 8px; }
+
+.gedempt { color: #8a8aa3; font-size: 0.9rem; line-height: 1.5; }
+
+.verborgen { display: none; }
+
+/* ===== Kaarten ===== */
+.kaart {
+  background: #20203a;
+  border: 1px solid #2e2e4a;
+  border-radius: 14px;
+  padding: 16px;
+  margin-bottom: 14px;
+}
+
+/* ===== Formulieren ===== */
+input, select, textarea {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid #2e2e4a;
+  border-radius: 10px;
+  background: #2a2a48;
+  color: #eaeaea;
+  font-size: 1rem;
+  font-family: inherit;
+  outline: none;
+  margin-bottom: 10px;
+}
+
+input:focus, select:focus, textarea:focus { border-color: #4ecca3; }
+
+.rij { display: flex; gap: 8px; }
+
+button[type="submit"] {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 10px;
+  background: #4ecca3;
+  color: #16213e;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+button[type="submit"]:hover { background: #3db38d; }
+
+.doel-instelling { font-size: 0.9rem; color: #8a8aa3; }
+
+.doel-instelling input {
+  width: 56px;
+  padding: 6px 8px;
+  margin: 0 4px;
+  text-align: center;
+}
+
+/* ===== Voortgangsbalk weekdoel ===== */
+.balk {
+  height: 10px;
+  background: #2a2a48;
+  border-radius: 5px;
+  overflow: hidden;
+  margin: 10px 0;
+}
+
+.balk-vulling {
+  height: 100%;
+  background: linear-gradient(90deg, #4ecca3, #6fd6ff);
+  border-radius: 5px;
+  transition: width 0.3s;
+}
+
+/* ===== Lijsten met gelogde items ===== */
+.lijst { list-style: none; }
+
+.lijst li {
+  background: #20203a;
+  border: 1px solid #2e2e4a;
+  border-radius: 10px;
+  padding: 12px 14px;
+  margin-bottom: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+
+.lijst .datum { color: #8a8aa3; font-size: 0.8rem; white-space: nowrap; }
+
+.lijst .wissen {
+  background: none;
+  border: none;
+  color: #8a8aa3;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.lijst .wissen:hover { color: #ff6b6b; }
+
+/* ===== Schema-velden ===== */
+.schema-dag { margin-bottom: 4px; }
+.schema-dag label { display: block; font-size: 0.85rem; color: #8a8aa3; margin-bottom: 4px; }
+
+/* ===== Navigatiebalk onderaan ===== */
+nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-around;
+  background: #20203a;
+  border-top: 1px solid #2e2e4a;
+  padding: 8px 0 max(8px, env(safe-area-inset-bottom));
+}
+
+.nav-knop {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  background: none;
+  border: none;
+  color: #8a8aa3;
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 4px 12px;
+  border-radius: 10px;
+}
+
+.nav-knop span { font-size: 0.7rem; }
+
+.nav-knop.actief { color: #4ecca3; }
+
+/* ============================================================
+   Motivatie, berichten en felicitaties
+   ============================================================ */
+
+.klein-kop { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 2px; }
+.tab-intro { margin: -6px 0 14px; }
+.kaart-kop { display: flex; justify-content: space-between; align-items: baseline; }
+
+/* ----- Motivatiekaart bovenaan ----- */
+.motivatie-kaart {
+  background:
+    radial-gradient(260px 160px at 100% 0%, rgba(111, 214, 255, 0.14), transparent 70%),
+    radial-gradient(260px 160px at 0% 100%, rgba(78, 204, 163, 0.16), transparent 70%),
+    #20203a;
+  border-color: rgba(78, 204, 163, 0.35);
+}
+.motivatie-kaart h2 { font-size: 1.45rem; margin-bottom: 6px; }
+.aanmoediging { color: #d5d5e6; line-height: 1.5; margin-bottom: 16px; }
+
+.cijfers { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 16px; }
+.cijfer { background: rgba(0, 0, 0, 0.22); border-radius: 12px; padding: 10px 6px; text-align: center; }
+.cijfer strong {
+  display: block; font-size: 1.6rem; line-height: 1.1;
+  background: linear-gradient(90deg, #4ecca3, #6fd6ff);
+  -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+}
+.cijfer span { font-size: 0.7rem; color: #8a8aa3; }
+
+.week-bolletjes { display: flex; justify-content: space-between; gap: 4px; }
+.bolletje { display: flex; flex-direction: column; align-items: center; gap: 4px; flex: 1; }
+.bolletje span {
+  width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center;
+  background: #2a2a48; border: 2px solid transparent; color: #16213e; font-weight: 800; font-size: 0.85rem;
+  transition: transform 0.2s;
+}
+.bolletje.actief span { background: linear-gradient(135deg, #4ecca3, #6fd6ff); }
+.bolletje.vandaag span { border-color: #ffb347; }
+.bolletje.vandaag.actief span { transform: scale(1.08); }
+.bolletje small { font-size: 0.7rem; color: #8a8aa3; }
+.bolletje.vandaag small { color: #ffb347; font-weight: 700; }
+
+/* ----- Snelknoppen ----- */
+.snel-knoppen { display: flex; gap: 8px; margin-top: 12px; }
+.snel-knop {
+  flex: 1; padding: 10px; border-radius: 10px; cursor: pointer; font: inherit; font-size: 0.9rem; font-weight: 600;
+  background: rgba(78, 204, 163, 0.1); color: #4ecca3; border: 1px solid rgba(78, 204, 163, 0.35);
+}
+.snel-knop:hover { background: rgba(78, 204, 163, 0.18); }
+
+/* ----- Badges ----- */
+.badges { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-top: 6px; }
+.badge { display: flex; flex-direction: column; align-items: center; gap: 4px; text-align: center; opacity: 0.4; }
+.badge.behaald { opacity: 1; }
+.badge-icoon {
+  width: 46px; height: 46px; border-radius: 50%; display: grid; place-items: center; font-size: 1.35rem;
+  background: #2a2a48; border: 1px solid #3a3a5c;
+}
+.badge.behaald .badge-icoon { background: rgba(255, 179, 71, 0.14); border-color: rgba(255, 179, 71, 0.55); box-shadow: 0 0 14px rgba(255, 179, 71, 0.2); }
+.badge small { font-size: 0.65rem; color: #b8b8cc; line-height: 1.2; }
+
+/* ----- Berichten ----- */
+.bericht {
+  position: relative; background: #20203a; border: 1px solid #2e2e4a; border-radius: 14px;
+  padding: 14px 16px; margin-bottom: 12px; border-left: 4px solid #4ecca3;
+}
+.bericht-weetje { border-left-color: #6fd6ff; }
+.bericht-tip { border-left-color: #ffb347; }
+.bericht-nieuws { border-left-color: #c58cff; }
+.bericht.ongelezen::after {
+  content: ""; position: absolute; top: 14px; right: 14px; width: 9px; height: 9px; border-radius: 50%;
+  background: #ff6b6b; box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.2);
+}
+.bericht-kop { display: flex; justify-content: space-between; gap: 10px; margin-bottom: 6px; padding-right: 18px; }
+.bericht-label { font-size: 0.75rem; font-weight: 700; color: #4ecca3; text-transform: uppercase; letter-spacing: 0.05em; }
+.bericht-weetje .bericht-label { color: #6fd6ff; }
+.bericht-tip .bericht-label { color: #ffb347; }
+.bericht-nieuws .bericht-label { color: #c58cff; }
+.bericht-datum { font-size: 0.75rem; color: #8a8aa3; white-space: nowrap; }
+.bericht h3 { font-size: 1.02rem; margin-bottom: 4px; }
+.bericht-tekst { color: #c8c8da; font-size: 0.93rem; line-height: 1.55; white-space: pre-line; }
+.bericht-uitgelicht { background: linear-gradient(180deg, rgba(78, 204, 163, 0.08), #20203a 60%); }
+.link-knop { background: none; border: 0; color: #4ecca3; font: inherit; font-size: 0.88rem; font-weight: 600; cursor: pointer; margin-top: 8px; padding: 0; }
+
+.spreuk { border-left-color: #ffb347; text-align: center; padding: 16px 18px; }
+.spreuk .bericht-label { color: #ffb347; }
+.spreuk-tekst { font-size: 1.05rem; font-style: italic; line-height: 1.5; margin-top: 6px; color: #eaeaea; }
+.leeg { text-align: center; padding: 30px 10px; }
+
+/* Rood bolletje met aantal ongelezen op de navigatieknop */
+.nav-knop { position: relative; }
+.teller-bolletje {
+  position: absolute; top: 0; right: 4px; min-width: 18px; height: 18px; padding: 0 5px;
+  border-radius: 9px; background: #ff6b6b; color: #fff; font-size: 0.68rem; font-weight: 700;
+  display: grid; place-items: center; line-height: 1;
+}
+.teller-bolletje[hidden] { display: none; }
+
+/* ----- Felicitatie-venster ----- */
+.viering {
+  position: fixed; inset: 0; z-index: 100; display: grid; place-items: center; padding: 24px;
+  background: rgba(8, 10, 22, 0.75); backdrop-filter: blur(4px); overflow: hidden;
+}
+.viering[hidden] { display: none; }
+.viering-kaart {
+  position: relative; z-index: 2; max-width: 340px; width: 100%; text-align: center;
+  background: linear-gradient(180deg, #262648, #1c1c34); border: 1px solid rgba(78, 204, 163, 0.45);
+  border-radius: 20px; padding: 28px 24px 22px; box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5);
+  animation: plop 0.45s cubic-bezier(.2, 1.5, .4, 1);
+}
+.viering-icoon { font-size: 3.4rem; margin-bottom: 8px; }
+.viering-kaart h2 { font-size: 1.4rem; margin-bottom: 8px; }
+.viering-kaart p { color: #c8c8da; line-height: 1.5; margin-bottom: 20px; }
+.viering-kaart button {
+  width: 100%; padding: 12px; border: 0; border-radius: 10px; cursor: pointer;
+  background: #4ecca3; color: #16213e; font: inherit; font-weight: 700; font-size: 1rem;
+}
+.confetti {
+  position: absolute; top: -12px; width: 8px; height: 14px; border-radius: 2px; z-index: 1;
+  animation: val linear forwards;
+}
+@keyframes val { to { top: 105vh; transform: rotate(720deg) translateX(40px); } }
+@keyframes plop { from { transform: scale(0.6); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+/* ----- Korte melding (toast) ----- */
+.toast {
+  position: fixed; left: 50%; bottom: 90px; transform: translate(-50%, 20px); z-index: 90;
+  background: #4ecca3; color: #16213e; font-weight: 700; padding: 10px 18px; border-radius: 999px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4); opacity: 0; pointer-events: none;
+  transition: opacity 0.25s, transform 0.25s; white-space: nowrap;
+}
+.toast.zichtbaar { opacity: 1; transform: translate(-50%, 0); }
+
+@media (prefers-reduced-motion: reduce) {
+  .viering-kaart { animation: none; }
+  .toast { transition: none; }
+}
+@media (max-width: 380px) {
+  .badges { grid-template-columns: repeat(4, 1fr); }
+  .bolletje span { width: 28px; height: 28px; }
+}
+@media (max-width: 420px) {
+  .snel-knop { font-size: 0.82rem; padding: 10px 6px; white-space: nowrap; }
+}

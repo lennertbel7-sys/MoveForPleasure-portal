@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#16213e">
+  <title>MoveForPleasure</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="../icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>MoveForPleasure</h1>
+    <span id="streak-badge" class="streak-badge"></span>
+  </header>
+
+  <main>
+    <!-- ===== Tab: Vandaag ===== -->
+    <section id="tab-vandaag" class="tab">
+      <!-- Persoonlijke aanmoediging + je belangrijkste cijfers -->
+      <div class="kaart motivatie-kaart">
+        <p id="vandaag-titel" class="gedempt klein-kop"></p>
+        <h2 id="groet"></h2>
+        <p id="aanmoediging" class="aanmoediging"></p>
+
+        <div class="cijfers">
+          <div class="cijfer">
+            <strong id="cijfer-streak">0</strong>
+            <span>🔥 dagen op rij</span>
+          </div>
+          <div class="cijfer">
+            <strong id="cijfer-weekreeks">0</strong>
+            <span>📈 weken doel gehaald</span>
+          </div>
+          <div class="cijfer">
+            <strong id="cijfer-week">0/3</strong>
+            <span>✅ deze week</span>
+          </div>
+        </div>
+
+        <!-- Zeven bolletjes: ma t/m zo, gevuld als je actief was -->
+        <div id="week-bolletjes" class="week-bolletjes" aria-label="Actieve dagen deze week"></div>
+      </div>
+
+      <!-- Nieuwste bericht of spreuk van de dag -->
+      <div id="vandaag-bericht"></div>
+
+      <div class="kaart">
+        <h3>Training van vandaag</h3>
+        <p id="vandaag-schema" class="gedempt"></p>
+        <div class="snel-knoppen">
+          <button class="snel-knop" data-naar="workout">🏋️ Workout loggen</button>
+          <button class="snel-knop" data-naar="cardio">🏃 Cardio loggen</button>
+        </div>
+      </div>
+
+      <div class="kaart">
+        <h3>Weekdoel</h3>
+        <p id="weekdoel-tekst" class="gedempt"></p>
+        <div class="balk"><div id="weekdoel-balk" class="balk-vulling"></div></div>
+        <label class="doel-instelling">
+          Doel: <input type="number" id="weekdoel-invoer" min="1" max="7"> actieve dagen per week
+        </label>
+      </div>
+
+      <div class="kaart">
+        <div class="kaart-kop">
+          <h3>Jouw badges</h3>
+          <span id="badges-telling" class="gedempt"></span>
+        </div>
+        <div id="badges" class="badges"></div>
+      </div>
+
+      <div class="kaart">
+        <h3>Recente activiteit</h3>
+        <ul id="recente-lijst" class="lijst"></ul>
+      </div>
+    </section>
+
+    <!-- ===== Tab: Workout ===== -->
+    <section id="tab-workout" class="tab verborgen">
+      <h2>Workout loggen</h2>
+      <form id="workout-formulier" class="kaart">
+        <input type="text" id="workout-oefening" placeholder="Oefening, bv. squat" required maxlength="40">
+        <div class="rij">
+          <input type="number" id="workout-gewicht" placeholder="kg" min="0" step="0.5">
+          <input type="number" id="workout-sets" placeholder="sets" min="1" required>
+          <input type="number" id="workout-reps" placeholder="reps" min="1" required>
+        </div>
+        <button type="submit">Loggen</button>
+      </form>
+      <ul id="workout-lijst" class="lijst"></ul>
+    </section>
+
+    <!-- ===== Tab: Cardio ===== -->
+    <section id="tab-cardio" class="tab verborgen">
+      <h2>Cardio loggen</h2>
+      <form id="cardio-formulier" class="kaart">
+        <select id="cardio-type">
+          <option>Hardlopen</option>
+          <option>Fietsen</option>
+          <option>Wandelen</option>
+          <option>Zwemmen</option>
+          <option>Anders</option>
+        </select>
+        <div class="rij">
+          <input type="number" id="cardio-minuten" placeholder="minuten" min="1" required>
+          <input type="number" id="cardio-km" placeholder="km (optioneel)" min="0" step="0.1">
+        </div>
+        <button type="submit">Loggen</button>
+      </form>
+      <ul id="cardio-lijst" class="lijst"></ul>
+    </section>
+
+    <!-- ===== Tab: Schema ===== -->
+    <section id="tab-schema" class="tab verborgen">
+      <h2>Weekschema</h2>
+      <p class="gedempt">Schrijf per dag wat je traint. Dit zie je dan terug op het Vandaag-scherm.</p>
+      <form id="schema-formulier" class="kaart">
+        <!-- De 7 dag-velden worden hier door JavaScript ingevuld -->
+        <div id="schema-velden"></div>
+        <button type="submit">Schema opslaan</button>
+      </form>
+    </section>
+
+    <!-- ===== Tab: Berichten ===== -->
+    <section id="tab-berichten" class="tab verborgen">
+      <h2>Berichten</h2>
+      <p class="gedempt tab-intro">Tips, weetjes en motivatie van het MoveForPleasure-team.</p>
+      <div id="berichten-lijst"></div>
+    </section>
+  </main>
+
+  <!-- ===== Felicitatie (verschijnt bij records, badges en mijlpalen) ===== -->
+  <div id="viering" class="viering" hidden role="dialog" aria-modal="true" aria-labelledby="viering-titel">
+    <div class="viering-kaart">
+      <div id="viering-icoon" class="viering-icoon"></div>
+      <h2 id="viering-titel"></h2>
+      <p id="viering-tekst"></p>
+      <button id="viering-knop" type="button">Top! 🙌</button>
+    </div>
+  </div>
+
+  <!-- ===== Korte melding onderaan ===== -->
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <!-- ===== Navigatiebalk onderaan (zoals een echte mobiele app) ===== -->
+  <nav>
+    <button class="nav-knop actief" data-tab="vandaag">🏠<span>Vandaag</span></button>
+    <button class="nav-knop" data-tab="workout">🏋️<span>Workout</span></button>
+    <button class="nav-knop" data-tab="cardio">🏃<span>Cardio</span></button>
+    <button class="nav-knop" data-tab="schema">📅<span>Schema</span></button>
+    <button class="nav-knop" data-tab="berichten">🔔<span>Berichten</span><b id="berichten-teller" class="teller-bolletje" hidden></b></button>
+  </nav>
+
+  <script src="../config.js"></script>
+  <script src="data.js"></script>
+  <script src="motivatie.js"></script>
+  <script src="berichten.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

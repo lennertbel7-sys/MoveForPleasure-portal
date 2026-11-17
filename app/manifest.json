@@ -2,13 +2,14 @@
   "name": "MoveForPleasure",
   "short_name": "Move",
   "description": "Jouw workouts, cardio en schema's op één plek",
-  "start_url": ".",
+  "start_url": "./",
+  "scope": "./",
   "display": "standalone",
   "background_color": "#16213e",
   "theme_color": "#16213e",
   "icons": [
     {
-      "src": "icon.svg",
+      "src": "../icon.svg",
       "sizes": "any",
       "type": "image/svg+xml",
       "purpose": "any"

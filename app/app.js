@@ -20,7 +20,16 @@ function toonTab(naam) {
     knop.classList.toggle("actief", knop.dataset.tab === naam);
   });
   vernieuwAlles();
+  window.scrollTo(0, 0);
+  // Berichten-tab geopend: de nieuwe berichten zijn nog even gemarkeerd
+  // (zodat je ziet wat nieuw is), maar de teller gaat meteen naar 0.
+  if (naam === "berichten") markeerAllesGelezen();
 }
+
+// Snelknoppen op het Vandaag-scherm
+document.querySelectorAll(".snel-knop").forEach(knop => {
+  knop.addEventListener("click", () => toonTab(knop.dataset.naar));
+});
 
 // ===== Alles op het scherm verversen =====
 // Na elke wijziging roepen we dit aan: het leest de actuele data
@@ -30,6 +39,82 @@ function vernieuwAlles() {
   vernieuwVandaag();
   vernieuwWorkoutLijst();
   vernieuwCardioLijst();
+  vernieuwBerichten();
+}
+
+// ===== Felicitaties =====
+let toastTimer;
+function toonToast(tekst) {
+  const toast = document.getElementById("toast");
+  toast.textContent = tekst;
+  toast.classList.add("zichtbaar");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => toast.classList.remove("zichtbaar"), 2600);
+}
+
+function toonViering(icoon, titel, tekst) {
+  document.getElementById("viering-icoon").textContent = icoon;
+  document.getElementById("viering-titel").textContent = titel;
+  document.getElementById("viering-tekst").textContent = tekst;
+  const viering = document.getElementById("viering");
+  viering.hidden = false;
+  strooiConfetti(viering);
+  document.getElementById("viering-knop").focus();
+}
+
+function sluitViering() {
+  const viering = document.getElementById("viering");
+  viering.hidden = true;
+  viering.querySelectorAll(".confetti").forEach(c => c.remove());
+}
+document.getElementById("viering-knop").addEventListener("click", sluitViering);
+document.getElementById("viering").addEventListener("click", (e) => { if (e.target.id === "viering") sluitViering(); });
+document.addEventListener("keydown", (e) => { if (e.key === "Escape") sluitViering(); });
+
+function strooiConfetti(plek) {
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const kleuren = ["#4ecca3", "#6fd6ff", "#ffb347", "#ff6b9a", "#f9f871"];
+  for (let i = 0; i < 60; i++) {
+    const stukje = document.createElement("span");
+    stukje.className = "confetti";
+    stukje.style.left = Math.random() * 100 + "vw";
+    stukje.style.background = kleuren[i % kleuren.length];
+    stukje.style.animationDelay = Math.random() * 0.6 + "s";
+    stukje.style.animationDuration = 1.8 + Math.random() * 1.4 + "s";
+    stukje.style.transform = `rotate(${Math.random() * 360}deg)`;
+    plek.appendChild(stukje);
+  }
+}
+
+// Wordt aangeroepen NA elke log. "voor" bevat hoe het ervoor stond,
+// zodat we kunnen zien wat er net veranderd is.
+function vierResultaat(voor, isRecord, oefening) {
+  const nuActief = actieveDagenDezeWeek();
+  const streak = berekenStreak();
+  const badgesNieuw = nieuweBadges();
+  const badgeTekst = badgesNieuw.length
+    ? ` Nieuwe badge: ${badgesNieuw.map(b => b.icoon + " " + b.naam).join(", ")}!`
+    : "";
+
+  if (isRecord) {
+    toonViering("🏆", "Nieuw persoonlijk record!", `Zwaarder dan ooit bij ${oefening}. Je wordt echt sterker!` + badgeTekst);
+  } else if (voor.actief < weekdoel && nuActief >= weekdoel) {
+    const reeks = berekenWeekreeks();
+    toonViering("🎯", "Weekdoel gehaald!",
+      (reeks > 1 ? `Al ${reeks} weken op rij! ` : "") + "Zo bouw je een gewoonte die blijft." + badgeTekst);
+  } else if (streak > voor.streak && [3, 7, 14, 21, 30, 50, 100].includes(streak)) {
+    toonViering("🔥", `${streak} dagen op rij!`, "Je bent niet te stoppen. Vergeet ook niet te rusten." + badgeTekst);
+  } else if (badgesNieuw.length) {
+    const b = badgesNieuw[0];
+    const extra = badgesNieuw.slice(1).map(x => `${x.icoon} ${x.naam}`).join(", ");
+    toonViering(b.icoon, `Nieuwe badge: ${b.naam}`, b.proficiat + (extra ? ` Je speelde ook vrij: ${extra}.` : ""));
+  } else {
+    toonToast(willekeurigCompliment());
+  }
+}
+
+function statusVoorLog() {
+  return { actief: actieveDagenDezeWeek(), streak: berekenStreak() };
 }
 
 function vernieuwStreakBadge() {
@@ -45,6 +130,44 @@ function vernieuwVandaag() {
 
   document.getElementById("vandaag-titel").textContent =
     `${dagNamenVoluit[dagSleutel]} ${nu.getDate()}/${nu.getMonth() + 1}`;
+
+  // Groet, aanmoediging en de drie cijfers
+  document.getElementById("groet").textContent = groet() + "! 👋";
+  document.getElementById("aanmoediging").textContent = aanmoediging();
+  document.getElementById("cijfer-streak").textContent = berekenStreak();
+  document.getElementById("cijfer-weekreeks").textContent = berekenWeekreeks();
+  document.getElementById("cijfer-week").textContent = `${actieveDagenDezeWeek()}/${weekdoel}`;
+
+  // Bolletjes ma t/m zo
+  const bolletjes = document.getElementById("week-bolletjes");
+  bolletjes.innerHTML = "";
+  const dagen = actieveDagen();
+  const maandag = new Date(maandagVan(vandaagTekst()) + "T12:00:00");
+  ["ma", "di", "wo", "do", "vr", "za", "zo"].forEach((naam, i) => {
+    const dag = new Date(maandag);
+    dag.setDate(maandag.getDate() + i);
+    const tekst = datumNaarTekst(dag);
+    const bol = document.createElement("div");
+    bol.className = "bolletje";
+    if (dagen.has(tekst)) bol.classList.add("actief");
+    if (tekst === vandaagTekst()) bol.classList.add("vandaag");
+    bol.innerHTML = `<span>${dagen.has(tekst) ? "✓" : ""}</span><small>${naam}</small>`;
+    bolletjes.appendChild(bol);
+  });
+
+  // Badges
+  const behaald = behaaldeBadges();
+  const badgeVak = document.getElementById("badges");
+  badgeVak.innerHTML = "";
+  badges.forEach(b => {
+    const div = document.createElement("div");
+    div.className = "badge" + (behaald.includes(b.id) ? " behaald" : "");
+    div.title = b.uitleg;
+    div.innerHTML = `<span class="badge-icoon">${behaald.includes(b.id) ? b.icoon : "🔒"}</span><small></small>`;
+    div.querySelector("small").textContent = b.naam;
+    badgeVak.appendChild(div);
+  });
+  document.getElementById("badges-telling").textContent = `${behaald.length}/${badges.length}`;
 
   // Training van vandaag uit het weekschema
   const planVandaag = schema[dagSleutel];
@@ -102,10 +225,12 @@ document.getElementById("workout-formulier").addEventListener("submit", (e) => {
   const sets = parseInt(document.getElementById("workout-sets").value);
   const reps = parseInt(document.getElementById("workout-reps").value);
   if (!oefening || !sets || !reps) return;
+  const voor = statusVoorLog();
+  const record = isNieuwRecord(oefening, gewicht); // vóór het opslaan checken!
   logWorkout(oefening, gewicht, sets, reps);
   e.target.reset();
-  document.getElementById("workout-oefening").focus();
   vernieuwAlles();
+  vierResultaat(voor, record, oefening);
 });
 
 function vernieuwWorkoutLijst() {
@@ -134,9 +259,11 @@ document.getElementById("cardio-formulier").addEventListener("submit", (e) => {
   const minuten = parseInt(document.getElementById("cardio-minuten").value);
   const km = parseFloat(document.getElementById("cardio-km").value) || 0;
   if (!minuten) return;
+  const voor = statusVoorLog();
   logCardio(type, minuten, km);
   e.target.reset();
   vernieuwAlles();
+  vierResultaat(voor, false);
 });
 
 function vernieuwCardioLijst() {
@@ -195,3 +322,10 @@ if ("serviceWorker" in navigator) {
 
 // ===== Start =====
 vernieuwAlles();
+haalBerichtenOp();
+
+// Nieuwe berichten ophalen als je de app weer opent of weer online bent
+document.addEventListener("visibilitychange", () => {
+  if (document.visibilityState === "visible") { haalBerichtenOp(); vernieuwAlles(); }
+});
+window.addEventListener("online", haalBerichtenOp);
