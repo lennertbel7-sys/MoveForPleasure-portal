@@ -58,7 +58,24 @@ async function start() {
 
   toonScherm("beheer");
   resetFormulier();
+  laadCijfers();
   await laadBerichten();
+}
+
+// ===== Kerncijfers (accounts, actief, wachtlijst) =====
+async function laadCijfers() {
+  const { data, error } = await db.rpc("admin_cijfers");
+  if (error) { $("admin-cijfers").textContent = "Cijfers konden niet geladen worden."; return; }
+  const tegels = [
+    ["👥", data.gebruikers, "accounts"],
+    ["✉️", data.bevestigd, "bevestigd"],
+    ["🌱", data.nieuw_7d, "nieuw (7 dagen)"],
+    ["🔥", data.actief_7d, "actief (7 dagen)"],
+    ["📝", data.wachtlijst, "op de wachtlijst"],
+  ];
+  $("admin-cijfers").innerHTML = tegels.map(([icoon, getal, label]) =>
+    `<div class="cijfer-tegel"><span>${icoon}</span><strong>${getal}</strong><small>${label}</small></div>`
+  ).join("");
 }
 
 // ===== Berichtkaart (zelfde opmaak als in de app) =====

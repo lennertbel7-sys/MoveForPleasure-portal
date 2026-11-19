@@ -69,3 +69,12 @@ body.admin { padding-bottom: 40px; }
   .admin-raster { grid-template-columns: 1fr; }
   .categorie-keuze { grid-template-columns: repeat(2, 1fr); }
 }
+
+/* ===== Kerncijfers ===== */
+.admin-cijfers { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; margin-bottom: 16px; }
+.cijfer-tegel {
+  display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 12px 8px;
+  background: #2b1d37; border: 1px solid #402d4c; border-radius: 14px;
+}
+.cijfer-tegel strong { font-size: 1.5rem; color: #ff7a3d; }
+.cijfer-tegel small { color: #a8919f; font-size: 0.8rem; text-align: center; }

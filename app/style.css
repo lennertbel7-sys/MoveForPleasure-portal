@@ -548,3 +548,19 @@ h1.merk { min-width: 0; white-space: nowrap; }
 .sync-status { font-size: 0.8rem; color: #a8919f; text-align: right; }
 .sync-status[data-toestand="klaar"] { color: #63d68c; }
 .sync-status[data-toestand="fout"] { color: #ffb02e; }
+
+/* ----- Welkomstscherm (niet ingelogd) ----- */
+body.welkom-open { overflow: hidden; }
+.welkom-scherm {
+  position: fixed; inset: 0; z-index: 50; overflow-y: auto;
+  background: radial-gradient(circle at 50% 0%, rgba(255, 122, 61, 0.25), transparent 60%), linear-gradient(160deg, #1c1226 0%, #23152f 100%);
+  display: flex; justify-content: center; padding: 40px 16px 30px;
+}
+.welkom-scherm[hidden] { display: none; }
+.welkom-inhoud { width: 100%; max-width: 400px; text-align: center; }
+.welkom-logo { border-radius: 18px; box-shadow: 0 10px 30px rgba(255, 79, 139, 0.35); margin-bottom: 16px; }
+.welkom-titel { font-size: 1.6rem; margin-bottom: 8px; }
+.welkom-sub { color: #d9c6d2; margin-bottom: 22px; line-height: 1.5; }
+.welkom-inhoud .account-kaart { text-align: left; }
+.welkom-punten { list-style: none; color: #a8919f; font-size: 0.9rem; line-height: 2; margin-top: 6px; }
+.welkom-punten a { color: #ff9a6b; }

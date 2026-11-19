@@ -205,10 +205,17 @@ function toonMelding(tekst, soort = "info") {
   m.className = "account-melding " + soort;
 }
 
+// Het welkomstscherm pas tonen als we zeker weten dat je niet ingelogd bent
+// (anders flitst het even op bij het openen van de app).
+let authBekend = false;
+
 function toonAccount() {
   const ingelogd = Boolean(gebruiker);
-  el("account-uit").hidden = ingelogd;
-  el("account-in").hidden = !ingelogd;
+  const herstel = !el("account-herstel").hidden;
+  el("account-kaart").hidden = !ingelogd && !herstel;
+  el("account-in").hidden = !ingelogd || herstel;
+  el("welkom-scherm").hidden = ingelogd || !authBekend;
+  document.body.classList.toggle("welkom-open", !el("welkom-scherm").hidden);
   if (ingelogd) el("account-wie").textContent = gebruiker.email;
   el("privacy-zin").textContent = ingelogd
     ? "🔒 Je gegevens worden veilig bewaard in de EU. Alleen jij kunt ze zien."
@@ -293,6 +300,7 @@ if (db) {
     if (error) { alert(vertaalFout(error)); return; }
     el("account-herstel").hidden = true;
     toonAccount();
+    toonTab("vandaag");
     toonToast("🔑 Nieuw wachtwoord opgeslagen!");
   });
 
@@ -321,10 +329,10 @@ if (db) {
   db.auth.onAuthStateChange((gebeurtenis, sessie) => {
     const vorige = gebruiker;
     gebruiker = sessie ? sessie.user : null;
+    authBekend = true;
     if (gebeurtenis === "PASSWORD_RECOVERY") {
-      el("account-uit").hidden = true;
-      el("account-in").hidden = true;
       el("account-herstel").hidden = false;
+      toonAccount();
       toonTab("profiel");
       return;
     }
@@ -346,9 +354,15 @@ if (db) {
     if (document.visibilityState === "visible") synchroniseer();
   });
 } else {
-  // Supabase niet geladen (offline): kaart toont uitleg
-  toonMelding("📴 Inloggen lukt alleen met internet. Je kunt de app gewoon blijven gebruiken.", "info");
-  el("account-formulier").hidden = true;
+  // Supabase niet geladen (geen internet). Was je al eens ingelogd op dit
+  // toestel, dan gewoon verder werken; anders uitleggen dat internet nodig is.
+  const alIngelogd = Object.keys(localStorage).some(k => k.startsWith("sb-") && k.endsWith("-auth-token"));
+  if (!alIngelogd) {
+    authBekend = true;
+    toonMelding("📴 Voor je eerste keer inloggen heb je internet nodig. Daarna werkt de app ook offline.", "info");
+    el("account-formulier").hidden = true;
+    el("account-modus-nieuw").parentElement.hidden = true;
+  }
 }
 
 // Na uitloggen/verwijderen: lokale kopie wissen, zodat de volgende

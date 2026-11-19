@@ -11,6 +11,37 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <!-- ===== Welkomstscherm: eerst (gratis) account maken of inloggen (account.js) ===== -->
+  <div id="welkom-scherm" class="welkom-scherm" hidden>
+    <div class="welkom-inhoud">
+      <img src="../icon.svg" alt="" width="72" height="72" class="welkom-logo">
+      <h1 class="welkom-titel">Welkom bij MoveForPleasure</h1>
+      <p class="welkom-sub">Beweeg niet omdat het moet. Maar omdat het goed voelt. 🧡</p>
+
+      <div id="account-uit" class="kaart account-kaart">
+        <div class="account-wissel" role="tablist">
+          <button type="button" id="account-modus-nieuw" class="actief" role="tab">Account maken</button>
+          <button type="button" id="account-modus-in" role="tab">Inloggen</button>
+        </div>
+        <form id="account-formulier">
+          <label class="veld-label" for="account-email">E-mailadres</label>
+          <input type="email" id="account-email" required autocomplete="email" placeholder="jij@voorbeeld.be">
+          <label class="veld-label" for="account-wachtwoord">Wachtwoord</label>
+          <input type="password" id="account-wachtwoord" required minlength="8" autocomplete="new-password" placeholder="Minstens 8 tekens">
+          <button type="submit" id="account-verstuur">Gratis account maken</button>
+        </form>
+        <button type="button" id="account-vergeten" class="link-knop" hidden>Wachtwoord vergeten?</button>
+        <p id="account-melding" class="account-melding" hidden></p>
+      </div>
+
+      <ul class="welkom-punten">
+        <li>✅ Helemaal gratis</li>
+        <li>☁️ Je beweging veilig bewaard, op al je toestellen</li>
+        <li>🔒 Alleen jij ziet je gegevens. <a href="../privacy.html">Privacy</a></li>
+      </ul>
+    </div>
+  </div>
+
   <header>
     <h1 class="merk"><img src="../icon.svg" alt="" width="30" height="30">MoveForPleasure</h1>
     <div class="kop-rechts">
@@ -204,26 +235,7 @@
       </div>
 
       <!-- Account: online bewaren (account.js) -->
-      <div class="kaart account-kaart" id="account-kaart">
-        <!-- Niet ingelogd -->
-        <div id="account-uit">
-          <h3>☁️ Bewaar je beweging veilig</h3>
-          <p class="gedempt">Met een gratis account staat alles veilig online en vind je het terug op elke telefoon of computer. Wat je al gelogd hebt, neem je gewoon mee.</p>
-          <div class="account-wissel" role="tablist">
-            <button type="button" id="account-modus-nieuw" class="actief" role="tab">Account maken</button>
-            <button type="button" id="account-modus-in" role="tab">Inloggen</button>
-          </div>
-          <form id="account-formulier">
-            <label class="veld-label" for="account-email">E-mailadres</label>
-            <input type="email" id="account-email" required autocomplete="email" placeholder="jij@voorbeeld.be">
-            <label class="veld-label" for="account-wachtwoord">Wachtwoord</label>
-            <input type="password" id="account-wachtwoord" required minlength="8" autocomplete="new-password" placeholder="Minstens 8 tekens">
-            <button type="submit" id="account-verstuur">Gratis account maken</button>
-          </form>
-          <button type="button" id="account-vergeten" class="link-knop" hidden>Wachtwoord vergeten?</button>
-          <p id="account-melding" class="account-melding" hidden></p>
-        </div>
-
+      <div class="kaart account-kaart" id="account-kaart" hidden>
         <!-- Nieuw wachtwoord kiezen (na de link uit de 'wachtwoord vergeten'-mail) -->
         <form id="account-herstel" hidden>
           <h3>🔑 Kies een nieuw wachtwoord</h3>
