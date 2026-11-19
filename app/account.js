@@ -243,6 +243,7 @@ function toonSyncStatus(toestand) {
 // Foutmeldingen van Supabase vertalen naar gewone taal
 function vertaalFout(fout) {
   const t = (fout && fout.message || "").toLowerCase();
+  if (t.includes("admin-account")) return "Dit is een admin-account. Dat kan je niet via de app verwijderen.";
   if (t.includes("invalid login")) return "E-mailadres of wachtwoord klopt niet.";
   if (t.includes("already registered") || t.includes("already been registered")) return "Er bestaat al een account met dit e-mailadres. Kies 'Inloggen'.";
   if (t.includes("email not confirmed")) return "Bevestig eerst je e-mailadres via de link in je mailbox.";
