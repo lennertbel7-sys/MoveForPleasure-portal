@@ -2,10 +2,10 @@
 // data.js — de opslaglaag
 //
 // Alle code die data bewaart en ophaalt zit in dit ene bestand.
-// Nu gebruikt het localStorage (opslag in je eigen browser).
-// In fase 3 vervangen we de binnenkant van deze functies door
-// een online database (Supabase) — de rest van de app hoeft
-// daar dan niets van te merken.
+// Alles wordt eerst in je eigen browser bewaard (localStorage),
+// zodat de app snel is en ook zonder internet werkt.
+// Ben je ingelogd, dan stuurt account.js elke wijziging daarna
+// op de achtergrond door naar de online database (Supabase).
 // ============================================================
 
 const opslag = {
@@ -15,6 +15,8 @@ const opslag = {
   },
   bewaar(sleutel, waarde) {
     localStorage.setItem("sportlog-" + sleutel, JSON.stringify(waarde));
+    // Laat account.js weten dat er iets veranderd is (voor de online opslag)
+    if (typeof naOpslaan === "function") naOpslaan(sleutel);
   }
 };
 
@@ -33,6 +35,16 @@ let weekdoel = opslag.laad("weekdoel", 3);
 // gewichten: [{ id, datum, kg }]  (lichaamsgewicht, max. één per dag)
 let profiel = opslag.laad("profiel", { naam: "", doel: "", niveau: "", lengte: null, geboortejaar: null, gewichtVolgen: false });
 let gewichten = opslag.laad("gewichten", []);
+
+// Opnieuw inlezen (nadat de online opslag nieuwere data binnenhaalde)
+function herlaadData() {
+  workouts = opslag.laad("workouts", []);
+  cardio = opslag.laad("cardio", []);
+  schema = opslag.laad("schema", { ma: "", di: "", wo: "", do: "", vr: "", za: "", zo: "" });
+  weekdoel = opslag.laad("weekdoel", 3);
+  profiel = opslag.laad("profiel", { naam: "", doel: "", niveau: "", lengte: null, geboortejaar: null, gewichtVolgen: false });
+  gewichten = opslag.laad("gewichten", []);
+}
 
 // ===== Hulpfuncties voor datums =====
 function datumNaarTekst(datum) {

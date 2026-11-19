@@ -203,6 +203,49 @@
         </div>
       </div>
 
+      <!-- Account: online bewaren (account.js) -->
+      <div class="kaart account-kaart" id="account-kaart">
+        <!-- Niet ingelogd -->
+        <div id="account-uit">
+          <h3>☁️ Bewaar je beweging veilig</h3>
+          <p class="gedempt">Met een gratis account staat alles veilig online en vind je het terug op elke telefoon of computer. Wat je al gelogd hebt, neem je gewoon mee.</p>
+          <div class="account-wissel" role="tablist">
+            <button type="button" id="account-modus-nieuw" class="actief" role="tab">Account maken</button>
+            <button type="button" id="account-modus-in" role="tab">Inloggen</button>
+          </div>
+          <form id="account-formulier">
+            <label class="veld-label" for="account-email">E-mailadres</label>
+            <input type="email" id="account-email" required autocomplete="email" placeholder="jij@voorbeeld.be">
+            <label class="veld-label" for="account-wachtwoord">Wachtwoord</label>
+            <input type="password" id="account-wachtwoord" required minlength="8" autocomplete="new-password" placeholder="Minstens 8 tekens">
+            <button type="submit" id="account-verstuur">Gratis account maken</button>
+          </form>
+          <button type="button" id="account-vergeten" class="link-knop" hidden>Wachtwoord vergeten?</button>
+          <p id="account-melding" class="account-melding" hidden></p>
+        </div>
+
+        <!-- Nieuw wachtwoord kiezen (na de link uit de 'wachtwoord vergeten'-mail) -->
+        <form id="account-herstel" hidden>
+          <h3>🔑 Kies een nieuw wachtwoord</h3>
+          <label class="veld-label" for="account-nieuw-wachtwoord">Nieuw wachtwoord</label>
+          <input type="password" id="account-nieuw-wachtwoord" required minlength="8" autocomplete="new-password" placeholder="Minstens 8 tekens">
+          <button type="submit">Wachtwoord opslaan</button>
+        </form>
+
+        <!-- Ingelogd -->
+        <div id="account-in" hidden>
+          <div class="kaart-kop">
+            <h3>☁️ Mijn account</h3>
+            <span id="sync-status" class="sync-status"></span>
+          </div>
+          <p class="gedempt">Ingelogd als <strong id="account-wie"></strong></p>
+          <div class="account-knoppen">
+            <button type="button" id="account-uitloggen" class="knop-rand-app">Uitloggen</button>
+            <button type="button" id="account-verwijder" class="link-knop gevaar">Account verwijderen</button>
+          </div>
+        </div>
+      </div>
+
       <!-- Statistieken -->
       <div class="kaart">
         <h3>Jouw cijfers</h3>
@@ -286,7 +329,7 @@
         </label>
 
         <button type="submit">Gegevens opslaan</button>
-        <p class="gedempt klein-tekst">🔒 Je gegevens blijven op dit toestel. Niemand anders kan ze zien.</p>
+        <p id="privacy-zin" class="gedempt klein-tekst">🔒 Je gegevens blijven op dit toestel. Niemand anders kan ze zien.</p>
       </form>
 
       <!-- Back-up -->
@@ -321,11 +364,14 @@
   </nav>
 
   <script src="../config.js"></script>
+  <!-- Supabase (inloggen + online opslag). Lukt dit niet (offline), dan werkt de app gewoon lokaal verder. -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="data.js"></script>
   <script src="motivatie.js"></script>
   <script src="berichten.js"></script>
   <script src="profiel.js"></script>
   <script src="cardio.js"></script>
   <script src="app.js"></script>
+  <script src="account.js"></script>
 </body>
 </html>

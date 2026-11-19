@@ -527,3 +527,24 @@ h1.merk { min-width: 0; white-space: nowrap; }
   .kop-rechts { gap: 8px; }
   .profiel-knop { width: 32px; height: 32px; }
 }
+
+/* ===== Account (inloggen + online bewaren) ===== */
+.account-kaart { border-color: rgba(255, 122, 61, 0.35); background: linear-gradient(160deg, #2f1f3a, #2b1d37); }
+.account-kaart .gedempt { margin-bottom: 12px; }
+.account-wissel { display: flex; gap: 4px; background: rgba(0, 0, 0, 0.25); border-radius: 10px; padding: 4px; margin-bottom: 12px; }
+.account-wissel button {
+  flex: 1; padding: 8px; border: 0; border-radius: 8px; cursor: pointer; font: inherit; font-size: 0.9rem;
+  background: transparent; color: #a8919f;
+}
+.account-wissel button.actief { background: #ff7a3d; color: #23152f; font-weight: 600; }
+.link-knop { background: none; border: 0; color: #ff9a6b; font: inherit; font-size: 0.85rem; cursor: pointer; margin-top: 10px; text-decoration: underline; }
+.link-knop.gevaar { color: #a8919f; }
+.link-knop.gevaar:hover { color: #ff6b6b; }
+.account-melding { margin-top: 12px; padding: 10px 12px; border-radius: 10px; font-size: 0.9rem; line-height: 1.45; }
+.account-melding.goed { background: rgba(99, 214, 140, 0.12); border: 1px solid rgba(99, 214, 140, 0.4); }
+.account-melding.fout { background: rgba(255, 107, 107, 0.12); border: 1px solid rgba(255, 107, 107, 0.4); }
+.account-melding.info { background: rgba(255, 255, 255, 0.05); border: 1px solid #402d4c; }
+.account-knoppen { display: flex; flex-direction: column; align-items: center; }
+.sync-status { font-size: 0.8rem; color: #a8919f; text-align: right; }
+.sync-status[data-toestand="klaar"] { color: #63d68c; }
+.sync-status[data-toestand="fout"] { color: #ffb02e; }
