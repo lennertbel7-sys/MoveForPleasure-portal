@@ -192,7 +192,7 @@ function zetModus(nieuweModus) {
   modus = nieuweModus;
   el("account-modus-nieuw").classList.toggle("actief", modus === "nieuw");
   el("account-modus-in").classList.toggle("actief", modus === "in");
-  el("account-verstuur").textContent = modus === "nieuw" ? "Gratis account maken" : "Inloggen";
+  el("account-verstuur").textContent = modus === "nieuw" ? "Account aanmaken" : "Inloggen";
   el("account-wachtwoord").autocomplete = modus === "nieuw" ? "new-password" : "current-password";
   el("account-vergeten").hidden = modus !== "in";
   toonMelding("");
@@ -283,7 +283,7 @@ if (db) {
       if (error) melding = vertaalFout(error);
     }
     knop.disabled = false;
-    knop.textContent = modus === "nieuw" ? "Gratis account maken" : "Inloggen";
+    knop.textContent = modus === "nieuw" ? "Account aanmaken" : "Inloggen";
     toonMelding(melding, soort);
   });
 
