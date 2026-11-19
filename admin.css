@@ -8,12 +8,12 @@ body.admin { padding-bottom: 40px; }
 .admin header, .admin main { max-width: 1000px; }
 
 .admin-label {
-  font-size: 0.75rem; -webkit-text-fill-color: #16213e; background: #ffb347;
+  font-size: 0.75rem; -webkit-text-fill-color: #23152f; background: #ffd23f;
   padding: 2px 8px; border-radius: 6px; vertical-align: middle; margin-left: 6px;
 }
 
 .admin label { display: block; font-size: 0.88rem; font-weight: 600; margin: 6px 0 6px; }
-.teller { float: right; font-weight: 400; color: #8a8aa3; font-size: 0.78rem; }
+.teller { float: right; font-weight: 400; color: #a8919f; font-size: 0.78rem; }
 
 .login { max-width: 400px; margin: 40px auto; }
 .login h2 { margin-bottom: 4px; }
@@ -21,30 +21,30 @@ body.admin { padding-bottom: 40px; }
 
 .fout { color: #ff6b6b; font-size: 0.9rem; margin-top: 10px; }
 .fout:empty, .melding:empty { display: none; }
-.melding { margin-top: 10px; font-size: 0.9rem; color: #4ecca3; }
+.melding { margin-top: 10px; font-size: 0.9rem; color: #ff7a3d; }
 .melding.fout { color: #ff6b6b; }
 
 .knop-klein, .knop-rand, .actie {
-  background: transparent; color: #eaeaea; border: 1px solid #3a3a5c; border-radius: 8px;
+  background: transparent; color: #eaeaea; border: 1px solid #50395c; border-radius: 8px;
   padding: 7px 12px; font: inherit; font-size: 0.85rem; cursor: pointer;
 }
-.knop-klein:hover, .knop-rand:hover, .actie:hover { border-color: #4ecca3; color: #4ecca3; }
+.knop-klein:hover, .knop-rand:hover, .actie:hover { border-color: #ff7a3d; color: #ff7a3d; }
 
 .admin-raster { display: grid; grid-template-columns: 1.2fr 1fr; gap: 20px; align-items: start; }
-.voorbeeld-kop { color: #8a8aa3; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 10px; }
+.voorbeeld-kop { color: #a8919f; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 10px; }
 
 .categorie-keuze { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 10px; }
 .categorie-keuze label { margin: 0; }
 .categorie-keuze input { position: absolute; opacity: 0; width: 1px; height: 1px; }
 .categorie-keuze span {
   display: block; text-align: center; padding: 9px 4px; border-radius: 10px; cursor: pointer;
-  background: #2a2a48; border: 1px solid #2e2e4a; font-size: 0.82rem; font-weight: 600;
+  background: #36263f; border: 1px solid #402d4c; font-size: 0.82rem; font-weight: 600;
 }
-.categorie-keuze input:checked + span { border-color: #4ecca3; background: rgba(78, 204, 163, 0.14); color: #4ecca3; }
-.categorie-keuze input:focus-visible + span { outline: 2px solid #6fd6ff; }
+.categorie-keuze input:checked + span { border-color: #ff7a3d; background: rgba(255, 122, 61, 0.14); color: #ff7a3d; }
+.categorie-keuze input:focus-visible + span { outline: 2px solid #ff4f8b; }
 
 .vinkje { display: flex !important; align-items: center; gap: 8px; font-weight: 400 !important; cursor: pointer; }
-.vinkje input { width: 18px; height: 18px; margin: 0; accent-color: #4ecca3; }
+.vinkje input { width: 18px; height: 18px; margin: 0; accent-color: #ff7a3d; }
 
 .knoppen-rij { display: flex; gap: 8px; margin-top: 6px; }
 .knoppen-rij button[type="submit"] { flex: 1; }
@@ -56,12 +56,12 @@ body.admin { padding-bottom: 40px; }
 .admin-item .bericht { margin-bottom: 0; border-bottom-left-radius: 0; border-bottom-right-radius: 0; }
 .admin-balk {
   display: flex; flex-wrap: wrap; align-items: center; gap: 6px;
-  background: #1a1a30; border: 1px solid #2e2e4a; border-top: 0; border-radius: 0 0 14px 14px; padding: 8px 12px;
+  background: #21152b; border: 1px solid #402d4c; border-top: 0; border-radius: 0 0 14px 14px; padding: 8px 12px;
 }
 .status { font-size: 0.75rem; font-weight: 700; padding: 3px 8px; border-radius: 6px; margin-right: auto; }
-.status-live { background: rgba(78, 204, 163, 0.15); color: #4ecca3; }
-.status-gepland { background: rgba(111, 214, 255, 0.15); color: #6fd6ff; }
-.status-verborgen { background: rgba(138, 138, 163, 0.18); color: #b0b0c4; }
+.status-live { background: rgba(255, 122, 61, 0.15); color: #ff7a3d; }
+.status-gepland { background: rgba(255, 79, 139, 0.15); color: #ff4f8b; }
+.status-verborgen { background: rgba(168, 145, 159, 0.18); color: #c7b3c0; }
 .actie { padding: 5px 10px; font-size: 0.8rem; }
 .actie.gevaar:hover { border-color: #ff6b6b; color: #ff6b6b; }
 

@@ -111,26 +111,26 @@ function aantalRecords() {
 // uitleg = wat je moet doen (zie je bij een vergrendelde badge)
 // proficiat = wat je te zien krijgt als je hem net vrijspeelt
 const badges = [
-  { id: "eerste",   icoon: "👟", naam: "Eerste stap",      uitleg: "Log je eerste training",          behaald: s => s.totaal >= 1,
-    proficiat: "Je eerste training staat erin. Het begin is gemaakt, en dat is altijd het moeilijkste stuk." },
+  { id: "eerste",   icoon: "👟", naam: "Eerste stap",      uitleg: "Houd je eerste beweegmoment bij",          behaald: s => s.totaal >= 1,
+    proficiat: "Je eerste beweegmoment staat erin! Het begin is gemaakt, en dat is altijd het moeilijkste stuk. 🧡" },
   { id: "streak3",  icoon: "🔥", naam: "Op stoom",         uitleg: "3 dagen op rij actief",           behaald: s => s.langste >= 3,
     proficiat: "Drie dagen op rij in beweging. Je zit lekker in je ritme!" },
-  { id: "week1",    icoon: "🎯", naam: "Doel geraakt",     uitleg: "Haal voor het eerst je weekdoel", behaald: s => s.wekenGehaald >= 1,
-    proficiat: "Je eerste weekdoel is binnen. Zo bouw je een gewoonte die blijft." },
+  { id: "week1",    icoon: "🎯", naam: "Doel geraakt",     uitleg: "Haal voor het eerst je weekchallenge", behaald: s => s.wekenGehaald >= 1,
+    proficiat: "Je eerste weekchallenge is binnen! Zo groeit een gewoonte die blijft." },
   { id: "record1",  icoon: "🏆", naam: "Sterker dan ooit", uitleg: "Verbeter een persoonlijk record", behaald: s => s.records >= 1,
-    proficiat: "Je eerste persoonlijke record. Je lichaam wordt echt sterker!" },
+    proficiat: "Je eerste persoonlijke record! Voel je hoe je lichaam sterker wordt?" },
   { id: "allround", icoon: "⚡", naam: "Allrounder",       uitleg: "Kracht én cardio in één week",    behaald: s => s.allround,
-    proficiat: "Kracht én cardio in één week: de beste combinatie voor een fit lichaam." },
-  { id: "tien",     icoon: "💪", naam: "Tien keer",        uitleg: "10 trainingen gelogd",            behaald: s => s.totaal >= 10,
-    proficiat: "Tien trainingen! Dit is geen toeval meer, dit wordt een gewoonte." },
+    proficiat: "Kracht én cardio in één week. Afwisseling maakt bewegen extra leuk!" },
+  { id: "tien",     icoon: "💪", naam: "Tien keer",        uitleg: "10 keer bewogen",            behaald: s => s.totaal >= 10,
+    proficiat: "Tien keer bewogen! Dit is geen toeval meer, dit wordt een gewoonte. 🌱" },
   { id: "streak7",  icoon: "🌟", naam: "Weekstrijder",     uitleg: "7 dagen op rij actief",           behaald: s => s.langste >= 7,
-    proficiat: "Een volle week elke dag actief. Indrukwekkend! Vergeet ook niet te rusten." },
-  { id: "reeks4",   icoon: "📈", naam: "Een maand sterk",  uitleg: "4 weken op rij je weekdoel",      behaald: s => s.weekreeks >= 4,
-    proficiat: "Vier weken op rij je doel gehaald. Een hele maand consequent: daar haken de meeste mensen af, jij niet." },
-  { id: "vijftig",  icoon: "🥇", naam: "Vijftig!",         uitleg: "50 trainingen gelogd",            behaald: s => s.totaal >= 50,
-    proficiat: "Vijftig trainingen. Kijk eens hoe ver je al gekomen bent!" },
-  { id: "reeks12",  icoon: "👑", naam: "Gewoonte-held",    uitleg: "12 weken op rij je weekdoel",     behaald: s => s.weekreeks >= 12,
-    proficiat: "Twaalf weken op rij. Sporten hoort nu gewoon bij wie je bent. Echt knap." }
+    proficiat: "Een volle week elke dag in beweging. Wat een energie! Gun jezelf ook een rustdag." },
+  { id: "reeks4",   icoon: "📈", naam: "Een maand sterk",  uitleg: "4 weken op rij je weekchallenge",      behaald: s => s.weekreeks >= 4,
+    proficiat: "Vier weken op rij je challenge gehaald. Een hele maand: daar haken de meeste mensen af, jij niet!" },
+  { id: "vijftig",  icoon: "🥇", naam: "Vijftig!",         uitleg: "50 keer bewogen",            behaald: s => s.totaal >= 50,
+    proficiat: "Vijftig keer bewogen. Kijk eens hoe ver je al gekomen bent! 🥳" },
+  { id: "reeks12",  icoon: "👑", naam: "Gewoonte-held",    uitleg: "12 weken op rij je weekchallenge",     behaald: s => s.weekreeks >= 12,
+    proficiat: "Twaalf weken op rij. Bewegen hoort nu gewoon bij wie je bent. Echt knap!" }
 ];
 
 // Alle cijfers die de badges nodig hebben, in één keer berekend
@@ -168,6 +168,43 @@ function nieuweBadges() {
   return nieuw.map(id => badges.find(b => b.id === id));
 }
 
+// ===== Levels en XP =====
+// Je verdient XP (ervaringspunten) met alles wat je doet:
+//   10 XP per training, 20 XP per week dat je je doel haalde,
+//   25 XP per badge. Zo stijg je in level.
+const levels = [
+  { vanaf: 0,    naam: "Starter" },
+  { vanaf: 50,   naam: "Beweger" },
+  { vanaf: 150,  naam: "Op dreef" },
+  { vanaf: 300,  naam: "Doorzetter" },
+  { vanaf: 500,  naam: "Sterkhouder" },
+  { vanaf: 800,  naam: "Atleet" },
+  { vanaf: 1200, naam: "Topper" },
+  { vanaf: 1700, naam: "Kampioen" },
+  { vanaf: 2300, naam: "Legende" },
+  { vanaf: 3000, naam: "Icoon" }
+];
+
+function berekenXP() {
+  return (workouts.length + cardio.length) * 10 + wekenDoelGehaald() * 20 + behaaldeBadges().length * 25;
+}
+
+// Geeft { nummer, naam, xp, vanaf, tot, procent } (tot = null bij het hoogste level)
+function huidigLevel() {
+  const xp = berekenXP();
+  let i = 0;
+  while (i + 1 < levels.length && xp >= levels[i + 1].vanaf) i++;
+  const volgende = levels[i + 1];
+  return {
+    nummer: i + 1,
+    naam: levels[i].naam,
+    xp,
+    vanaf: levels[i].vanaf,
+    tot: volgende ? volgende.vanaf : null,
+    procent: volgende ? ((xp - levels[i].vanaf) / (volgende.vanaf - levels[i].vanaf)) * 100 : 100
+  };
+}
+
 // ===== Aanmoediging op het Vandaag-scherm =====
 
 function groet() {
@@ -188,48 +225,48 @@ function aanmoediging() {
   const dag = (n) => (n === 1 ? "dag" : "dagen");
 
   if (totaal === 0) {
-    return "Elke reis begint met één stap. Log vandaag je eerste training, hoe klein ook. 💪";
+    return "Welkom! Elke beweging telt, ook een korte wandeling. Waar heb jij vandaag zin in? 😃";
   }
   if (vandaagActief && nogNodig === 0) {
-    return "Weekdoel binnen! Alles wat je nu nog doet is pure bonus. 🌟";
+    return "Je weekchallenge is binnen! Alles wat je nu nog doet is pure bonus. Geniet ervan! 🌟";
   }
   if (vandaagActief) {
-    return `Lekker bezig vandaag! Nog ${nogNodig} ${dag(nogNodig)} en je weekdoel is binnen.`;
+    return `Fijn dat je bewogen hebt vandaag! Nog ${nogNodig} ${dag(nogNodig)} en je weekchallenge is binnen. 🧡`;
   }
   if (nogNodig === 0) {
-    return "Je weekdoel heb je al gehaald. Vandaag rusten of nog even bewegen? Allebei goed. 😌";
+    return "Je weekchallenge heb je al gehaald. Vandaag rusten of nog even bewegen voor de fun? Allebei goed. 😌";
   }
   if (streak >= 2) {
-    return `Je streak van ${streak} dagen staat op het spel 🔥 Een korte wandeling telt ook!`;
+    return `Al ${streak} dagen op rij in beweging! 🔥 Zin om er vandaag nog eentje bij te doen? Een wandelingetje telt ook.`;
   }
   if (nogNodig > dagenOver) {
-    return "Deze week wordt krap, en dat is oké. Elke training telt. Pak vandaag gewoon de draad weer op.";
+    return "Drukke week? Helemaal oké. Elke beweging telt, ook een kleine. Doe vandaag gewoon iets wat je leuk vindt.";
   }
   if (nogNodig === dagenOver) {
-    return `Nog ${nogNodig} ${dag(nogNodig)} nodig en nog ${dagenOver} ${dag(dagenOver)} over: vandaag telt! 💥`;
+    return `Nog ${nogNodig} ${dag(nogNodig)} en nog ${dagenOver} ${dag(dagenOver)} over: perfect haalbaar. Waar heb je zin in? 💥`;
   }
-  return `Nog ${nogNodig} ${dag(nogNodig)} tot je weekdoel en nog ${dagenOver} ${dag(dagenOver)} over. Je kunt het!`;
+  return `Nog ${nogNodig} ${dag(nogNodig)} voor je weekchallenge, en je hebt nog ${dagenOver} ${dag(dagenOver)}. Zonder stress, gewoon op jouw tempo. 🙂`;
 }
 
 // ===== Spreuk van de dag =====
 // Wordt getoond als de admin (nog) geen vastgepind bericht heeft.
 
 const spreuken = [
-  "Consequent zijn wint het altijd van perfect zijn.",
-  "De moeilijkste stap is die naar de deur. Daarna gaat het vanzelf.",
-  "Je hoeft niet zin te hebben om te beginnen. De zin komt tijdens het bewegen.",
+  "Beweeg niet omdat het moet, maar omdat het goed voelt.",
+  "Een wandeling telt. Dansen in de keuken telt. Alles telt.",
+  "Je hoeft geen zin te hebben om te beginnen. De zin komt tijdens het bewegen.",
   "Tien minuten bewegen is oneindig veel meer dan nul minuten.",
   "Vergelijk jezelf alleen met wie je vorige maand was.",
-  "Rustdagen zijn geen luiheid: dan word je sterker.",
-  "Eén gemiste training is geen probleem. Zorg alleen dat het er geen twee op rij worden.",
-  "Je lichaam onthoudt elke training, ook de korte.",
+  "Rusten hoort er ook bij. Morgen beweeg je met nieuwe energie.",
+  "Een dagje overslaan is geen ramp. Het gaat om wat je meestal doet, niet om perfect zijn.",
   "Kleine stappen, elke week. Over een jaar herken je jezelf niet meer.",
-  "Motivatie zet je in beweging, gewoonte houdt je in beweging.",
-  "Je bent maar één training verwijderd van een beter humeur.",
-  "Niet sneller dan gisteren nodig: gewoon opnieuw opdagen.",
-  "Plan je training zoals een afspraak. Die met jezelf is de belangrijkste.",
-  "Trots zijn mag ook op de dagen dat het zwaar voelde.",
-  "Sporten is geen straf voor wat je at, maar een cadeau voor wat je lichaam kan."
+  "Zoek de beweging die je blij maakt, en je hoeft jezelf nooit meer te dwingen.",
+  "Je bent maar één wandeling verwijderd van een beter humeur.",
+  "Bewegen is geen straf voor wat je at, maar een cadeau voor je lichaam.",
+  "Samen bewegen is dubbel zo leuk. Vraag eens een vriend(in) mee!",
+  "Plezier houdt je langer vol dan discipline ooit kan.",
+  "Trots zijn mag, ook op de kleine dingen.",
+  "Het beste soort beweging? Die waar je zin in hebt."
 ];
 
 function spreukVanDeDag() {
@@ -241,8 +278,8 @@ function spreukVanDeDag() {
 // ===== Felicitaties na het loggen =====
 // Korte, afwisselende complimenten voor een gewone log.
 const complimenten = [
-  "Lekker bezig! 💪", "Weer een stap vooruit! 🚀", "Goed gedaan! ✨",
-  "Die telt! ✅", "Sterk werk! 🔥", "Je toekomstige ik is je dankbaar! 🙌"
+  "Lekker bezig! 💪", "Die telt! 🎉", "Goed gedaan! ✨", "Fijn dat je bewoog! 🧡",
+  "Weer een stapje verder! 🚀", "Je lichaam zegt dankjewel! 🙌", "Zo leuk! 😃"
 ];
 function willekeurigCompliment() {
   return complimenten[Math.floor(Math.random() * complimenten.length)];

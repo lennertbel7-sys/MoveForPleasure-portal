@@ -1,13 +1,25 @@
 {
   "name": "MoveForPleasure",
   "short_name": "Move",
-  "description": "Jouw workouts, cardio en schema's op één plek",
+  "description": "Bewegen voor plezier: je workouts, cardio en weekdoel op één plek",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
-  "background_color": "#16213e",
-  "theme_color": "#16213e",
+  "background_color": "#23152f",
+  "theme_color": "#23152f",
   "icons": [
+    {
+      "src": "../logo/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "../logo/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
     {
       "src": "../icon.svg",
       "sizes": "any",

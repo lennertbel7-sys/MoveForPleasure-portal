@@ -3,17 +3,19 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#0f1424">
-  <title>MoveForPleasure: sporten en het eindelijk volhouden</title>
-  <meta name="description" content="De simpele sport-app die je helpt om het écht vol te houden. Kracht, cardio, streaks en je weekschema op één plek. Gratis, zonder reclame.">
+  <meta name="theme-color" content="#1a1022">
+  <title>MoveForPleasure: terug met plezier bewegen, en het volhouden</title>
+  <meta name="description" content="De app die je terug met plezier laat bewegen en helpt om het vol te houden. Geen strenge cijfermachine, wel haalbare challenges en een gewoonte die blijft. Gratis, zonder reclame.">
 
   <!-- Hoe de pagina eruitziet als je hem deelt op WhatsApp, LinkedIn, enz. -->
   <meta property="og:type" content="website">
-  <meta property="og:title" content="MoveForPleasure: sport 3x per week en hou het vol">
-  <meta property="og:description" content="Kracht, cardio, streaks en je weekschema in één simpele app. Schrijf je in voor de wachtlijst.">
+  <meta property="og:title" content="MoveForPleasure: beweeg omdat het goed voelt">
+  <meta property="og:description" content="Terug met plezier bewegen, met haalbare challenges die passen bij je leven. Schrijf je in voor de wachtlijst.">
+  <meta property="og:image" content="https://moveforpleasure.be/logo/icon-512.png">
   <meta property="og:locale" content="nl_BE">
 
   <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
   <link rel="stylesheet" href="landing.css">
 </head>
 <body>
@@ -32,7 +34,8 @@
       </button>
 
       <nav class="menu" id="menu" aria-label="Hoofdmenu">
-        <a href="#functies">Functies</a>
+        <a href="#waarom">Waarom</a>
+        <a href="#functies">De app</a>
         <a href="#hoe">Hoe het werkt</a>
         <a href="#prijzen">Prijzen</a>
         <a href="#faq">Vragen</a>
@@ -48,21 +51,21 @@
       <div class="gloed" aria-hidden="true"></div>
       <div class="container hero-raster">
         <div class="hero-tekst">
-          <span class="pil">✨ Binnenkort: accounts &amp; Pro</span>
-          <h1>Sport 3x per week.<br><span class="verloop">En hou het eindelijk vol.</span></h1>
+          <span class="pil">😃 Bewegen voor plezier, voor iedereen</span>
+          <h1>Beweeg niet omdat het moet.<br><span class="verloop">Maar omdat het goed voelt.</span></h1>
           <p class="lead">
-            De meeste mensen stoppen niet omdat sporten te zwaar is, maar omdat ze het overzicht
-            en de motivatie kwijtraken. MoveForPleasure houdt je streak, weekdoel en schema bij,
-            zodat elke week een beetje makkelijker wordt.
+            MoveForPleasure is de app die je terug met plezier laat bewegen en je helpt om het
+            vol te houden. Geen strenge cijfermachine, wel haalbare challenges die passen bij
+            jouw leven. Stap voor stap bouw je een gewoonte op die blijft.
           </p>
           <div class="knoppen">
-            <a class="btn btn-groot" href="#wachtlijst">Zet me op de wachtlijst</a>
+            <a class="btn btn-groot" href="#wachtlijst">Ik doe mee!</a>
             <a class="btn btn-groot btn-rand" href="app/">Probeer de gratis app →</a>
           </div>
           <ul class="vertrouwen">
             <li>✓ Gratis te gebruiken</li>
+            <li>✓ Voor elk niveau</li>
             <li>✓ Geen reclame</li>
-            <li>✓ Werkt op elke telefoon</li>
           </ul>
         </div>
 
@@ -72,102 +75,162 @@
             <div class="telefoon-notch"></div>
             <div class="scherm">
               <div class="scherm-kop">
-                <strong>Vandaag</strong>
-                <span class="streak">🔥 12 dagen</span>
+                <strong>Goedemorgen! 👋</strong>
+                <span class="streak">🔥 4 dagen</span>
               </div>
               <div class="mini-kaart">
-                <small>Training van vandaag</small>
-                <p>Bovenlichaam: bankdrukken, roeien, schouders</p>
+                <small>Vandaag op je planning</small>
+                <p>Rondje wandelen in de zon 🌤️</p>
               </div>
               <div class="mini-kaart">
-                <small>Weekdoel</small>
-                <p>2 van 3 actieve dagen</p>
+                <small>Jouw weekchallenge</small>
+                <p>2 van 3 beweegdagen, nog eentje! 💪</p>
                 <div class="mini-balk"><div style="width:66%"></div></div>
               </div>
               <div class="mini-kaart">
                 <small>Recent</small>
-                <div class="mini-rij"><span>🏋️ Squat · 3×8 · 60 kg</span><em>ma</em></div>
-                <div class="mini-rij"><span>🏃 Hardlopen · 5,2 km</span><em>zo</em></div>
-                <div class="mini-rij"><span>🏋️ Deadlift · 3×5 · 80 kg</span><em>vr</em></div>
+                <div class="mini-rij"><span>🚶 Wandelen · 35 min</span><em>ma</em></div>
+                <div class="mini-rij"><span>🎾 Padel · 60 min</span><em>za</em></div>
+                <div class="mini-rij"><span>🪢 Touwspringen · 3 rondes</span><em>do</em></div>
               </div>
-              <div class="mini-nav"><span class="actief">🏠</span><span>🏋️</span><span>🏃</span><span>📅</span><span>💬</span></div>
+              <div class="mini-nav"><span class="actief">🏠</span><span>🏋️</span><span>🏃</span><span>📅</span><span>🔔</span></div>
             </div>
           </div>
-          <div class="zwevend zwevend-1">🏆 Nieuw record: 80 kg</div>
-          <div class="zwevend zwevend-2">✅ Weekdoel gehaald</div>
+          <div class="zwevend zwevend-1">⭐ Level up: Op dreef!</div>
+          <div class="zwevend zwevend-2">🎉 Weekchallenge gehaald</div>
         </div>
       </div>
     </section>
 
-    <!-- ===================== FUNCTIES ===================== -->
-    <section class="sectie" id="functies">
+    <!-- ===================== WAAROM (missie) ===================== -->
+    <section class="sectie" id="waarom">
       <div class="container">
         <div class="sectie-kop onthul">
-          <span class="bovenschrift">Functies</span>
-          <h2>Alles wat je nodig hebt. Niets wat je afleidt.</h2>
-          <p>Geen eindeloze menu's of sociale feeds, maar precies genoeg om consequent te blijven trainen.</p>
+          <span class="bovenschrift">Waarom MoveForPleasure</span>
+          <h2>Bewegen mag weer leuk zijn</h2>
+          <p>
+            Veel mensen haken af omdat bewegen voelt als een verplichting, of omdat apps vooral
+            draaien om prestaties en cijfers. Wij doen het anders.
+          </p>
+        </div>
+
+        <div class="pijlers">
+          <article class="pijler onthul">
+            <div class="pijler-icoon">😃</div>
+            <h3>Plezier, geen cijfermachine</h3>
+            <p>Je houdt je beweging bij zonder dat het streng of saai wordt. Een wandeling telt net zo goed als een workout.</p>
+          </article>
+          <article class="pijler onthul">
+            <div class="pijler-icoon">🎯</div>
+            <h3>Haalbare challenges</h3>
+            <p>Jij kiest wat past bij jouw leven: 2 keer per week bewegen is een prima start. Kleine overwinningen, grote glimlach.</p>
+          </article>
+          <article class="pijler onthul">
+            <div class="pijler-icoon">🌱</div>
+            <h3>Een gewoonte die blijft</h3>
+            <p>Stap voor stap, week na week. Geen crashdieet of bootcamp, maar een ritme dat je makkelijk volhoudt.</p>
+          </article>
+          <article class="pijler onthul">
+            <div class="pijler-icoon">🤝</div>
+            <h3>Samen gaat het makkelijker</h3>
+            <p>Binnenkort kom je anderen tegen die hetzelfde doen. Want bewegen is nog leuker als je het samen doet.</p>
+          </article>
+        </div>
+
+        <blockquote class="missie onthul">
+          “Zo beweeg je niet omdat het moet, maar omdat het goed voelt.
+          <span class="verloop">En omdat je het samen doet.</span>”
+        </blockquote>
+      </div>
+    </section>
+
+    <!-- ===================== FUNCTIES ===================== -->
+    <section class="sectie sectie-alt" id="functies">
+      <div class="container">
+        <div class="sectie-kop onthul">
+          <span class="bovenschrift">De app</span>
+          <h2>Alles om met plezier in beweging te blijven</h2>
+          <p>Geen ingewikkelde menu's, geen druk. Gewoon een vrolijke app die je aanmoedigt, viert wat je doet en je helpt om door te gaan.</p>
         </div>
 
         <div class="raster-3">
           <article class="functie onthul">
-            <div class="functie-icoon">🔥</div>
-            <h3>Streaks die motiveren</h3>
-            <p>Zie hoeveel dagen op rij je actief bent. Eén dag gemist? Morgen pak je hem weer op.</p>
-          </article>
-          <article class="functie onthul">
             <div class="functie-icoon">🎯</div>
-            <h3>Een haalbaar weekdoel</h3>
-            <p>Kies zelf hoeveel dagen per week je wil sporten en volg live hoe ver je staat.</p>
+            <h3>Jouw eigen weekchallenge</h3>
+            <p>Kies zelf hoeveel dagen per week je wil bewegen. De ring vult zich met elke beweegdag, en als hij vol is, vieren we het samen. 🎉</p>
           </article>
           <article class="functie onthul">
-            <div class="functie-icoon">🏋️</div>
-            <h3>Kracht in seconden gelogd</h3>
-            <p>Oefening, gewicht, sets en reps. Eén scherm, een paar tikken, klaar.</p>
+            <div class="functie-icoon">⭐</div>
+            <h3>Levels en badges</h3>
+            <p>Elke beweging levert punten op. Stijg van "Starter" naar "Icoon" en speel badges vrij. Zo voelt elke stap als een overwinning.</p>
           </article>
           <article class="functie onthul">
-            <div class="functie-icoon">🏃</div>
-            <h3>Cardio telt ook mee</h3>
-            <p>Hardlopen, fietsen, zwemmen of wandelen: minuten en kilometers in hetzelfde overzicht.</p>
+            <div class="functie-icoon">🔥</div>
+            <h3>Aanmoediging op maat</h3>
+            <p>Elke dag een persoonlijk berichtje dat past bij hoe jouw week loopt. Een dag gemist? Geen probleem, morgen pak je de draad weer op.</p>
           </article>
           <article class="functie onthul">
-            <div class="functie-icoon">📅</div>
-            <h3>Je eigen weekschema</h3>
-            <p>Plan per dag wat je traint en zie elke ochtend meteen wat er op het programma staat.</p>
+            <div class="functie-icoon">🎾</div>
+            <h3>Elke beweging telt</h3>
+            <p>Wandelen, fietsen, padel, touwspringen, zwemmen, krachttraining of HYROX: alles telt mee. Met rondes als je dat leuk vindt.</p>
+          </article>
+          <article class="functie onthul">
+            <div class="functie-icoon">💌</div>
+            <h3>Tips en motivatie</h3>
+            <p>In je berichtencentrum vind je regelmatig weetjes, tips en een dosis motivatie om je op weg te helpen.</p>
           </article>
           <article class="functie onthul">
             <div class="functie-icoon">📱</div>
-            <h3>Een echte app, zonder app store</h3>
-            <p>Zet hem met één tik op je beginscherm. Werkt ook als je even geen internet hebt.</p>
+            <h3>Altijd bij de hand</h3>
+            <p>Zet de app met één tik op je beginscherm, zonder app store. Hij werkt zelfs als je even geen internet hebt.</p>
           </article>
         </div>
       </div>
     </section>
 
     <!-- ===================== HOE HET WERKT ===================== -->
-    <section class="sectie sectie-alt" id="hoe">
+    <section class="sectie" id="hoe">
       <div class="container">
         <div class="sectie-kop onthul">
           <span class="bovenschrift">Hoe het werkt</span>
-          <h2>In drie stappen op weg</h2>
+          <h2>In drie kleine stappen op weg</h2>
+          <p>Je hoeft geen sporter te zijn om te beginnen. Je hoeft alleen maar te beginnen.</p>
         </div>
 
         <ol class="stappen">
           <li class="stap onthul">
             <span class="stap-nr">1</span>
-            <h3>Kies je weekdoel</h3>
-            <p>Begin klein, bijvoorbeeld 2 of 3 dagen per week. Haalbaar is belangrijker dan ambitieus.</p>
+            <h3>Kies een haalbare challenge</h3>
+            <p>Hoeveel dagen per week wil je bewegen? Begin klein. Haalbaar wint het altijd van ambitieus.</p>
           </li>
           <li class="stap onthul">
             <span class="stap-nr">2</span>
-            <h3>Log na elke training</h3>
-            <p>Kracht of cardio, het kost je minder dan een halve minuut.</p>
+            <h3>Beweeg zoals jij het leuk vindt</h3>
+            <p>Een wandeling, een partijtje padel of een workout. Tik het in de app, dat duurt nog geen halve minuut.</p>
           </li>
           <li class="stap onthul">
             <span class="stap-nr">3</span>
-            <h3>Zie je streak groeien</h3>
-            <p>Elke week dat je je doel haalt, wordt de gewoonte sterker. Dat is het hele geheim.</p>
+            <h3>Voel hoe het een gewoonte wordt</h3>
+            <p>Week na week groeit je ritme, je level en je zelfvertrouwen. Tot bewegen gewoon bij je leven hoort.</p>
           </li>
         </ol>
+      </div>
+    </section>
+
+    <!-- ===================== SAMEN (binnenkort) ===================== -->
+    <section class="sectie sectie-alt" id="samen">
+      <div class="container">
+        <div class="samen-blok onthul">
+          <div class="samen-figuren" aria-hidden="true">🚶‍♀️🏃🚴‍♂️🧘</div>
+          <span class="bovenschrift">Binnenkort</span>
+          <h2>Samen bewegen</h2>
+          <p>
+            Straks kom je in MoveForPleasure ook anderen tegen die hetzelfde doen. Moedig elkaar aan,
+            ga samen een challenge aan en vier elkaars overwinningen. Want samen houd je het makkelijker vol,
+            en het is gewoon veel leuker.
+          </p>
+          <a class="btn btn-rand" href="#wachtlijst">Hou me op de hoogte</a>
+        </div>
       </div>
     </section>
 
@@ -176,8 +239,8 @@
       <div class="container">
         <div class="sectie-kop onthul">
           <span class="bovenschrift">Prijzen</span>
-          <h2>Gratis starten. Upgraden als je wil.</h2>
-          <p>Loggen en je data synchroniseren blijven altijd gratis. Pro helpt je het vol te houden. Wachtlijst-leden krijgen korting.</p>
+          <h2>Gratis beginnen. Extra hulp als je wil.</h2>
+          <p>Bewegen en je beweging bijhouden blijft altijd gratis. Pro geeft je een extra duwtje in de rug om het vol te houden. Wachtlijst-leden krijgen korting.</p>
         </div>
 
         <div class="schakelaar onthul" role="group" aria-label="Betaalperiode">
@@ -191,9 +254,9 @@
             <p class="prijs"><span class="bedrag">€0</span></p>
             <p class="prijs-sub">Voor altijd</p>
             <ul class="vinkjes">
-              <li>Onbeperkt workouts en cardio loggen</li>
-              <li>Streak en weekdoel</li>
-              <li>Eigen weekschema</li>
+              <li>Onbeperkt al je beweging bijhouden</li>
+              <li>Weekchallenge, levels en badges</li>
+              <li>Eigen weekplanning</li>
               <li>Account met sync tussen al je toestellen <em class="binnenkort">binnenkort</em></li>
               <li>Installeerbaar op je telefoon</li>
             </ul>
@@ -210,12 +273,12 @@
             <p class="prijs-sub" id="pro-sub">Maandelijks opzegbaar</p>
             <ul class="vinkjes">
               <li>Alles uit Gratis</li>
-              <li>Slim weekplan dat zich aanpast als je een week mist</li>
-              <li>Herinneringen op je telefoon</li>
+              <li>Slimme challenges die meebewegen met jouw week</li>
+              <li>Vriendelijke herinneringen op je telefoon</li>
               <li>Streak-redders voor drukke weken</li>
-              <li>Maandrapport: je vooruitgang in kracht én cardio</li>
-              <li>Uitdagingen met vrienden</li>
-              <li>Onbeperkte historie en grafieken</li>
+              <li>Maandoverzicht van al je beweegmomenten</li>
+              <li>Challenges samen met vrienden</li>
+              <li>Je volledige historie en grafieken</li>
             </ul>
             <a class="btn btn-vol" href="#wachtlijst">Wachtlijst + korting</a>
           </div>
@@ -235,7 +298,7 @@
         <div class="faq">
           <details class="onthul">
             <summary>Is MoveForPleasure echt gratis?</summary>
-            <p>Ja. Loggen, streaks, je weekdoel, je weekschema en (binnenkort) je account met sync blijven altijd gratis. Je data is van jou, daar laten we je nooit voor betalen. Pro is een optionele upgrade met extra hulp om consequent te blijven.</p>
+            <p>Ja. Je beweging bijhouden, je weekchallenge, levels, badges, je planning en (binnenkort) je account met sync blijven altijd gratis. Je data is van jou, daar laten we je nooit voor betalen. Pro is een optionele upgrade voor wie een extra duwtje wil.</p>
           </details>
           <details class="onthul">
             <summary>Moet ik iets downloaden uit de App Store of Play Store?</summary>
@@ -250,12 +313,20 @@
             <p>We gebruiken het alleen om je te laten weten wanneer accounts en Pro live gaan. Geen spam, nooit doorverkocht, en je kunt je altijd uitschrijven. Lees meer in onze <a href="privacy.html">privacyverklaring</a>.</p>
           </details>
           <details class="onthul">
-            <summary>Wat is het verschil met apps zoals Hevy of Strava?</summary>
-            <p>Die apps zijn gemaakt voor sporters die al gemotiveerd zijn en vooral cijfers willen. MoveForPleasure is gemaakt voor iedereen die vaker wil sporten maar steeds afhaakt: alles draait om je weekdoel en je streak, kracht en cardio staan in één overzicht, en alles is in het Nederlands.</p>
+            <summary>Ik ben helemaal niet sportief. Is dit wel iets voor mij?</summary>
+            <p>Juist voor jou! MoveForPleasure is er voor iedereen die meer wil bewegen, ook als je al lang niets meer gedaan hebt. Een wandeling van 20 minuten telt al. Jij bepaalt het tempo.</p>
           </details>
           <details class="onthul">
-            <summary>Is dit geschikt voor beginners?</summary>
-            <p>Juist wel. De app is bewust simpel gehouden en draait om één ding: een gewoonte opbouwen die je volhoudt.</p>
+            <summary>Wat is het verschil met apps zoals Hevy of Strava?</summary>
+            <p>Die apps zijn gemaakt voor sporters die al gemotiveerd zijn en vooral cijfers en prestaties willen. MoveForPleasure draait om plezier en volhouden: haalbare challenges, aanmoediging in plaats van druk, elke soort beweging telt, en alles is in het Nederlands.</p>
+          </details>
+          <details class="onthul">
+            <summary>Wat als ik een week niet beweeg?</summary>
+            <p>Dan is dat zo. Geen schuldgevoel, geen boze meldingen. De app moedigt je aan om de draad weer op te pakken, en je badges en level blijven gewoon van jou.</p>
+          </details>
+          <details class="onthul">
+            <summary>Wanneer kan ik samen met anderen bewegen?</summary>
+            <p>Daar werken we aan. Schrijf je in op de wachtlijst, dan hoor je als eerste wanneer je anderen kunt aanmoedigen en samen challenges kunt doen.</p>
           </details>
         </div>
       </div>
@@ -267,8 +338,8 @@
         <div class="cta-blok onthul">
           <div class="cta-tekst">
             <span class="bovenschrift">Wachtlijst</span>
-            <h2>Wees er als eerste bij</h2>
-            <p>Schrijf je in en ontvang als eerste toegang tot accounts en Pro, met korting voor vroege leden.</p>
+            <h2>Beweeg je mee?</h2>
+            <p>Schrijf je in en wees er als eerste bij wanneer accounts, Pro en samen bewegen live gaan. Vroege leden krijgen korting. 🧡</p>
             <p class="teller" id="teller" hidden></p>
           </div>
 
@@ -280,20 +351,20 @@
             </div>
 
             <div class="veld">
-              <label for="wl-type">Wat voor sporter ben je?</label>
+              <label for="wl-type">Wat past het best bij jou?</label>
               <select id="wl-type" name="type" required>
                 <option value="">Maak een keuze…</option>
-                <option value="beginner">Ik ben (opnieuw) aan het beginnen</option>
-                <option value="kracht">Vooral krachttraining</option>
-                <option value="combi">Kracht én cardio</option>
-                <option value="cardio">Vooral cardio</option>
+                <option value="beginner">Ik wil (opnieuw) beginnen met bewegen</option>
+                <option value="cardio">Ik wandel, fiets, loop of zwem graag</option>
+                <option value="kracht">Ik doe vooral krachttraining</option>
+                <option value="combi">Ik doe van alles een beetje</option>
               </select>
               <p class="veld-fout" id="fout-type"></p>
             </div>
 
             <div class="veld">
-              <label for="wl-wens">Wat zou je in een sport-app het liefst willen? <span class="optioneel">optioneel</span></label>
-              <textarea id="wl-wens" name="wens" rows="3" maxlength="500" placeholder="Bijvoorbeeld: een schema dat zich aanpast aan mijn niveau"></textarea>
+              <label for="wl-wens">Wat zou jou helpen om met plezier te bewegen? <span class="optioneel">optioneel</span></label>
+              <textarea id="wl-wens" name="wens" rows="3" maxlength="500" placeholder="Bijvoorbeeld: samen met vrienden een challenge doen"></textarea>
               <p class="tekens"><span id="wens-teller">0</span>/500</p>
             </div>
 
@@ -310,7 +381,7 @@
             <p class="veld-fout" id="fout-akkoord"></p>
 
             <button type="submit" class="btn btn-groot btn-vol" id="wl-knop">
-              <span class="knop-tekst">Inschrijven</span>
+              <span class="knop-tekst">Ik doe mee!</span>
               <span class="spinner" aria-hidden="true"></span>
             </button>
             <p id="wl-melding" class="melding" role="alert"></p>
@@ -319,9 +390,9 @@
           <!-- Wordt getoond na een geslaagde inschrijving -->
           <div class="gelukt" id="gelukt" hidden tabindex="-1">
             <div class="gelukt-icoon">🎉</div>
-            <h3>Je staat op de lijst!</h3>
-            <p>Bedankt voor je inschrijving. We laten van ons horen zodra accounts en Pro live gaan.</p>
-            <a class="btn btn-rand" href="app/">Probeer intussen de gratis app →</a>
+            <h3>Welkom bij de beweging!</h3>
+            <p>Super dat je erbij bent. We laten van ons horen zodra er nieuws is. Zin om alvast te beginnen?</p>
+            <a class="btn btn-rand" href="app/">Start met de gratis app →</a>
           </div>
         </div>
       </div>

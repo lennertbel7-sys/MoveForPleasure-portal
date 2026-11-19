@@ -20,7 +20,7 @@ const opslag = {
 
 // ===== De data van de app =====
 // workouts: [{ id, datum: "2026-06-11", oefening, gewicht, sets, reps }]
-// cardio:   [{ id, datum, type, minuten, km }]
+// cardio:   [{ id, datum, type, minuten, km, rondes? }]  rondes = [{ seconden, aantal }]
 // schema:   { ma: "tekst", di: "", ... }
 // weekdoel: getal (actieve dagen per week)
 
@@ -28,6 +28,11 @@ let workouts = opslag.laad("workouts", []);
 let cardio = opslag.laad("cardio", []);
 let schema = opslag.laad("schema", { ma: "", di: "", wo: "", do: "", vr: "", za: "", zo: "" });
 let weekdoel = opslag.laad("weekdoel", 3);
+
+// profiel:   { naam, doel, niveau, lengte, geboortejaar, gewichtVolgen }
+// gewichten: [{ id, datum, kg }]  (lichaamsgewicht, max. één per dag)
+let profiel = opslag.laad("profiel", { naam: "", doel: "", niveau: "", lengte: null, geboortejaar: null, gewichtVolgen: false });
+let gewichten = opslag.laad("gewichten", []);
 
 // ===== Hulpfuncties voor datums =====
 function datumNaarTekst(datum) {
@@ -100,8 +105,11 @@ function verwijderWorkout(id) {
   opslag.bewaar("workouts", workouts);
 }
 
-function logCardio(type, minuten, km) {
-  cardio.unshift({ id: Date.now(), datum: vandaagTekst(), type, minuten, km });
+// rondes is optioneel: [{ seconden, aantal }]
+function logCardio(type, minuten, km, rondes = []) {
+  const item = { id: Date.now(), datum: vandaagTekst(), type, minuten, km };
+  if (rondes.length) item.rondes = rondes;
+  cardio.unshift(item);
   opslag.bewaar("cardio", cardio);
 }
 
@@ -118,4 +126,23 @@ function bewaarSchema(nieuwSchema) {
 function bewaarWeekdoel(doel) {
   weekdoel = doel;
   opslag.bewaar("weekdoel", weekdoel);
+}
+
+function bewaarProfiel(nieuwProfiel) {
+  profiel = nieuwProfiel;
+  opslag.bewaar("profiel", profiel);
+}
+
+// Lichaamsgewicht: weeg je twee keer op één dag, dan telt de laatste
+function logGewicht(kg) {
+  const vandaag = vandaagTekst();
+  gewichten = gewichten.filter(g => g.datum !== vandaag);
+  gewichten.push({ id: Date.now(), datum: vandaag, kg });
+  gewichten.sort((a, b) => a.datum.localeCompare(b.datum)); // oudste eerst
+  opslag.bewaar("gewichten", gewichten);
+}
+
+function verwijderGewicht(id) {
+  gewichten = gewichten.filter(g => g.id !== id);
+  opslag.bewaar("gewichten", gewichten);
 }

@@ -19,6 +19,7 @@ function toonTab(naam) {
   document.querySelectorAll(".nav-knop").forEach(knop => {
     knop.classList.toggle("actief", knop.dataset.tab === naam);
   });
+  document.getElementById("profiel-knop").classList.toggle("actief", naam === "profiel");
   vernieuwAlles();
   window.scrollTo(0, 0);
   // Berichten-tab geopend: de nieuwe berichten zijn nog even gemarkeerd
@@ -40,6 +41,7 @@ function vernieuwAlles() {
   vernieuwWorkoutLijst();
   vernieuwCardioLijst();
   vernieuwBerichten();
+  vernieuwProfiel();
 }
 
 // ===== Felicitaties =====
@@ -73,7 +75,7 @@ document.addEventListener("keydown", (e) => { if (e.key === "Escape") sluitVieri
 
 function strooiConfetti(plek) {
   if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-  const kleuren = ["#4ecca3", "#6fd6ff", "#ffb347", "#ff6b9a", "#f9f871"];
+  const kleuren = ["#ff7a3d", "#ff4f8b", "#ffd23f", "#ff7a3d", "#f9f871"];
   for (let i = 0; i < 60; i++) {
     const stukje = document.createElement("span");
     stukje.className = "confetti";
@@ -96,14 +98,19 @@ function vierResultaat(voor, isRecord, oefening) {
     ? ` Nieuwe badge: ${badgesNieuw.map(b => b.icoon + " " + b.naam).join(", ")}!`
     : "";
 
+  const level = huidigLevel();
+
   if (isRecord) {
-    toonViering("🏆", "Nieuw persoonlijk record!", `Zwaarder dan ooit bij ${oefening}. Je wordt echt sterker!` + badgeTekst);
+    toonViering("🏆", "Nieuw persoonlijk record!", `Zwaarder dan ooit bij ${oefening}. Voel je hoe sterk je wordt? 💪` + badgeTekst);
+  } else if (level.nummer > voor.level) {
+    toonViering("⭐", `Level up! Level ${level.nummer}`,
+      `Je bent nu officieel "${level.naam}". Elke training brengt je verder.` + badgeTekst);
   } else if (voor.actief < weekdoel && nuActief >= weekdoel) {
     const reeks = berekenWeekreeks();
-    toonViering("🎯", "Weekdoel gehaald!",
-      (reeks > 1 ? `Al ${reeks} weken op rij! ` : "") + "Zo bouw je een gewoonte die blijft." + badgeTekst);
+    toonViering("🎯", "Weekchallenge gehaald!",
+      (reeks > 1 ? `Al ${reeks} weken op rij! ` : "") + "Zo groeit een gewoonte die blijft. Geniet ervan!" + badgeTekst);
   } else if (streak > voor.streak && [3, 7, 14, 21, 30, 50, 100].includes(streak)) {
-    toonViering("🔥", `${streak} dagen op rij!`, "Je bent niet te stoppen. Vergeet ook niet te rusten." + badgeTekst);
+    toonViering("🔥", `${streak} dagen op rij!`, "Wat een energie! Gun jezelf ook af en toe een rustdag. 😌" + badgeTekst);
   } else if (badgesNieuw.length) {
     const b = badgesNieuw[0];
     const extra = badgesNieuw.slice(1).map(x => `${x.icoon} ${x.naam}`).join(", ");
@@ -114,13 +121,14 @@ function vierResultaat(voor, isRecord, oefening) {
 }
 
 function statusVoorLog() {
-  return { actief: actieveDagenDezeWeek(), streak: berekenStreak() };
+  return { actief: actieveDagenDezeWeek(), streak: berekenStreak(), level: huidigLevel().nummer };
 }
 
 function vernieuwStreakBadge() {
   const streak = berekenStreak();
-  document.getElementById("streak-badge").textContent =
-    streak > 0 ? `🔥 ${streak} ${streak === 1 ? "dag" : "dagen"}` : "";
+  // De vlam flakkert (zie .vlam in style.css)
+  document.getElementById("streak-badge").innerHTML =
+    streak > 0 ? `<span class="vlam">🔥</span> ${streak} ${streak === 1 ? "dag" : "dagen"}` : "";
 }
 
 // ===== Tab: Vandaag =====
@@ -132,11 +140,29 @@ function vernieuwVandaag() {
     `${dagNamenVoluit[dagSleutel]} ${nu.getDate()}/${nu.getMonth() + 1}`;
 
   // Groet, aanmoediging en de drie cijfers
-  document.getElementById("groet").textContent = groet() + "! 👋";
+  document.getElementById("groet").textContent = groet() + (profiel.naam ? `, ${profiel.naam}` : "") + "! 👋";
   document.getElementById("aanmoediging").textContent = aanmoediging();
   document.getElementById("cijfer-streak").textContent = berekenStreak();
   document.getElementById("cijfer-weekreeks").textContent = berekenWeekreeks();
-  document.getElementById("cijfer-week").textContent = `${actieveDagenDezeWeek()}/${weekdoel}`;
+  document.getElementById("cijfer-totaal").textContent = workouts.length + cardio.length;
+
+  // Weekdoel-ring: de gekleurde rand vult zich naarmate je dichter bij je doel komt
+  const actiefDezeWeek = actieveDagenDezeWeek();
+  const omtrek = 2 * Math.PI * 34;
+  const deel = Math.min(1, actiefDezeWeek / weekdoel);
+  const ringVoor = document.getElementById("ring-voor");
+  ringVoor.style.strokeDasharray = omtrek;
+  ringVoor.style.strokeDashoffset = omtrek * (1 - deel);
+  document.getElementById("ring").classList.toggle("vol", deel >= 1);
+  document.getElementById("ring-tekst").textContent = deel >= 1 ? "🎉" : `${actiefDezeWeek}/${weekdoel}`;
+
+  // Level en XP
+  const level = huidigLevel();
+  document.getElementById("level-naam").textContent = `⭐ Level ${level.nummer} · ${level.naam}`;
+  document.getElementById("level-xp").textContent = level.tot
+    ? `${level.xp} / ${level.tot} XP`
+    : `${level.xp} XP · max level!`;
+  document.getElementById("level-vulling").style.width = level.procent + "%";
 
   // Bolletjes ma t/m zo
   const bolletjes = document.getElementById("week-bolletjes");
@@ -172,14 +198,14 @@ function vernieuwVandaag() {
   // Training van vandaag uit het weekschema
   const planVandaag = schema[dagSleutel];
   document.getElementById("vandaag-schema").textContent =
-    planVandaag ? planVandaag : "Niets gepland — stel je weekschema in via de Schema-tab.";
+    planVandaag ? planVandaag : "Nog niets gepland. Waar heb je zin in? Plan het via de Planning-tab, of doe gewoon iets spontaans! 🙂";
 
   // Weekdoel
   const actief = actieveDagenDezeWeek();
   document.getElementById("weekdoel-tekst").textContent =
     actief >= weekdoel
-      ? `Weekdoel gehaald: ${actief} van ${weekdoel} dagen actief! 🎉`
-      : `${actief} van ${weekdoel} dagen actief deze week`;
+      ? `Challenge gehaald: ${actief} van ${weekdoel} beweegdagen! 🎉`
+      : `${actief} van ${weekdoel} beweegdagen deze week`;
   document.getElementById("weekdoel-balk").style.width =
     Math.min(100, (actief / weekdoel) * 100) + "%";
   document.getElementById("weekdoel-invoer").value = weekdoel;
@@ -187,13 +213,13 @@ function vernieuwVandaag() {
   // Recente activiteit: workouts en cardio samen, nieuwste eerst
   const alles = [
     ...workouts.map(w => ({ datum: w.datum, id: w.id, tekst: `🏋️ ${w.oefening} — ${w.sets}×${w.reps}${w.gewicht ? " @ " + w.gewicht + " kg" : ""}` })),
-    ...cardio.map(c => ({ datum: c.datum, id: c.id, tekst: `🏃 ${c.type} — ${c.minuten} min${c.km ? ", " + c.km + " km" : ""}` }))
+    ...cardio.map(c => ({ datum: c.datum, id: c.id, tekst: cardioTekst(c) }))
   ].sort((a, b) => b.datum.localeCompare(a.datum) || b.id - a.id).slice(0, 8);
 
   const lijst = document.getElementById("recente-lijst");
   lijst.innerHTML = "";
   if (alles.length === 0) {
-    lijst.innerHTML = `<li><span class="gedempt">Nog niets gelogd. Begin via de Workout- of Cardio-tab!</span></li>`;
+    lijst.innerHTML = `<li><span class="gedempt">Nog niets bijgehouden. Elke beweging telt, begin waar je zin in hebt! 😃</span></li>`;
     return;
   }
   alles.forEach(item => {
@@ -255,13 +281,28 @@ function vernieuwWorkoutLijst() {
 // ===== Tab: Cardio =====
 document.getElementById("cardio-formulier").addEventListener("submit", (e) => {
   e.preventDefault();
+  const fout = document.getElementById("cardio-fout");
   const type = document.getElementById("cardio-type").value;
-  const minuten = parseInt(document.getElementById("cardio-minuten").value);
-  const km = parseFloat(document.getElementById("cardio-km").value) || 0;
-  if (!minuten) return;
+  const rondes = verzamelRondes();
+  let minuten = parseInt(document.getElementById("cardio-minuten").value);
+  const km = infoVoor(type).km ? parseFloat(document.getElementById("cardio-km").value) || 0 : 0;
+
+  // Geen minuten ingevuld? Dan rekenen we ze uit de tijd van de rondes
+  const rondeSeconden = rondes.reduce((som, r) => som + r.seconden, 0);
+  if (!minuten && rondeSeconden) minuten = Math.max(1, Math.round(rondeSeconden / 60));
+
+  if (!minuten) {
+    fout.textContent = "Vul het aantal minuten in, of voeg rondes met een tijd toe.";
+    document.getElementById("cardio-minuten").focus();
+    return;
+  }
+  fout.textContent = "";
+
   const voor = statusVoorLog();
-  logCardio(type, minuten, km);
+  logCardio(type, minuten, km, rondes);
   e.target.reset();
+  sluitRondes();
+  pasTypeAan();
   vernieuwAlles();
   vierResultaat(voor, false);
 });
@@ -272,7 +313,7 @@ function vernieuwCardioLijst() {
   cardio.slice(0, 20).forEach(c => {
     const li = document.createElement("li");
     const tekst = document.createElement("span");
-    tekst.textContent = `${c.type} — ${c.minuten} min${c.km ? ", " + c.km + " km" : ""}`;
+    tekst.textContent = cardioTekst(c);
     const datum = document.createElement("span");
     datum.className = "datum";
     datum.textContent = leesbareDatum(c.datum);

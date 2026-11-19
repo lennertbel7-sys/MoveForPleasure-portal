@@ -87,7 +87,7 @@ async function laadTeller() {
     const aantal = await antwoord.json();
     if (aantal >= 10) {
       const teller = document.getElementById("teller");
-      teller.textContent = `🔥 Al ${aantal} sporters staan op de wachtlijst`;
+      teller.textContent = `🧡 Al ${aantal} mensen bewegen met ons mee`;
       teller.hidden = false;
     }
   } catch { /* geen internet of database even weg: teller gewoon niet tonen */ }
@@ -136,7 +136,7 @@ function controleer() {
 function laden(bezig) {
   knop.disabled = bezig;
   knop.classList.toggle("laden", bezig);
-  knop.querySelector(".knop-tekst").textContent = bezig ? "Bezig met inschrijven…" : "Inschrijven";
+  knop.querySelector(".knop-tekst").textContent = bezig ? "Even geduld…" : "Ik doe mee!";
 }
 
 function toonGelukt() {

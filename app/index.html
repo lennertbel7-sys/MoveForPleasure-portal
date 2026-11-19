@@ -3,16 +3,20 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#16213e">
+  <meta name="theme-color" content="#23152f">
   <title>MoveForPleasure</title>
   <link rel="manifest" href="manifest.json">
   <link rel="icon" href="../icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="../apple-touch-icon.png">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <header>
-    <h1>MoveForPleasure</h1>
-    <span id="streak-badge" class="streak-badge"></span>
+    <h1 class="merk"><img src="../icon.svg" alt="" width="30" height="30">MoveForPleasure</h1>
+    <div class="kop-rechts">
+      <span id="streak-badge" class="streak-badge"></span>
+      <button id="profiel-knop" class="profiel-knop" type="button" aria-label="Mijn profiel">👤</button>
+    </div>
   </header>
 
   <main>
@@ -20,9 +24,45 @@
     <section id="tab-vandaag" class="tab">
       <!-- Persoonlijke aanmoediging + je belangrijkste cijfers -->
       <div class="kaart motivatie-kaart">
-        <p id="vandaag-titel" class="gedempt klein-kop"></p>
-        <h2 id="groet"></h2>
-        <p id="aanmoediging" class="aanmoediging"></p>
+        <!-- Bewegende hartslaglijn op de achtergrond -->
+        <svg class="hartslag" viewBox="0 0 400 60" preserveAspectRatio="none" aria-hidden="true">
+          <path d="M0 40 H120 L135 40 L145 18 L158 56 L170 8 L182 46 L192 40 H260 L272 40 L280 28 L290 50 L298 40 H400" />
+        </svg>
+
+        <div class="motivatie-boven">
+          <div class="motivatie-tekst">
+            <p id="vandaag-titel" class="gedempt klein-kop"></p>
+            <h2 id="groet"></h2>
+            <p id="aanmoediging" class="aanmoediging"></p>
+          </div>
+
+          <!-- Weekdoel-ring -->
+          <div id="ring" class="ring" role="img" aria-label="Voortgang weekdoel">
+            <svg viewBox="0 0 84 84">
+              <defs>
+                <linearGradient id="ring-verloop" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0%" stop-color="#ff7a3d"/>
+                  <stop offset="100%" stop-color="#ff4f8b"/>
+                </linearGradient>
+              </defs>
+              <circle class="ring-achter" cx="42" cy="42" r="34"/>
+              <circle id="ring-voor" class="ring-voor" cx="42" cy="42" r="34"/>
+            </svg>
+            <div class="ring-midden">
+              <strong id="ring-tekst">0/3</strong>
+              <small>challenge</small>
+            </div>
+          </div>
+        </div>
+
+        <!-- Level en XP -->
+        <div class="level">
+          <div class="level-kop">
+            <span id="level-naam" class="level-naam">⭐ Level 1 · Starter</span>
+            <span id="level-xp" class="level-xp">0 XP</span>
+          </div>
+          <div class="level-balk"><div id="level-vulling"></div></div>
+        </div>
 
         <div class="cijfers">
           <div class="cijfer">
@@ -34,8 +74,8 @@
             <span>📈 weken doel gehaald</span>
           </div>
           <div class="cijfer">
-            <strong id="cijfer-week">0/3</strong>
-            <span>✅ deze week</span>
+            <strong id="cijfer-totaal">0</strong>
+            <span>🙌 keer bewogen</span>
           </div>
         </div>
 
@@ -47,20 +87,20 @@
       <div id="vandaag-bericht"></div>
 
       <div class="kaart">
-        <h3>Training van vandaag</h3>
+        <h3>Vandaag op je planning</h3>
         <p id="vandaag-schema" class="gedempt"></p>
         <div class="snel-knoppen">
-          <button class="snel-knop" data-naar="workout">🏋️ Workout loggen</button>
-          <button class="snel-knop" data-naar="cardio">🏃 Cardio loggen</button>
+          <button class="snel-knop" data-naar="workout">🏋️ Workout</button>
+          <button class="snel-knop" data-naar="cardio">🚶 Beweging</button>
         </div>
       </div>
 
       <div class="kaart">
-        <h3>Weekdoel</h3>
+        <h3>Jouw weekchallenge</h3>
         <p id="weekdoel-tekst" class="gedempt"></p>
         <div class="balk"><div id="weekdoel-balk" class="balk-vulling"></div></div>
         <label class="doel-instelling">
-          Doel: <input type="number" id="weekdoel-invoer" min="1" max="7"> actieve dagen per week
+          Doel: <input type="number" id="weekdoel-invoer" min="1" max="7"> beweegdagen per week
         </label>
       </div>
 
@@ -73,7 +113,7 @@
       </div>
 
       <div class="kaart">
-        <h3>Recente activiteit</h3>
+        <h3>Recent bewogen</h3>
         <ul id="recente-lijst" class="lijst"></ul>
       </div>
     </section>
@@ -95,19 +135,40 @@
 
     <!-- ===== Tab: Cardio ===== -->
     <section id="tab-cardio" class="tab verborgen">
-      <h2>Cardio loggen</h2>
+      <h2>Beweging bijhouden</h2>
       <form id="cardio-formulier" class="kaart">
         <select id="cardio-type">
           <option>Hardlopen</option>
           <option>Fietsen</option>
           <option>Wandelen</option>
           <option>Zwemmen</option>
+          <option>Traplopen</option>
+          <option>Touwspringen</option>
+          <option>HYROX</option>
+          <option>Padel</option>
+          <option>CrossFit</option>
           <option>Anders</option>
         </select>
         <div class="rij">
-          <input type="number" id="cardio-minuten" placeholder="minuten" min="1" required>
+          <input type="number" id="cardio-minuten" placeholder="minuten" min="1" max="1440">
           <input type="number" id="cardio-km" placeholder="km (optioneel)" min="0" step="0.1">
         </div>
+
+        <!-- Optioneel: rondes met tijd en aantal (bv. touwspringen) -->
+        <button type="button" id="rondes-knop" class="rondes-knop">➕ Rondes toevoegen <span>(tijd &amp; aantal per ronde)</span></button>
+        <div id="rondes-blok" class="rondes-blok" hidden>
+          <div class="rondes-kop">
+            <span>#</span><span>Tijd (min : sec)</span><span id="aantal-kop">Aantal</span><span></span>
+          </div>
+          <div id="rondes-lijst"></div>
+          <div class="rondes-acties">
+            <button type="button" id="ronde-erbij" class="ronde-erbij">+ Ronde</button>
+            <button type="button" id="rondes-weg" class="rondes-weg">Rondes verwijderen</button>
+          </div>
+          <p id="rondes-totaal" class="rondes-totaal"></p>
+        </div>
+
+        <p id="cardio-fout" class="veld-fout-app" role="alert"></p>
         <button type="submit">Loggen</button>
       </form>
       <ul id="cardio-lijst" class="lijst"></ul>
@@ -115,20 +176,125 @@
 
     <!-- ===== Tab: Schema ===== -->
     <section id="tab-schema" class="tab verborgen">
-      <h2>Weekschema</h2>
-      <p class="gedempt">Schrijf per dag wat je traint. Dit zie je dan terug op het Vandaag-scherm.</p>
+      <h2>Mijn weekplanning</h2>
+      <p class="gedempt">Plan per dag waar je zin in hebt, bijvoorbeeld "wandelen met de hond" of "padel met vrienden". Je ziet het terug op het Vandaag-scherm. Lege dag = rustdag, ook goed!</p>
       <form id="schema-formulier" class="kaart">
         <!-- De 7 dag-velden worden hier door JavaScript ingevuld -->
         <div id="schema-velden"></div>
-        <button type="submit">Schema opslaan</button>
+        <button type="submit">Planning opslaan</button>
       </form>
     </section>
 
     <!-- ===== Tab: Berichten ===== -->
     <section id="tab-berichten" class="tab verborgen">
       <h2>Berichten</h2>
-      <p class="gedempt tab-intro">Tips, weetjes en motivatie van het MoveForPleasure-team.</p>
+      <p class="gedempt tab-intro">Tips, weetjes en een flinke dosis motivatie, speciaal voor jou. 🧡</p>
       <div id="berichten-lijst"></div>
+    </section>
+
+    <!-- ===== Tab: Profiel (via de knop rechtsboven) ===== -->
+    <section id="tab-profiel" class="tab verborgen">
+      <!-- Kop met initiaal, naam en doel -->
+      <div class="kaart profiel-kop">
+        <div id="profiel-avatar" class="avatar">👤</div>
+        <div>
+          <h2 id="profiel-naam">Mijn profiel</h2>
+          <p id="profiel-sub" class="gedempt"></p>
+        </div>
+      </div>
+
+      <!-- Statistieken -->
+      <div class="kaart">
+        <h3>Jouw cijfers</h3>
+        <div id="statistieken" class="statistieken"></div>
+      </div>
+
+      <!-- Activiteitskalender -->
+      <div class="kaart">
+        <div class="kaart-kop">
+          <h3>Laatste 12 weken</h3>
+          <span id="kalender-telling" class="gedempt"></span>
+        </div>
+        <div id="kalender" class="kalender" aria-label="Activiteitskalender"></div>
+        <div class="kalender-legende gedempt">
+          minder <i class="k0"></i><i class="k1"></i><i class="k2"></i><i class="k3"></i> meer
+        </div>
+      </div>
+
+      <!-- Lichaamsgewicht (alleen zichtbaar als je dit aanzet bij Mijn gegevens) -->
+      <div class="kaart" id="gewicht-kaart" hidden>
+        <div class="kaart-kop">
+          <h3>Lichaamsgewicht</h3>
+          <span id="gewicht-verschil" class="gedempt"></span>
+        </div>
+        <div id="gewicht-grafiek" class="grafiek"></div>
+        <form id="gewicht-formulier" class="rij gewicht-invoer">
+          <input type="number" id="gewicht-kg" placeholder="Gewicht vandaag (kg)" min="20" max="400" step="0.1" required>
+          <button type="submit">Opslaan</button>
+        </form>
+        <ul id="gewicht-lijst" class="lijst compact"></ul>
+      </div>
+
+      <!-- Persoonlijke records -->
+      <div class="kaart">
+        <h3>🏆 Persoonlijke records</h3>
+        <ul id="records-lijst" class="lijst compact"></ul>
+      </div>
+
+      <!-- Gegevens -->
+      <form id="profiel-formulier" class="kaart">
+        <h3>Mijn gegevens</h3>
+        <label class="veld-label" for="p-naam">Voornaam</label>
+        <input type="text" id="p-naam" maxlength="30" placeholder="Hoe mogen we je noemen?" autocomplete="given-name">
+
+        <label class="veld-label" for="p-doel">Mijn doel</label>
+        <select id="p-doel">
+          <option value="">Kies een doel…</option>
+          <option value="volhouden">Een sportgewoonte opbouwen</option>
+          <option value="sterker">Sterker worden</option>
+          <option value="conditie">Betere conditie</option>
+          <option value="afvallen">Gewicht verliezen</option>
+          <option value="fit">Me fitter en energieker voelen</option>
+        </select>
+
+        <label class="veld-label" for="p-niveau">Mijn niveau</label>
+        <select id="p-niveau">
+          <option value="">Kies je niveau…</option>
+          <option value="beginner">Beginner</option>
+          <option value="gemiddeld">Gemiddeld</option>
+          <option value="gevorderd">Gevorderd</option>
+        </select>
+
+        <div class="rij">
+          <div>
+            <label class="veld-label" for="p-lengte">Lengte (cm)</label>
+            <input type="number" id="p-lengte" min="100" max="250" placeholder="bv. 178">
+          </div>
+          <div>
+            <label class="veld-label" for="p-geboortejaar">Geboortejaar</label>
+            <input type="number" id="p-geboortejaar" min="1920" max="2020" placeholder="bv. 1995">
+          </div>
+        </div>
+        <!-- Schakelaar: gewicht bijhouden is optioneel -->
+        <label class="schakel-rij" for="p-gewicht">
+          <span class="schakel-tekst">
+            <strong>⚖️ Gewicht bijhouden</strong>
+            <small id="p-gewicht-uitleg">Alleen als dit voor jou een persoonlijk doel is. Je kunt het altijd weer uitzetten.</small>
+          </span>
+          <input type="checkbox" id="p-gewicht" class="schakel-invoer" role="switch">
+          <span class="schakel-knop" aria-hidden="true"></span>
+        </label>
+
+        <button type="submit">Gegevens opslaan</button>
+        <p class="gedempt klein-tekst">🔒 Je gegevens blijven op dit toestel. Niemand anders kan ze zien.</p>
+      </form>
+
+      <!-- Back-up -->
+      <div class="kaart">
+        <h3>Mijn gegevens downloaden</h3>
+        <p class="gedempt">Download een back-up van al je trainingen, je gewicht en je profiel.</p>
+        <button type="button" id="exporteer-knop" class="knop-rand-app">⬇️ Back-up downloaden</button>
+      </div>
     </section>
   </main>
 
@@ -149,8 +315,8 @@
   <nav>
     <button class="nav-knop actief" data-tab="vandaag">🏠<span>Vandaag</span></button>
     <button class="nav-knop" data-tab="workout">🏋️<span>Workout</span></button>
-    <button class="nav-knop" data-tab="cardio">🏃<span>Cardio</span></button>
-    <button class="nav-knop" data-tab="schema">📅<span>Schema</span></button>
+    <button class="nav-knop" data-tab="cardio">🚶<span>Bewegen</span></button>
+    <button class="nav-knop" data-tab="schema">📅<span>Planning</span></button>
     <button class="nav-knop" data-tab="berichten">🔔<span>Berichten</span><b id="berichten-teller" class="teller-bolletje" hidden></b></button>
   </nav>
 
@@ -158,6 +324,8 @@
   <script src="data.js"></script>
   <script src="motivatie.js"></script>
   <script src="berichten.js"></script>
+  <script src="profiel.js"></script>
+  <script src="cardio.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
