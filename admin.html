@@ -59,6 +59,24 @@
         </div>
       </div>
 
+      <!-- Ledenlijst (admin-leden.js) -->
+      <div class="leden-kop">
+        <h2 class="lijst-kop">👥 Leden <span id="leden-aantal" class="leden-aantal"></span></h2>
+        <input type="search" id="leden-zoek" placeholder="Zoek op naam of e-mail…" aria-label="Leden zoeken">
+      </div>
+      <div class="kaart leden-kaart">
+        <div class="leden-scroll">
+          <table class="leden-tabel">
+            <thead>
+              <tr>
+                <th>Naam</th><th>E-mail</th><th>Doel</th><th>Aangemeld</th><th>Laatst actief</th><th title="Gelogde workouts + bewegingen">Bewogen</th>
+              </tr>
+            </thead>
+            <tbody id="leden-lijst"></tbody>
+          </table>
+        </div>
+      </div>
+
       <h2 class="lijst-kop">📣 Berichten voor iedereen</h2>
       <div class="admin-raster">
         <form id="bericht-formulier" class="kaart">
@@ -112,5 +130,6 @@
   <script src="config.js"></script>
   <script src="admin.js"></script>
   <script src="admin-chat.js"></script>
+  <script src="admin-leden.js"></script>
 </body>
 </html>

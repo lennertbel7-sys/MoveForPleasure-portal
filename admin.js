@@ -60,6 +60,7 @@ async function start() {
   resetFormulier();
   laadCijfers();
   if (typeof startAdminChat === "function") startAdminChat();
+  if (typeof laadLeden === "function") laadLeden();
   await laadBerichten();
 }
 
