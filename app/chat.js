@@ -77,7 +77,7 @@ function tekenChat() {
   if (!chatBerichten.length) {
     const leeg = document.createElement("p");
     leeg.className = "gedempt chat-leeg";
-    leeg.textContent = "👋 Nog geen berichten. Zeg gerust hallo!";
+    leeg.textContent = "👋 Vraag, idee of gewoon iets kwijt? Stuur ons een bericht. We lezen alles en antwoorden zo snel mogelijk.";
     lijst.appendChild(leeg);
     return;
   }

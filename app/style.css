@@ -647,3 +647,19 @@ body.welkom-open { overflow: hidden; }
 .vandaag-plan.gedaan span:first-child { opacity: 0.6; text-decoration: line-through; }
 .vandaag-plan-knop { padding: 6px 14px; border: 0; border-radius: 16px; background: #ff7a3d; color: #23152f; font: inherit; font-weight: 700; font-size: 0.82rem; cursor: pointer; }
 .vandaag-plan-gedaan { color: #63d68c; font-size: 0.85rem; font-weight: 600; }
+
+/* ----- Chatvenster voor leden (zoals op de adminpagina) ----- */
+.chat-venster {
+  display: flex; flex-direction: column; overflow: hidden;
+  height: calc(100vh - 235px); height: calc(100dvh - 235px); min-height: 360px;
+  background: #2b1d37; border: 1px solid #402d4c; border-radius: 16px; margin-bottom: 14px;
+}
+.chat-venster[hidden] { display: none; }
+.chat-venster-kop { display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-bottom: 1px solid #402d4c; background: rgba(0, 0, 0, 0.15); }
+.chat-avatar { border-radius: 50%; flex-shrink: 0; }
+.chat-venster-kop strong { display: block; font-size: 0.98rem; }
+.chat-venster-sub { display: block; font-size: 0.78rem; color: #a8919f; }
+.chat-venster .chat-lijst { flex: 1; min-height: 0; max-height: none; margin: 0; border-radius: 0; padding: 14px 8px; background: #241830; }
+.chat-venster .chat-leeg { padding: 0 24px; text-align: center; }
+.chat-venster .chat-fout { margin: 0; padding: 8px 14px; background: rgba(255, 176, 46, 0.1); }
+.chat-venster .chat-invoer { padding: 10px; border-top: 1px solid #402d4c; background: #2b1d37; }

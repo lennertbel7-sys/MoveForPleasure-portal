@@ -250,14 +250,23 @@
       </div>
 
       <!-- Chat met de admin (chat.js) -->
-      <div id="paneel-chat" class="kaart chat-kaart" hidden>
-        <p class="gedempt chat-intro">Vraag, idee of gewoon iets kwijt? Stuur ons een bericht. We lezen alles en antwoorden zo snel mogelijk. 🧡</p>
+      <div id="paneel-chat" class="chat-venster" hidden>
+        <!-- Kop: met wie chat je? -->
+        <div class="chat-venster-kop">
+          <img src="../icon.svg" alt="" width="38" height="38" class="chat-avatar">
+          <div>
+            <strong>MoveForPleasure</strong>
+            <span class="chat-venster-sub">Meestal antwoord binnen een dag 🧡</span>
+          </div>
+        </div>
+        <!-- Berichten -->
         <div id="chat-lijst" class="chat-lijst" aria-live="polite"></div>
+        <p id="chat-fout" class="chat-fout" hidden></p>
+        <!-- Typen + versturen -->
         <form id="chat-formulier" class="chat-invoer">
           <textarea id="chat-tekst" rows="1" maxlength="2000" placeholder="Typ je bericht…" required></textarea>
           <button type="submit" aria-label="Versturen">➤</button>
         </form>
-        <p id="chat-fout" class="chat-fout" hidden></p>
       </div>
     </section>
 
