@@ -23,12 +23,24 @@ const opslag = {
 // ===== De data van de app =====
 // workouts: [{ id, datum: "2026-06-11", oefening, gewicht, sets, reps }]
 // cardio:   [{ id, datum, type, minuten, km, rondes? }]  rondes = [{ seconden, aantal }]
-// schema:   { ma: "tekst", di: "", ... }
 // weekdoel: getal (actieve dagen per week)
 
 let workouts = opslag.laad("workouts", []);
 let cardio = opslag.laad("cardio", []);
-let schema = opslag.laad("schema", { ma: "", di: "", wo: "", do: "", vr: "", za: "", zo: "" });
+// schema (weekplanning): { ma: [ { id, sport, minuten, tijd, notitie } ], di: [...], ... }
+// Vroeger was elke dag één stukje tekst; normaliseerSchema zet dat om.
+const WEEKDAGEN = ["ma", "di", "wo", "do", "vr", "za", "zo"];
+function normaliseerSchema(s) {
+  const nieuw = {};
+  WEEKDAGEN.forEach((dag, i) => {
+    const waarde = s && s[dag];
+    if (Array.isArray(waarde)) nieuw[dag] = waarde;
+    else if (typeof waarde === "string" && waarde.trim()) nieuw[dag] = [{ id: i + 1, sport: "Anders", minuten: null, tijd: "", notitie: waarde.trim() }];
+    else nieuw[dag] = [];
+  });
+  return nieuw;
+}
+let schema = normaliseerSchema(opslag.laad("schema", null));
 let weekdoel = opslag.laad("weekdoel", 3);
 
 // profiel:   { naam, doel, niveau, lengte, geboortejaar, gewichtVolgen }
@@ -40,7 +52,7 @@ let gewichten = opslag.laad("gewichten", []);
 function herlaadData() {
   workouts = opslag.laad("workouts", []);
   cardio = opslag.laad("cardio", []);
-  schema = opslag.laad("schema", { ma: "", di: "", wo: "", do: "", vr: "", za: "", zo: "" });
+  schema = normaliseerSchema(opslag.laad("schema", null));
   weekdoel = opslag.laad("weekdoel", 3);
   profiel = opslag.laad("profiel", { naam: "", doel: "", niveau: "", lengte: null, geboortejaar: null, gewichtVolgen: false });
   gewichten = opslag.laad("gewichten", []);

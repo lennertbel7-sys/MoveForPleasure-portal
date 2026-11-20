@@ -59,6 +59,7 @@ async function start() {
   toonScherm("beheer");
   resetFormulier();
   laadCijfers();
+  if (typeof startAdminChat === "function") startAdminChat();
   await laadBerichten();
 }
 

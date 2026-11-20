@@ -118,8 +118,9 @@
       <div id="vandaag-bericht"></div>
 
       <div class="kaart">
+        <div id="vandaag-doel" class="vandaag-doel"></div>
         <h3>Vandaag op je planning</h3>
-        <p id="vandaag-schema" class="gedempt"></p>
+        <div id="vandaag-schema"></div>
         <div class="snel-knoppen">
           <button class="snel-knop" data-naar="workout">🏋️ Workout</button>
           <button class="snel-knop" data-naar="cardio">🚶 Beweging</button>
@@ -207,20 +208,57 @@
 
     <!-- ===== Tab: Schema ===== -->
     <section id="tab-schema" class="tab verborgen">
-      <h2>Mijn weekplanning</h2>
-      <p class="gedempt">Plan per dag waar je zin in hebt, bijvoorbeeld "wandelen met de hond" of "padel met vrienden". Je ziet het terug op het Vandaag-scherm. Lege dag = rustdag, ook goed!</p>
-      <form id="schema-formulier" class="kaart">
-        <!-- De 7 dag-velden worden hier door JavaScript ingevuld -->
-        <div id="schema-velden"></div>
-        <button type="submit">Planning opslaan</button>
-      </form>
+      <!-- ===== Mijn doel (planning.js) ===== -->
+      <div class="kaart doel-kaart">
+        <h3>🎯 Mijn doel</h3>
+        <p class="gedempt">Waarom wil jij bewegen? Kies wat het best bij je past.</p>
+        <div id="doel-tegels" class="doel-tegels" role="radiogroup" aria-label="Mijn doel"></div>
+
+        <label class="veld-label" for="doel-tekst">In je eigen woorden <span class="optioneel">(optioneel)</span></label>
+        <input type="text" id="doel-tekst" maxlength="100" placeholder="bv. 5 km lopen zonder stoppen, of elke dag even buiten">
+
+        <label class="veld-label" for="doel-datum">Tegen wanneer? <span class="optioneel">(optioneel)</span></label>
+        <input type="date" id="doel-datum">
+
+        <label class="veld-label">Hoeveel dagen per week wil je bewegen?</label>
+        <div id="weekdoel-keuze" class="weekdoel-keuze" role="radiogroup" aria-label="Beweegdagen per week"></div>
+        <p id="weekdoel-uitleg" class="gedempt klein-uitleg"></p>
+      </div>
+
+      <!-- ===== Weekplanning ===== -->
+      <div class="kaart-kop planning-kop">
+        <h2>📅 Mijn weekplanning</h2>
+        <button type="button" id="vul-week" class="knop-klein-app">✨ Stel mijn week voor</button>
+      </div>
+      <p id="planning-status" class="planning-status"></p>
+      <div id="planning-dagen" class="planning-dagen"></div>
+      <p class="gedempt klein-uitleg">Je planning herhaalt zich elke week. Lege dag = rustdag, ook goed! 😌</p>
     </section>
 
     <!-- ===== Tab: Berichten ===== -->
     <section id="tab-berichten" class="tab verborgen">
       <h2>Berichten</h2>
-      <p class="gedempt tab-intro">Tips, weetjes en een flinke dosis motivatie, speciaal voor jou. 🧡</p>
-      <div id="berichten-lijst"></div>
+      <!-- Wissel tussen nieuws van de admin en je eigen chat -->
+      <div class="account-wissel berichten-wissel" role="tablist">
+        <button type="button" id="wissel-nieuws" class="actief" role="tab">📣 Nieuws</button>
+        <button type="button" id="wissel-chat" role="tab">💬 Chat met ons <b id="chat-teller" class="teller-bolletje" hidden></b></button>
+      </div>
+
+      <div id="paneel-nieuws">
+        <p class="gedempt tab-intro">Tips, weetjes en een flinke dosis motivatie, speciaal voor jou. 🧡</p>
+        <div id="berichten-lijst"></div>
+      </div>
+
+      <!-- Chat met de admin (chat.js) -->
+      <div id="paneel-chat" class="kaart chat-kaart" hidden>
+        <p class="gedempt chat-intro">Vraag, idee of gewoon iets kwijt? Stuur ons een bericht. We lezen alles en antwoorden zo snel mogelijk. 🧡</p>
+        <div id="chat-lijst" class="chat-lijst" aria-live="polite"></div>
+        <form id="chat-formulier" class="chat-invoer">
+          <textarea id="chat-tekst" rows="1" maxlength="2000" placeholder="Typ je bericht…" required></textarea>
+          <button type="submit" aria-label="Versturen">➤</button>
+        </form>
+        <p id="chat-fout" class="chat-fout" hidden></p>
+      </div>
     </section>
 
     <!-- ===== Tab: Profiel (via de knop rechtsboven) ===== -->
@@ -383,7 +421,9 @@
   <script src="berichten.js"></script>
   <script src="profiel.js"></script>
   <script src="cardio.js"></script>
+  <script src="planning.js"></script>
   <script src="app.js"></script>
   <script src="account.js"></script>
+  <script src="chat.js"></script>
 </body>
 </html>

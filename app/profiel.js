@@ -286,6 +286,7 @@ document.getElementById("profiel-formulier").addEventListener("submit", (e) => {
   const lengte = parseInt(document.getElementById("p-lengte").value);
   const jaar = parseInt(document.getElementById("p-geboortejaar").value);
   bewaarProfiel({
+    ...profiel, // behoud o.a. je persoonlijke doel en doeldatum (Planning-tab)
     naam: document.getElementById("p-naam").value.trim(),
     doel: document.getElementById("p-doel").value,
     niveau: document.getElementById("p-niveau").value,

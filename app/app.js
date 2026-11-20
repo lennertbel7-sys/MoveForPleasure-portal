@@ -42,6 +42,7 @@ function vernieuwAlles() {
   vernieuwCardioLijst();
   vernieuwBerichten();
   vernieuwProfiel();
+  vernieuwPlanning();
 }
 
 // ===== Felicitaties =====
@@ -195,10 +196,8 @@ function vernieuwVandaag() {
   });
   document.getElementById("badges-telling").textContent = `${behaald.length}/${badges.length}`;
 
-  // Training van vandaag uit het weekschema
-  const planVandaag = schema[dagSleutel];
-  document.getElementById("vandaag-schema").textContent =
-    planVandaag ? planVandaag : "Nog niets gepland. Waar heb je zin in? Plan het via de Planning-tab, of doe gewoon iets spontaans! 🙂";
+  // Doel + wat er vandaag gepland staat (planning.js)
+  vernieuwPlanningVandaag();
 
   // Weekdoel
   const actief = actieveDagenDezeWeek();
@@ -326,34 +325,8 @@ function vernieuwCardioLijst() {
   });
 }
 
-// ===== Tab: Schema =====
-// De 7 invoervelden (ma t/m zo) één keer opbouwen.
-const schemaVelden = document.getElementById("schema-velden");
-["ma", "di", "wo", "do", "vr", "za", "zo"].forEach(dag => {
-  const div = document.createElement("div");
-  div.className = "schema-dag";
-  const label = document.createElement("label");
-  label.textContent = dagNamenVoluit[dag];
-  label.htmlFor = "schema-" + dag;
-  const veld = document.createElement("input");
-  veld.type = "text";
-  veld.id = "schema-" + dag;
-  veld.placeholder = "bv. benen + 20 min hardlopen (of leeg = rustdag)";
-  veld.maxLength = 80;
-  veld.value = schema[dag];
-  div.append(label, veld);
-  schemaVelden.appendChild(div);
-});
-
-document.getElementById("schema-formulier").addEventListener("submit", (e) => {
-  e.preventDefault();
-  const nieuwSchema = {};
-  ["ma", "di", "wo", "do", "vr", "za", "zo"].forEach(dag => {
-    nieuwSchema[dag] = document.getElementById("schema-" + dag).value.trim();
-  });
-  bewaarSchema(nieuwSchema);
-  toonTab("vandaag"); // terug naar het overzicht zodat je het resultaat ziet
-});
+// ===== Tab: Planning =====
+// Doel en weekplanning staan in planning.js
 
 // ===== PWA: service worker registreren =====
 // Hiermee kan de app op een telefoon "geïnstalleerd" worden.

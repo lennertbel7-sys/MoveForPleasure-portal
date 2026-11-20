@@ -105,8 +105,9 @@ function voegSamen(sleutel, lokaal, online) {
   }
   if (sleutel === "schema") {
     // per dag: lokaal ingevuld wint, anders wat online stond
-    const samen = { ...online };
-    Object.keys(lokaal).forEach(dag => { if (lokaal[dag]) samen[dag] = lokaal[dag]; });
+    const lok = normaliseerSchema(lokaal), onl = normaliseerSchema(online);
+    const samen = { ...onl };
+    Object.keys(lok).forEach(dag => { if (lok[dag].length) samen[dag] = lok[dag]; });
     return samen;
   }
   if (sleutel === "profiel") {
@@ -338,6 +339,10 @@ if (db) {
       return;
     }
     toonAccount();
+    // Chat starten of stoppen als de gebruiker verandert
+    if ((vorige && vorige.id) !== (gebruiker && gebruiker.id) && typeof chatGebruikerGewijzigd === "function") {
+      setTimeout(chatGebruikerGewijzigd, 0);
+    }
     // Pas synchroniseren nadat de callback klaar is (aanbeveling van Supabase)
     if (gebruiker && (!vorige || vorige.id !== gebruiker.id)) {
       setTimeout(async () => {

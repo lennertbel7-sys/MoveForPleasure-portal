@@ -44,6 +44,22 @@
     <section id="scherm-beheer" hidden>
       <!-- Kerncijfers: hoeveel mensen bewegen er mee? -->
       <div class="admin-cijfers" id="admin-cijfers"></div>
+
+      <!-- Chats met gebruikers (admin-chat.js) -->
+      <h2 class="lijst-kop">💬 Chats <span id="chats-ongelezen" class="chats-ongelezen" hidden></span></h2>
+      <div class="chat-beheer kaart">
+        <div id="gesprekken-lijst" class="gesprekken-lijst"></div>
+        <div class="gesprek">
+          <div id="gesprek-kop" class="gesprek-kop">Kies links een gesprek</div>
+          <div id="gesprek-berichten" class="gesprek-berichten"></div>
+          <form id="antwoord-formulier" class="antwoord-formulier" hidden>
+            <textarea id="antwoord-tekst" rows="2" maxlength="2000" required placeholder="Typ je antwoord… (Enter = versturen, Shift+Enter = nieuwe regel)"></textarea>
+            <button type="submit">Antwoorden</button>
+          </form>
+        </div>
+      </div>
+
+      <h2 class="lijst-kop">📣 Berichten voor iedereen</h2>
       <div class="admin-raster">
         <form id="bericht-formulier" class="kaart">
           <h2 id="formulier-titel">Nieuw bericht</h2>
@@ -95,5 +111,6 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="config.js"></script>
   <script src="admin.js"></script>
+  <script src="admin-chat.js"></script>
 </body>
 </html>

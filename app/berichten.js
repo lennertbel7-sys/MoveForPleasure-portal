@@ -86,7 +86,8 @@ function maakBerichtKaart(bericht, opties = {}) {
 }
 
 function vernieuwTeller() {
-  const aantal = ongelezenBerichten().length;
+  // nieuws + ongelezen chat-antwoorden (chat.js)
+  const aantal = ongelezenBerichten().length + (typeof chatOngelezen === "number" ? chatOngelezen : 0);
   const teller = document.getElementById("berichten-teller");
   teller.textContent = aantal > 9 ? "9+" : aantal;
   teller.hidden = aantal === 0;

@@ -78,3 +78,35 @@ body.admin { padding-bottom: 40px; }
 }
 .cijfer-tegel strong { font-size: 1.5rem; color: #ff7a3d; }
 .cijfer-tegel small { color: #a8919f; font-size: 0.8rem; text-align: center; }
+
+/* ===== Chats ===== */
+.chats-ongelezen { font-size: 0.8rem; background: #ff6b6b; color: #fff; padding: 2px 10px; border-radius: 10px; vertical-align: middle; margin-left: 6px; }
+.chat-beheer { display: grid; grid-template-columns: 280px 1fr; gap: 0; padding: 0; overflow: hidden; margin-bottom: 26px; min-height: 420px; }
+.gesprekken-lijst { border-right: 1px solid #402d4c; max-height: 520px; overflow-y: auto; }
+.gesprekken-lijst .leeg { padding: 20px 14px; color: #a8919f; font-size: 0.9rem; }
+.gesprek-item {
+  position: relative; display: grid; grid-template-columns: 1fr auto; gap: 2px 8px; width: 100%; text-align: left;
+  padding: 12px 14px; background: none; border: 0; border-bottom: 1px solid #402d4c; color: #eaeaea; font: inherit; cursor: pointer;
+}
+.gesprek-item:hover { background: rgba(255, 255, 255, 0.04); }
+.gesprek-item.actief { background: rgba(255, 122, 61, 0.12); }
+.gesprek-item strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.gesprek-item.ongelezen strong { color: #ff7a3d; }
+.gesprek-tijd { font-size: 0.75rem; color: #a8919f; }
+.gesprek-voorbeeld { grid-column: 1 / -1; font-size: 0.85rem; color: #a8919f; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; padding-right: 26px; }
+.gesprek-badge { position: absolute; right: 14px; bottom: 12px; background: #ff6b6b; color: #fff; font-size: 0.7rem; border-radius: 9px; min-width: 18px; padding: 1px 5px; text-align: center; }
+.gesprek { display: flex; flex-direction: column; min-width: 0; }
+.gesprek-kop { padding: 12px 16px; border-bottom: 1px solid #402d4c; font-weight: 600; color: #d9c6d2; }
+.gesprek-berichten { flex: 1; display: flex; flex-direction: column; gap: 6px; padding: 14px; overflow-y: auto; max-height: 420px; }
+.admin-bel { max-width: 75%; padding: 8px 12px 6px; border-radius: 14px; }
+.admin-bel p { white-space: pre-wrap; line-height: 1.4; }
+.admin-bel span { display: block; text-align: right; font-size: 0.7rem; opacity: 0.7; margin-top: 2px; }
+.admin-bel.van-gebruiker { align-self: flex-start; background: #3a2847; border: 1px solid #50395c; }
+.admin-bel.van-admin { align-self: flex-end; background: linear-gradient(135deg, #ff7a3d, #ff4f8b); color: #fff; }
+.antwoord-formulier { display: flex; gap: 8px; padding: 12px; border-top: 1px solid #402d4c; }
+.antwoord-formulier textarea { flex: 1; margin: 0; resize: vertical; }
+.antwoord-formulier button { width: auto !important; padding: 0 18px; }
+@media (max-width: 700px) {
+  .chat-beheer { grid-template-columns: 1fr; }
+  .gesprekken-lijst { border-right: 0; border-bottom: 1px solid #402d4c; max-height: 220px; }
+}
