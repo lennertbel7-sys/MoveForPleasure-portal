@@ -190,7 +190,15 @@ function stopChat() {
 
 // Wordt door account.js aangeroepen als je in- of uitlogt
 function chatGebruikerGewijzigd() {
-  if (gebruiker) startChat(); else stopChat();
+  if (gebruiker) {
+    startChat();
+    // Link uit de meldingsmail (.../app/#chat): meteen de chat openen
+    if (location.hash === "#chat") {
+      history.replaceState(null, "", location.pathname);
+      toonTab("berichten");
+      toonChatPaneel(true);
+    }
+  } else stopChat();
 }
 if (typeof gebruiker !== "undefined" && gebruiker) startChat();
 document.addEventListener("visibilitychange", () => {
