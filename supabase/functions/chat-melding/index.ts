@@ -49,9 +49,13 @@ function mailHtml(titel: string, intro: string, bericht: string, knopTekst: stri
 }
 
 async function stuurMail(aan: string[], onderwerp: string, html: string) {
-  const sleutel = Deno.env.get("RESEND_API_KEY");
+  const sleutel = Deno.env.get("RESEND_API_KEY")?.trim();
   if (!sleutel) {
-    console.log("Geen RESEND_API_KEY ingesteld: mail niet verstuurd naar", aan.length, "ontvanger(s)");
+    // Hulp bij instellen: toon welke geheimen met "resend" bestaan (alleen naam + lengte, nooit de waarde)
+    const gevonden = Object.entries(Deno.env.toObject())
+      .filter(([k]) => /resend/i.test(k))
+      .map(([k, v]) => `${JSON.stringify(k)} (lengte ${v.trim().length})`);
+    console.log("Geen RESEND_API_KEY ingesteld: mail niet verstuurd naar", aan.length, "ontvanger(s). Gevonden:", gevonden.join(", ") || "geen");
     return false;
   }
   const r = await fetch("https://api.resend.com/emails", {

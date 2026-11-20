@@ -12,7 +12,7 @@
 // altijd gewoon direct naar het internet.
 // ============================================================
 
-const CACHE_NAAM = "sportlog-v15";
+const CACHE_NAAM = "sportlog-v16";
 
 self.addEventListener("fetch", (gebeurtenis) => {
   const verzoek = gebeurtenis.request;

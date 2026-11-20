@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bevestig je account</title>
+</head>
+<body style="margin:0;padding:0;background:#f6f1f4;font-family:'Segoe UI',Arial,sans-serif;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f6f1f4;">
+    <tr>
+      <td align="center" style="padding:32px 14px;">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:520px;">
+          <!-- Logo -->
+          <tr>
+            <td align="center" style="padding-bottom:18px;">
+              <img src="https://moveforpleasure.be/logo/icon-192.png" width="72" height="72" alt="MoveForPleasure" style="display:block;border-radius:18px;">
+            </td>
+          </tr>
+          <!-- Kaart -->
+          <tr>
+            <td style="background:#23152f;border-radius:20px;padding:34px 28px;color:#eaeaea;">
+              <p style="margin:0 0 6px;font-size:14px;font-weight:700;letter-spacing:0.5px;color:#ff7a3d;">MOVEFORPLEASURE</p>
+              <h1 style="margin:0 0 14px;font-size:26px;line-height:1.25;color:#ffffff;">Welkom! Fijn dat je erbij bent 🧡</h1>
+              <p style="margin:0 0 22px;font-size:16px;line-height:1.6;color:#d9c6d2;">
+                Nog één klik en je kan beginnen. Bevestig je e-mailadres, dan staat je account klaar
+                en wordt alles wat je bijhoudt veilig bewaard.
+              </p>
+              <table role="presentation" cellpadding="0" cellspacing="0">
+                <tr>
+                  <td style="border-radius:12px;background:#ff7a3d;background-image:linear-gradient(135deg,#ff7a3d,#ff4f8b);">
+                    <a href="{{ .ConfirmationURL }}" style="display:inline-block;padding:15px 30px;font-size:17px;font-weight:700;color:#ffffff;text-decoration:none;border-radius:12px;">Bevestig mijn account</a>
+                  </td>
+                </tr>
+              </table>
+              <p style="margin:26px 0 8px;font-size:15px;font-weight:700;color:#ffffff;">Wat je kan verwachten:</p>
+              <p style="margin:0;font-size:15px;line-height:1.8;color:#d9c6d2;">
+                🎯 Een doel en weekplanning die bij jouw leven passen<br>
+                🔥 Streaks, badges en weekchallenges die je motiveren<br>
+                💬 Een vraag? Chat gewoon met ons in de app
+              </p>
+              <p style="margin:24px 0 0;font-size:15px;line-height:1.6;color:#d9c6d2;">
+                Beweeg niet omdat het moet. Maar omdat het goed voelt.<br>
+                <strong style="color:#ffb02e;">Team MoveForPleasure</strong>
+              </p>
+            </td>
+          </tr>
+          <!-- Voettekst -->
+          <tr>
+            <td style="padding:18px 10px 0;text-align:center;font-size:12px;line-height:1.6;color:#8a7a85;">
+              Werkt de knop niet? Kopieer deze link in je browser:<br>
+              <a href="{{ .ConfirmationURL }}" style="color:#c2410c;word-break:break-all;">{{ .ConfirmationURL }}</a><br><br>
+              Heb jij je niet aangemeld bij MoveForPleasure? Dan mag je deze mail gewoon negeren.<br>
+              <a href="https://moveforpleasure.be" style="color:#8a7a85;">moveforpleasure.be</a> ·
+              <a href="https://moveforpleasure.be/privacy.html" style="color:#8a7a85;">Privacy</a>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
