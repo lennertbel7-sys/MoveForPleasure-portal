@@ -185,7 +185,7 @@ nav {
 .motivatie-kaart h2 { font-size: 1.45rem; margin-bottom: 6px; }
 .aanmoediging { color: #ead9e3; line-height: 1.5; margin-bottom: 16px; }
 
-.cijfers { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 16px; }
+.cijfers { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 16px; }
 .cijfer { background: rgba(0, 0, 0, 0.22); border-radius: 12px; padding: 10px 6px; text-align: center; }
 .cijfer strong {
   display: block; font-size: 1.6rem; line-height: 1.1;
@@ -725,3 +725,6 @@ body.welkom-open { overflow: hidden; }
 .beweeg-details summary::-webkit-details-marker { display: none; }
 .beweeg-details summary span { color: #a8919f; font-weight: 400; }
 .beweeg-details[open] summary { margin-bottom: 4px; }
+
+/* De ring is een knop (naar Planning), maar ziet er niet zo uit */
+button.ring { background: none; border: 0; padding: 0; cursor: pointer; color: inherit; font: inherit; }

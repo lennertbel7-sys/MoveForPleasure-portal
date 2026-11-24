@@ -281,3 +281,25 @@ function bewerk(b) {
 }
 
 start();
+
+// ===== Zondagmail: voorbeeld naar jezelf =====
+// De functie controleert zelf of je admin bent, en stuurt dan alleen naar JOUW e-mailadres,
+// met je eigen beweegweek. Dit telt niet als de echte zondagmail.
+$("weekmail-voorbeeld").addEventListener("click", async () => {
+  const melding = $("weekmail-melding");
+  melding.className = "melding";
+  melding.textContent = "Bezig…";
+  const { data } = await db.auth.getSession();
+  try {
+    const r = await fetch(`${SUPABASE_URL}/functions/v1/weekmail`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", apikey: SUPABASE_KEY, Authorization: `Bearer ${data.session?.access_token ?? ""}` },
+      body: JSON.stringify({ voorbeeld: true })
+    });
+    melding.textContent = (r.ok ? "✓ " : "") + await r.text();
+    if (!r.ok) melding.className = "melding fout";
+  } catch (fout) {
+    melding.textContent = "Niet gelukt: " + fout.message;
+    melding.className = "melding fout";
+  }
+});

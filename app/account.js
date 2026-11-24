@@ -219,8 +219,8 @@ function toonAccount() {
   document.body.classList.toggle("welkom-open", !el("welkom-scherm").hidden);
   if (ingelogd) el("account-wie").textContent = gebruiker.email;
   el("privacy-zin").textContent = ingelogd
-    ? "🔒 Je gegevens worden veilig bewaard in de EU. Alleen jij kunt ze zien."
-    : "🔒 Je gegevens blijven op dit toestel. Niemand anders kan ze zien.";
+    ? "🔒 Veilig bewaard in de EU. Je trainingen zijn privé: wij zien alleen je naam, e-mail en hoe vaak je bewoog, om je te kunnen helpen."
+    : "🔒 Je gegevens blijven op dit toestel.";
   toonSyncStatus();
 }
 

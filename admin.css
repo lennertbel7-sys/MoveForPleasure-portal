@@ -132,3 +132,9 @@ body.admin { padding-bottom: 40px; }
 /* Knop "willekeurig weetje" */
 .weetje-knop { width: 100%; margin-bottom: 4px; }
 .weetje-uitleg { font-size: 0.8rem; color: #a8919f; margin-bottom: 12px; }
+
+/* Zondagmail-kaart */
+.weekmail-kaart { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; justify-content: space-between; margin: 16px 0; }
+.weekmail-kaart > div { flex: 1 1 260px; }
+.weekmail-kaart .weetje-uitleg { margin: 4px 0 0; }
+.weekmail-kaart .melding { flex-basis: 100%; margin: 0; }

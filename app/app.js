@@ -173,7 +173,6 @@ function vernieuwVandaag() {
   // Groet, aanmoediging en de drie cijfers
   document.getElementById("groet").textContent = groet() + (profiel.naam ? `, ${profiel.naam}` : "") + "! 👋";
   document.getElementById("aanmoediging").textContent = aanmoediging();
-  document.getElementById("cijfer-streak").textContent = berekenStreak();
   document.getElementById("cijfer-weekreeks").textContent = berekenWeekreeks();
   document.getElementById("cijfer-totaal").textContent = workouts.length + cardio.length;
 
@@ -229,16 +228,6 @@ function vernieuwVandaag() {
   // Doel + wat er vandaag gepland staat (planning.js)
   vernieuwPlanningVandaag();
 
-  // Weekdoel
-  const actief = actieveDagenDezeWeek();
-  document.getElementById("weekdoel-tekst").textContent =
-    actief >= weekdoel
-      ? `Challenge gehaald: ${actief} van ${weekdoel} beweegdagen! 🎉`
-      : `${actief} van ${weekdoel} beweegdagen deze week`;
-  document.getElementById("weekdoel-balk").style.width =
-    Math.min(100, (actief / weekdoel) * 100) + "%";
-  document.getElementById("weekdoel-invoer").value = weekdoel;
-
   // Recente activiteit: workouts en cardio samen, nieuwste eerst
   const alles = [
     ...workouts.map(w => ({ datum: w.datum, id: w.id, tekst: krachtTekst(w) })),
@@ -263,14 +252,8 @@ function vernieuwVandaag() {
   });
 }
 
-// Weekdoel aanpassen
-document.getElementById("weekdoel-invoer").addEventListener("change", (e) => {
-  const doel = parseInt(e.target.value);
-  if (doel >= 1 && doel <= 7) {
-    bewaarWeekdoel(doel);
-    vernieuwAlles();
-  }
-});
+// Tik op de ring: naar Planning, waar je je weekdoel kiest
+document.getElementById("ring").addEventListener("click", () => toonTab("schema"));
 
 // Kop boven wat er op de gekozen dag gelogd is (kracht + cardio samen)
 function vernieuwDagKop() {
@@ -334,6 +317,8 @@ if ("serviceWorker" in navigator) {
 
 // ===== Start =====
 vernieuwAlles();
+// Link uit de zondagmail (.../app/#profiel): meteen je profiel openen
+if (location.hash === "#profiel") toonTab("profiel");
 haalBerichtenOp();
 
 // Nieuwe berichten ophalen als je de app weer opent of weer online bent

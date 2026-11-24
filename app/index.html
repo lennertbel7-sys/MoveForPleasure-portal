@@ -8,7 +8,7 @@
   <link rel="manifest" href="manifest.json">
   <link rel="icon" href="../icon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="../apple-touch-icon.png">
-  <link rel="stylesheet" href="style.css?v=23">
+  <link rel="stylesheet" href="style.css?v=24">
 </head>
 <body>
   <!-- ===== Welkomstscherm: eerst (gratis) account maken of inloggen (account.js) ===== -->
@@ -37,7 +37,7 @@
       <ul class="welkom-punten">
         <li>✅ Gratis beginnen, geen betaalgegevens nodig</li>
         <li>☁️ Je beweging veilig bewaard, op al je toestellen</li>
-        <li>🔒 Alleen jij ziet je gegevens. <a href="../privacy.html">Privacy</a></li>
+        <li>🔒 Je trainingen zijn privé, we verkopen nooit iets door. <a href="../privacy.html">Privacy</a></li>
       </ul>
     </div>
   </div>
@@ -69,7 +69,8 @@
           </div>
 
           <!-- Weekdoel-ring -->
-          <div id="ring" class="ring" role="img" aria-label="Voortgang weekdoel">
+          <!-- Tik op de ring om je weekdoel aan te passen (Planning) -->
+          <button type="button" id="ring" class="ring" aria-label="Voortgang weekchallenge, tik om je weekdoel aan te passen">
             <svg viewBox="0 0 84 84">
               <defs>
                 <linearGradient id="ring-verloop" x1="0" y1="0" x2="1" y2="1">
@@ -82,9 +83,9 @@
             </svg>
             <div class="ring-midden">
               <strong id="ring-tekst">0/3</strong>
-              <small>challenge</small>
+              <small>deze week</small>
             </div>
-          </div>
+          </button>
         </div>
 
         <!-- Level en XP -->
@@ -100,10 +101,6 @@
           <div class="cijfer">
             <strong id="cijfer-weekreeks">0</strong>
             <span>📈 weken op rij je doel</span>
-          </div>
-          <div class="cijfer">
-            <strong id="cijfer-streak">0</strong>
-            <span>🔥 dagen op rij</span>
           </div>
           <div class="cijfer">
             <strong id="cijfer-totaal">0</strong>
@@ -127,14 +124,6 @@
         </div>
       </div>
 
-      <div class="kaart">
-        <h3>Jouw weekchallenge</h3>
-        <p id="weekdoel-tekst" class="gedempt"></p>
-        <div class="balk"><div id="weekdoel-balk" class="balk-vulling"></div></div>
-        <label class="doel-instelling">
-          Doel: <input type="number" id="weekdoel-invoer" min="1" max="7"> beweegdagen per week
-        </label>
-      </div>
 
 
       <div class="kaart">
@@ -342,6 +331,15 @@
             <span id="sync-status" class="sync-status"></span>
           </div>
           <p class="gedempt">Ingelogd als <strong id="account-wie"></strong></p>
+          <!-- Zondagmail aan/uit (supabase/functions/weekmail) -->
+          <label class="schakel-rij" for="p-zondagmail">
+            <span class="schakel-tekst">
+              <strong>📬 Zondagmail</strong>
+              <small>Elke zondagavond een kort overzicht van je beweegweek in je mailbox.</small>
+            </span>
+            <input type="checkbox" id="p-zondagmail" class="schakel-invoer" role="switch">
+            <span class="schakel-knop" aria-hidden="true"></span>
+          </label>
           <div class="account-knoppen">
             <button type="button" id="account-uitloggen" class="knop-rand-app">Uitloggen</button>
             <button type="button" id="account-verwijder" class="link-knop gevaar">Account verwijderen</button>
@@ -395,7 +393,7 @@
         </label>
 
         <button type="submit">Gegevens opslaan</button>
-        <p id="privacy-zin" class="gedempt klein-tekst">🔒 Je gegevens blijven op dit toestel. Niemand anders kan ze zien.</p>
+        <p id="privacy-zin" class="gedempt klein-tekst">🔒 Je gegevens blijven op dit toestel.</p>
       </form>
 
       <!-- Back-up -->
@@ -428,22 +426,22 @@
     <button class="nav-knop" data-tab="vooruitgang">📈<span>Vooruitgang</span></button>
   </nav>
 
-  <!-- ?v=23 achter onze eigen bestanden: verhoog dit getal bij elke update
+  <!-- ?v=24 achter onze eigen bestanden: verhoog dit getal bij elke update
        (samen met CACHE_NAAM in sw.js), zodat telefoons alles tegelijk vernieuwen. -->
-  <script src="../config.js?v=23"></script>
+  <script src="../config.js?v=24"></script>
   <!-- Supabase (inloggen + online opslag). Lukt dit niet (offline), dan werkt de app gewoon lokaal verder. -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="data.js?v=23"></script>
-  <script src="../weetjes.js?v=23"></script>
-  <script src="motivatie.js?v=23"></script>
-  <script src="berichten.js?v=23"></script>
-  <script src="profiel.js?v=23"></script>
-  <script src="cardio.js?v=23"></script>
-  <script src="planning.js?v=23"></script>
-  <script src="agenda.js?v=23"></script>
-  <script src="beweging.js?v=23"></script>
-  <script src="app.js?v=23"></script>
-  <script src="account.js?v=23"></script>
-  <script src="chat.js?v=23"></script>
+  <script src="data.js?v=24"></script>
+  <script src="../weetjes.js?v=24"></script>
+  <script src="motivatie.js?v=24"></script>
+  <script src="berichten.js?v=24"></script>
+  <script src="profiel.js?v=24"></script>
+  <script src="cardio.js?v=24"></script>
+  <script src="planning.js?v=24"></script>
+  <script src="agenda.js?v=24"></script>
+  <script src="beweging.js?v=24"></script>
+  <script src="app.js?v=24"></script>
+  <script src="account.js?v=24"></script>
+  <script src="chat.js?v=24"></script>
 </body>
 </html>

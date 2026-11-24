@@ -253,8 +253,9 @@ function aanmoediging() {
   if (nogNodig === 0) {
     return "Je weekchallenge heb je al gehaald. Vandaag rusten of nog even bewegen voor de fun? Allebei goed. 😌";
   }
-  if (streak >= 2) {
-    return `Al ${streak} dagen op rij in beweging! 🔥 Zin om er vandaag nog eentje bij te doen? Een wandelingetje telt ook.`;
+  const weken = berekenWeekreeks();
+  if (weken >= 2) {
+    return `Al ${weken} weken op rij je challenge gehaald! 📈 Nog ${nogNodig} ${dag(nogNodig)} deze week en je bouwt verder aan je ritme.`;
   }
   if (nogNodig > dagenOver) {
     return "Drukke week? Helemaal oké. Elke beweging telt, ook een kleine. Doe vandaag gewoon iets wat je leuk vindt.";

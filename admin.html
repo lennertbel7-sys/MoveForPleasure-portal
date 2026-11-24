@@ -45,6 +45,16 @@
       <!-- Kerncijfers: hoeveel mensen bewegen er mee? -->
       <div class="admin-cijfers" id="admin-cijfers"></div>
 
+      <!-- Zondagmail: zelf een voorbeeld ontvangen (supabase/functions/weekmail) -->
+      <div class="kaart weekmail-kaart">
+        <div>
+          <strong>📬 Zondagmail</strong>
+          <p class="weetje-uitleg">Elke zondag om 18u krijgen leden automatisch een overzicht van hun beweegweek (tenzij ze het uitzetten in hun profiel).</p>
+        </div>
+        <button type="button" id="weekmail-voorbeeld" class="knop-rand">📧 Stuur mij een voorbeeld</button>
+        <p id="weekmail-melding" class="melding"></p>
+      </div>
+
       <!-- Chats met gebruikers (admin-chat.js) -->
       <h2 class="lijst-kop">💬 Chats <span id="chats-ongelezen" class="chats-ongelezen" hidden></span></h2>
       <div class="chat-beheer kaart">

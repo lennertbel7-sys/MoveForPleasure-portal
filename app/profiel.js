@@ -35,6 +35,7 @@ function initiaal() {
 
 // ===== Alles op het profielscherm tekenen =====
 function vernieuwProfiel() {
+  document.getElementById("p-zondagmail").checked = profiel.zondagmail !== false;
   document.getElementById("profiel-knop").textContent = initiaal();
   document.getElementById("profiel-avatar").textContent = initiaal();
   document.getElementById("profiel-naam").textContent = profiel.naam || "Mijn profiel";
@@ -255,6 +256,14 @@ function vulProfielFormulier() {
   document.getElementById("p-geboortejaar").value = profiel.geboortejaar || "";
   document.getElementById("p-gewicht").checked = Boolean(profiel.gewichtVolgen);
 }
+
+// ===== Schakelaar "Zondagmail" =====
+// Standaard aan; uitzetten wordt meteen bewaard (en online gezet).
+const zondagmailSchakelaar = document.getElementById("p-zondagmail");
+zondagmailSchakelaar.addEventListener("change", () => {
+  bewaarProfiel({ ...profiel, zondagmail: zondagmailSchakelaar.checked });
+  toonToast(zondagmailSchakelaar.checked ? "📬 Je krijgt elke zondag je beweegweek" : "Zondagmail staat uit");
+});
 
 // ===== Schakelaar "Gewicht bijhouden" =====
 // Wordt meteen bewaard, zodat je direct ziet wat er verandert.
