@@ -11,7 +11,8 @@
 // ============================================================
 
 // Voor wie nog niets logde: een paar ideeën om mee te beginnen
-const standaardBewegingen = ["Wandelen", "Fietsen", "Hardlopen", "Zwemmen", "Krachttraining", "Yoga", "Dansen", "Padel"];
+const standaardBewegingen = ["Wandelen", "Fietsen", "Hardlopen", "Zwemmen", "Traplopen", "Touwspringen",
+  "Krachttraining", "Yoga", "Dansen", "Padel"];
 
 const beweegVelden = {
   minuten: document.getElementById("beweeg-minuten"),
@@ -71,10 +72,10 @@ function vernieuwBeweegKeuzes() {
     lijst.appendChild(o);
   });
 
-  // Knopjes: je 8 meest recente bewegingen (aangevuld met ideeën)
+  // Knopjes: je 10 meest recente bewegingen (aangevuld met ideeën)
   const chips = document.getElementById("beweeg-chips");
   chips.innerHTML = "";
-  [...eigen, ...extra].slice(0, 8).forEach(naam => {
+  [...eigen, ...extra].slice(0, 10).forEach(naam => {
     const knop = document.createElement("button");
     knop.type = "button";
     knop.className = "beweeg-chip";
