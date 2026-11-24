@@ -135,6 +135,15 @@ function vernieuwVoorbeeld() {
 ["b-titel", "b-tekst", "b-vastgepind", "b-moment"].forEach(id => $(id).addEventListener("input", vernieuwVoorbeeld));
 document.querySelectorAll("input[name=categorie]").forEach(r => r.addEventListener("change", vernieuwVoorbeeld));
 
+// 🎲 Willekeurig weetje: vult titel en tekst in, klik nog eens voor een ander
+$("weetje-knop").addEventListener("click", () => {
+  const w = willekeurigWeetje($("b-titel").value);
+  document.querySelector("input[name=categorie][value=weetje]").checked = true;
+  $("b-titel").value = w.titel;
+  $("b-tekst").value = w.tekst;
+  vernieuwVoorbeeld();
+});
+
 $("b-wanneer").addEventListener("change", () => {
   const later = $("b-wanneer").value === "later";
   $("b-moment").hidden = !later;

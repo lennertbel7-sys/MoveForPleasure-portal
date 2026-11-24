@@ -89,6 +89,9 @@
             <label><input type="radio" name="categorie" value="tip"><span>🎯 Tip</span></label>
             <label><input type="radio" name="categorie" value="nieuws"><span>📣 Nieuws</span></label>
           </div>
+          <!-- Vult een willekeurig weetje in (uit weetjes.js); klik nog eens voor een ander -->
+          <button type="button" id="weetje-knop" class="knop-rand weetje-knop">🎲 Willekeurig weetje invullen</button>
+          <p class="weetje-uitleg">Elke maandag verschijnt er ook automatisch een "Weetje van de week" in de app.</p>
 
           <label for="b-titel">Titel <span class="teller" id="titel-teller">0/120</span></label>
           <input type="text" id="b-titel" maxlength="120" required placeholder="Bijvoorbeeld: Geen zin? Doe 10 minuten.">
@@ -128,6 +131,7 @@
   <!-- Supabase-bibliotheek voor het inloggen -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="config.js"></script>
+  <script src="weetjes.js"></script>
   <script src="admin.js"></script>
   <script src="admin-chat.js"></script>
   <script src="admin-leden.js"></script>

@@ -37,12 +37,22 @@ async function haalBerichtenOp() {
   vernieuwBerichten();
 }
 
+// De berichten van de admin + automatisch het weetje van de week
+// (weetjes.js). Vastgepinde berichten blijven bovenaan, de rest op datum.
+function alleBerichten() {
+  const lijst = [...berichten];
+  if (typeof weetjeVanDeWeek === "function") lijst.push(weetjeVanDeWeek());
+  return lijst.sort((a, b) =>
+    (b.vastgepind ? 1 : 0) - (a.vastgepind ? 1 : 0) || b.gepubliceerd_op.localeCompare(a.gepubliceerd_op));
+}
+
 function ongelezenBerichten() {
-  return berichten.filter(b => !gelezenBerichten.includes(b.id));
+  return alleBerichten().filter(b => !gelezenBerichten.includes(b.id));
 }
 
 function markeerAllesGelezen() {
-  gelezenBerichten = berichten.map(b => b.id);
+  // Oude weetjes-van-de-week uit de lijst halen, zodat die niet eindeloos groeit
+  gelezenBerichten = alleBerichten().map(b => b.id);
   opslag.bewaar("berichten-gelezen", gelezenBerichten);
   vernieuwTeller();
 }
@@ -69,7 +79,7 @@ function maakBerichtKaart(bericht, opties = {}) {
   kop.className = "bericht-kop";
   const label = document.createElement("span");
   label.className = "bericht-label";
-  label.textContent = `${info.icoon} ${info.naam}`;
+  label.textContent = `${info.icoon} ${info.naam}${bericht.automatisch ? " van de week" : ""}`;
   const datum = document.createElement("span");
   datum.className = "bericht-datum";
   datum.textContent = (bericht.vastgepind ? "📌 " : "") + wanneer(bericht.gepubliceerd_op);
@@ -99,10 +109,11 @@ function vernieuwBerichten() {
   // De lijst in de Berichten-tab
   const lijst = document.getElementById("berichten-lijst");
   lijst.innerHTML = "";
-  if (berichten.length === 0) {
+  const alle = alleBerichten();
+  if (alle.length === 0) {
     lijst.innerHTML = `<p class="gedempt leeg">Nog geen berichten. Kom snel terug voor tips en motivatie!</p>`;
   } else {
-    berichten.forEach(b => lijst.appendChild(maakBerichtKaart(b, { ongelezen: !gelezenBerichten.includes(b.id) })));
+    alle.forEach(b => lijst.appendChild(maakBerichtKaart(b, { ongelezen: !gelezenBerichten.includes(b.id) })));
   }
 
   // Op het Vandaag-scherm: nieuwste ongelezen bericht, anders de spreuk van de dag
