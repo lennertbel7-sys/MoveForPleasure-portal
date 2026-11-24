@@ -27,6 +27,9 @@ const opslag = {
 
 let workouts = opslag.laad("workouts", []);
 let cardio = opslag.laad("cardio", []);
+// Oudere data kan in "log-volgorde" staan: zet alles op datum
+workouts.sort((a, b) => b.datum.localeCompare(a.datum) || b.id - a.id);
+cardio.sort((a, b) => b.datum.localeCompare(a.datum) || b.id - a.id);
 // schema (weekplanning): { ma: [ { id, sport, minuten, tijd, notitie } ], di: [...], ... }
 // Vroeger was elke dag één stukje tekst; normaliseerSchema zet dat om.
 const WEEKDAGEN = ["ma", "di", "wo", "do", "vr", "za", "zo"];
@@ -50,8 +53,8 @@ let gewichten = opslag.laad("gewichten", []);
 
 // Opnieuw inlezen (nadat de online opslag nieuwere data binnenhaalde)
 function herlaadData() {
-  workouts = opslag.laad("workouts", []);
-  cardio = opslag.laad("cardio", []);
+  workouts = sorteerNieuwsteEerst(opslag.laad("workouts", []));
+  cardio = sorteerNieuwsteEerst(opslag.laad("cardio", []));
   schema = normaliseerSchema(opslag.laad("schema", null));
   weekdoel = opslag.laad("weekdoel", 3);
   profiel = opslag.laad("profiel", { naam: "", doel: "", niveau: "", lengte: null, geboortejaar: null, gewichtVolgen: false });
@@ -119,8 +122,16 @@ function actieveDagenDezeWeek() {
 // ===== Acties die data wijzigen =====
 // Elk item krijgt een uniek id, zodat we het later kunnen verwijderen.
 
-function logWorkout(oefening, gewicht, sets, reps) {
-  workouts.unshift({ id: Date.now(), datum: vandaagTekst(), oefening, gewicht, sets, reps });
+// Nieuwste eerst, op datum (zo kan je ook iets van vorige week toevoegen
+// en blijft de volgorde kloppen voor records en lijsten).
+function sorteerNieuwsteEerst(lijst) {
+  return lijst.sort((a, b) => b.datum.localeCompare(a.datum) || b.id - a.id);
+}
+
+// datum is optioneel: zonder datum wordt het vandaag
+function logWorkout(oefening, gewicht, sets, reps, datum = vandaagTekst()) {
+  workouts.unshift({ id: Date.now(), datum, oefening, gewicht, sets, reps });
+  sorteerNieuwsteEerst(workouts);
   opslag.bewaar("workouts", workouts);
 }
 
@@ -130,10 +141,11 @@ function verwijderWorkout(id) {
 }
 
 // rondes is optioneel: [{ seconden, aantal }]
-function logCardio(type, minuten, km, rondes = []) {
-  const item = { id: Date.now(), datum: vandaagTekst(), type, minuten, km };
+function logCardio(type, minuten, km, rondes = [], datum = vandaagTekst()) {
+  const item = { id: Date.now(), datum, type, minuten, km };
   if (rondes.length) item.rondes = rondes;
   cardio.unshift(item);
+  sorteerNieuwsteEerst(cardio);
   opslag.bewaar("cardio", cardio);
 }
 

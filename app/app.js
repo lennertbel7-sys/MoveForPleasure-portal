@@ -43,6 +43,7 @@ function vernieuwAlles() {
   vernieuwBerichten();
   vernieuwProfiel();
   vernieuwPlanning();
+  vernieuwAgendas();
 }
 
 // ===== Felicitaties =====
@@ -251,17 +252,24 @@ document.getElementById("workout-formulier").addEventListener("submit", (e) => {
   const reps = parseInt(document.getElementById("workout-reps").value);
   if (!oefening || !sets || !reps) return;
   const voor = statusVoorLog();
-  const record = isNieuwRecord(oefening, gewicht); // vóór het opslaan checken!
-  logWorkout(oefening, gewicht, sets, reps);
+  const record = isNieuwRecord(oefening, gewicht, gekozenDatum); // vóór het opslaan checken!
+  logWorkout(oefening, gewicht, sets, reps, gekozenDatum);
   e.target.reset();
   vernieuwAlles();
   vierResultaat(voor, record, oefening);
 });
 
+// Kop + lege melding boven de lijst van de gekozen dag
+function dagLijstKop(id, aantal, leeg) {
+  document.getElementById(id).textContent = `${datumKop(gekozenDatum)} · ${aantal ? aantal + " gelogd" : leeg}`;
+}
+
 function vernieuwWorkoutLijst() {
   const lijst = document.getElementById("workout-lijst");
   lijst.innerHTML = "";
-  workouts.slice(0, 20).forEach(w => {
+  const opDag = workouts.filter(w => w.datum === gekozenDatum);
+  dagLijstKop("workout-dag-kop", opDag.length, "nog niets gelogd");
+  opDag.forEach(w => {
     const li = document.createElement("li");
     const tekst = document.createElement("span");
     tekst.textContent = `${w.oefening} — ${w.sets}×${w.reps}${w.gewicht ? " @ " + w.gewicht + " kg" : ""}`;
@@ -298,7 +306,7 @@ document.getElementById("cardio-formulier").addEventListener("submit", (e) => {
   fout.textContent = "";
 
   const voor = statusVoorLog();
-  logCardio(type, minuten, km, rondes);
+  logCardio(type, minuten, km, rondes, gekozenDatum);
   e.target.reset();
   sluitRondes();
   pasTypeAan();
@@ -309,7 +317,9 @@ document.getElementById("cardio-formulier").addEventListener("submit", (e) => {
 function vernieuwCardioLijst() {
   const lijst = document.getElementById("cardio-lijst");
   lijst.innerHTML = "";
-  cardio.slice(0, 20).forEach(c => {
+  const opDag = cardio.filter(c => c.datum === gekozenDatum);
+  dagLijstKop("cardio-dag-kop", opDag.length, "nog niets gelogd");
+  opDag.forEach(c => {
     const li = document.createElement("li");
     const tekst = document.createElement("span");
     tekst.textContent = cardioTekst(c);

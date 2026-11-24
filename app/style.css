@@ -663,3 +663,38 @@ body.welkom-open { overflow: hidden; }
 .chat-venster .chat-leeg { padding: 0 24px; text-align: center; }
 .chat-venster .chat-fout { margin: 0; padding: 8px 14px; background: rgba(255, 176, 46, 0.1); }
 .chat-venster .chat-invoer { padding: 10px; border-top: 1px solid #402d4c; background: #2b1d37; }
+
+/* ===== Agenda: dag kiezen om te loggen (agenda.js) ===== */
+.agenda { padding: 12px; }
+.agenda-kop { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+.agenda-kop strong { text-transform: capitalize; }
+.agenda-pijl {
+  background: #36263f; border: 1px solid #402d4c; color: #eaeaea;
+  width: 36px; height: 36px; border-radius: 10px; font-size: 1.3rem; cursor: pointer;
+}
+.agenda-pijl:disabled { opacity: 0.3; cursor: default; }
+.agenda-raster { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+.agenda-dagnaam { text-align: center; font-size: 0.75rem; color: #a8919f; padding-bottom: 2px; }
+.agenda-dag {
+  aspect-ratio: 1 / 1; max-height: 48px; width: 100%;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
+  background: #36263f; border: 1px solid transparent; border-radius: 10px;
+  color: #eaeaea; font-size: 0.9rem; font-family: inherit; cursor: pointer;
+}
+.agenda-dag:hover:not(:disabled) { border-color: #ff7a3d; }
+.agenda-dag:disabled { background: transparent; color: #5c4868; cursor: default; }
+.agenda-dag.vandaag { border-color: #ffd23f; }
+.agenda-dag.gekozen { background: linear-gradient(135deg, #ff7a3d, #ff4f8b); color: #23152f; font-weight: 700; }
+.stipjes { display: flex; gap: 3px; height: 6px; }
+.stip { width: 6px; height: 6px; border-radius: 50%; display: block; }
+.stip.kracht { background: #ff7a3d; }
+.stip.beweging { background: #ff4f8b; }
+.agenda-dag.gekozen .stip { background: #23152f; }
+.agenda-vandaag {
+  display: block; margin: 10px auto 0; background: none; border: none;
+  color: #ffd23f; font-size: 0.85rem; cursor: pointer; font-family: inherit;
+}
+.log-datum { font-size: 0.85rem; color: #a8919f; margin-bottom: 8px; }
+.log-datum.verleden { color: #ffd23f; font-weight: 600; }
+.log-datum.verleden::before { content: "📅 "; }
+.dag-kop { font-size: 0.95rem; color: #a8919f; margin: 4px 0 8px; }

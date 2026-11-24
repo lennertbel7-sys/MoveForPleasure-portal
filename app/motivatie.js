@@ -86,9 +86,10 @@ function zelfdeOefening(a, b) {
 
 // Zou dit gewicht een nieuw record zijn? (Alleen als je de oefening al
 // eerder deed: de eerste keer is per definitie geen "verbetering".)
-function isNieuwRecord(oefening, gewicht) {
+// datum: de dag waarop je logt (telt alleen wat je vóór/op die dag deed)
+function isNieuwRecord(oefening, gewicht, datum = vandaagTekst()) {
   if (!gewicht) return false;
-  const eerder = workouts.filter(w => zelfdeOefening(w.oefening, oefening) && w.gewicht);
+  const eerder = workouts.filter(w => zelfdeOefening(w.oefening, oefening) && w.gewicht && w.datum <= datum);
   if (eerder.length === 0) return false;
   return gewicht > Math.max(...eerder.map(w => w.gewicht));
 }
