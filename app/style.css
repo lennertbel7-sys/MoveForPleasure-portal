@@ -701,3 +701,16 @@ body.welkom-open { overflow: hidden; }
 
 /* "Vorige keer"-hint bij het loggen */
 .vorige-keer { font-size: 0.85rem; color: #ffd23f; margin: -2px 0 10px; line-height: 1.4; }
+
+/* ===== Belletje (berichten) rechtsboven ===== */
+.kop-knop {
+  position: relative; width: 36px; height: 36px; border-radius: 50%; cursor: pointer;
+  background: #36263f; border: 2px solid transparent; font-size: 1.05rem;
+  display: grid; place-items: center; color: inherit;
+}
+.kop-knop.actief { border-color: #ffd23f; box-shadow: 0 0 0 3px rgba(255, 210, 63, 0.25); }
+.kop-knop .teller-bolletje { top: -5px; right: -6px; }
+
+/* ===== Kracht / cardio kiezen in de tab Bewegen ===== */
+.soort-wissel { margin-bottom: 14px; }
+.soort-wissel button { font-size: 0.95rem; padding: 10px; }

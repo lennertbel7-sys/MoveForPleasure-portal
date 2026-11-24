@@ -13,13 +13,23 @@ document.querySelectorAll(".nav-knop").forEach(knop => {
   knop.addEventListener("click", () => toonTab(knop.dataset.tab));
 });
 
+// Berichten zit achter het belletje rechtsboven
+document.getElementById("berichten-knop").addEventListener("click", () => toonTab("berichten"));
+
+// De app heeft 4 tabs. Kracht en cardio zitten samen in "Bewegen";
+// toonTab("workout") of toonTab("cardio") opent die tab met het juiste formulier.
 function toonTab(naam) {
+  if (naam === "workout" || naam === "cardio") {
+    kiesSoort(naam === "workout" ? "kracht" : "cardio");
+    naam = "bewegen";
+  }
   document.querySelectorAll(".tab").forEach(tab => tab.classList.add("verborgen"));
   document.getElementById("tab-" + naam).classList.remove("verborgen");
   document.querySelectorAll(".nav-knop").forEach(knop => {
     knop.classList.toggle("actief", knop.dataset.tab === naam);
   });
   document.getElementById("profiel-knop").classList.toggle("actief", naam === "profiel");
+  document.getElementById("berichten-knop").classList.toggle("actief", naam === "berichten");
   vernieuwAlles();
   window.scrollTo(0, 0);
   // Berichten-tab geopend: de nieuwe berichten zijn nog even gemarkeerd
@@ -280,10 +290,29 @@ document.getElementById("workout-formulier").addEventListener("submit", (e) => {
   vierResultaat(voor, record, oefening);
 });
 
-// Kop + lege melding boven de lijst van de gekozen dag
-function dagLijstKop(id, aantal, leeg) {
-  document.getElementById(id).textContent = `${datumKop(gekozenDatum)} · ${aantal ? aantal + " gelogd" : leeg}`;
+// Kop boven wat er op de gekozen dag gelogd is (kracht + cardio samen)
+function vernieuwDagKop() {
+  const aantal = workouts.filter(w => w.datum === gekozenDatum).length + cardio.filter(c => c.datum === gekozenDatum).length;
+  document.getElementById("dag-kop").textContent =
+    `${datumKop(gekozenDatum)} · ${aantal ? aantal + " gelogd" : "nog niets gelogd"}`;
 }
+
+// ===== Kracht of cardio? =====
+// We beginnen met wat je het laatst logde.
+let gekozenSoort = (cardio[0] && (!workouts[0] || cardio[0].datum + cardio[0].id > workouts[0].datum + workouts[0].id)) ? "cardio" : "kracht";
+
+function kiesSoort(soort) {
+  gekozenSoort = soort;
+  document.getElementById("workout-formulier").hidden = soort !== "kracht";
+  document.getElementById("cardio-formulier").hidden = soort !== "cardio";
+  document.getElementById("soort-kracht").classList.toggle("actief", soort === "kracht");
+  document.getElementById("soort-cardio").classList.toggle("actief", soort === "cardio");
+  document.getElementById("soort-kracht").setAttribute("aria-selected", soort === "kracht");
+  document.getElementById("soort-cardio").setAttribute("aria-selected", soort === "cardio");
+}
+document.getElementById("soort-kracht").addEventListener("click", () => kiesSoort("kracht"));
+document.getElementById("soort-cardio").addEventListener("click", () => kiesSoort("cardio"));
+kiesSoort(gekozenSoort);
 
 // ===== Sneller loggen: je vorige keer =====
 // Typ je een oefening die je al eens deed, dan vullen we je vorige
@@ -338,7 +367,7 @@ function vernieuwWorkoutLijst() {
   const lijst = document.getElementById("workout-lijst");
   lijst.innerHTML = "";
   const opDag = workouts.filter(w => w.datum === gekozenDatum);
-  dagLijstKop("workout-dag-kop", opDag.length, "nog niets gelogd");
+  vernieuwDagKop();
   opDag.forEach(w => {
     const li = document.createElement("li");
     const tekst = document.createElement("span");
@@ -389,7 +418,6 @@ function vernieuwCardioLijst() {
   const lijst = document.getElementById("cardio-lijst");
   lijst.innerHTML = "";
   const opDag = cardio.filter(c => c.datum === gekozenDatum);
-  dagLijstKop("cardio-dag-kop", opDag.length, "nog niets gelogd");
   opDag.forEach(c => {
     const li = document.createElement("li");
     const tekst = document.createElement("span");

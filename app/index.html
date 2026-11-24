@@ -46,6 +46,7 @@
     <h1 class="merk"><img src="../icon.svg" alt="" width="30" height="30">MoveForPleasure</h1>
     <div class="kop-rechts">
       <span id="streak-badge" class="streak-badge"></span>
+      <button id="berichten-knop" class="kop-knop" type="button" data-tab="berichten" aria-label="Berichten">🔔<b id="berichten-teller" class="teller-bolletje" hidden></b></button>
       <button id="profiel-knop" class="profiel-knop" type="button" aria-label="Mijn profiel">👤</button>
     </div>
   </header>
@@ -122,8 +123,8 @@
         <h3>Vandaag op je planning</h3>
         <div id="vandaag-schema"></div>
         <div class="snel-knoppen">
-          <button class="snel-knop" data-naar="workout">🏋️ Workout</button>
-          <button class="snel-knop" data-naar="cardio">🚶 Beweging</button>
+          <button class="snel-knop" data-naar="workout">🏋️ Kracht</button>
+          <button class="snel-knop" data-naar="cardio">🚶 Cardio &amp; sport</button>
         </div>
       </div>
 
@@ -136,13 +137,6 @@
         </label>
       </div>
 
-      <div class="kaart">
-        <div class="kaart-kop">
-          <h3>Jouw badges</h3>
-          <span id="badges-telling" class="gedempt"></span>
-        </div>
-        <div id="badges" class="badges"></div>
-      </div>
 
       <div class="kaart">
         <h3>Recent bewogen</h3>
@@ -150,11 +144,18 @@
       </div>
     </section>
 
-    <!-- ===== Tab: Workout ===== -->
-    <section id="tab-workout" class="tab verborgen">
-      <h2>Workout loggen</h2>
+    <!-- ===== Tab: Bewegen (kracht én cardio loggen) ===== -->
+    <section id="tab-bewegen" class="tab verborgen">
+      <h2>Bewegen loggen</h2>
       <!-- Agenda: kies de dag waarop je logt (agenda.js) -->
       <div class="kaart agenda" aria-label="Kies een dag"></div>
+
+      <!-- Wat heb je gedaan? Wisselt tussen de twee formulieren -->
+      <div class="account-wissel soort-wissel" role="tablist" aria-label="Soort beweging">
+        <button type="button" id="soort-kracht" role="tab">🏋️ Kracht</button>
+        <button type="button" id="soort-cardio" role="tab">🚶 Cardio &amp; sport</button>
+      </div>
+
       <form id="workout-formulier" class="kaart">
         <p class="log-datum"></p>
         <input type="text" id="workout-oefening" placeholder="Oefening, bv. squat" required maxlength="40" list="oefeningen-lijst" autocomplete="off">
@@ -168,15 +169,8 @@
         <p id="workout-vorige" class="vorige-keer" hidden></p>
         <button type="submit">Loggen</button>
       </form>
-      <h3 id="workout-dag-kop" class="dag-kop"></h3>
-      <ul id="workout-lijst" class="lijst"></ul>
-    </section>
 
-    <!-- ===== Tab: Cardio ===== -->
-    <section id="tab-cardio" class="tab verborgen">
-      <h2>Beweging bijhouden</h2>
-      <div class="kaart agenda" aria-label="Kies een dag"></div>
-      <form id="cardio-formulier" class="kaart">
+      <form id="cardio-formulier" class="kaart" hidden>
         <p class="log-datum"></p>
         <select id="cardio-type">
           <option>Hardlopen</option>
@@ -213,7 +207,9 @@
         <p id="cardio-fout" class="veld-fout-app" role="alert"></p>
         <button type="submit">Loggen</button>
       </form>
-      <h3 id="cardio-dag-kop" class="dag-kop"></h3>
+      <!-- Wat er op de gekozen dag gelogd is: kracht en cardio samen -->
+      <h3 id="dag-kop" class="dag-kop"></h3>
+      <ul id="workout-lijst" class="lijst"></ul>
       <ul id="cardio-lijst" class="lijst"></ul>
     </section>
 
@@ -244,6 +240,56 @@
       <p id="planning-status" class="planning-status"></p>
       <div id="planning-dagen" class="planning-dagen"></div>
       <p class="gedempt klein-uitleg">Je planning herhaalt zich elke week. Lege dag = rustdag, ook goed! 😌</p>
+    </section>
+
+    <!-- ===== Tab: Mijn vooruitgang (cijfers en badges, getekend door profiel.js en app.js) ===== -->
+    <section id="tab-vooruitgang" class="tab verborgen">
+      <h2>Mijn vooruitgang</h2>
+      <!-- Statistieken -->
+      <div class="kaart">
+        <h3>Jouw cijfers</h3>
+        <div id="statistieken" class="statistieken"></div>
+      </div>
+
+      <!-- Activiteitskalender -->
+      <div class="kaart">
+        <div class="kaart-kop">
+          <h3>Laatste 12 weken</h3>
+          <span id="kalender-telling" class="gedempt"></span>
+        </div>
+        <div id="kalender" class="kalender" aria-label="Activiteitskalender"></div>
+        <div class="kalender-legende gedempt">
+          minder <i class="k0"></i><i class="k1"></i><i class="k2"></i><i class="k3"></i> meer
+        </div>
+      </div>
+
+      <!-- Lichaamsgewicht (alleen zichtbaar als je dit aanzet bij Mijn gegevens) -->
+      <div class="kaart" id="gewicht-kaart" hidden>
+        <div class="kaart-kop">
+          <h3>Lichaamsgewicht</h3>
+          <span id="gewicht-verschil" class="gedempt"></span>
+        </div>
+        <div id="gewicht-grafiek" class="grafiek"></div>
+        <form id="gewicht-formulier" class="rij gewicht-invoer">
+          <input type="number" id="gewicht-kg" placeholder="Gewicht vandaag (kg)" min="20" max="400" step="0.1" required>
+          <button type="submit">Opslaan</button>
+        </form>
+        <ul id="gewicht-lijst" class="lijst compact"></ul>
+      </div>
+
+      <!-- Persoonlijke records -->
+      <div class="kaart">
+        <h3>🏆 Persoonlijke records</h3>
+        <ul id="records-lijst" class="lijst compact"></ul>
+      </div>
+
+      <div class="kaart">
+        <div class="kaart-kop">
+          <h3>Jouw badges</h3>
+          <span id="badges-telling" class="gedempt"></span>
+        </div>
+        <div id="badges" class="badges"></div>
+      </div>
     </section>
 
     <!-- ===== Tab: Berichten ===== -->
@@ -316,43 +362,6 @@
         </div>
       </div>
 
-      <!-- Statistieken -->
-      <div class="kaart">
-        <h3>Jouw cijfers</h3>
-        <div id="statistieken" class="statistieken"></div>
-      </div>
-
-      <!-- Activiteitskalender -->
-      <div class="kaart">
-        <div class="kaart-kop">
-          <h3>Laatste 12 weken</h3>
-          <span id="kalender-telling" class="gedempt"></span>
-        </div>
-        <div id="kalender" class="kalender" aria-label="Activiteitskalender"></div>
-        <div class="kalender-legende gedempt">
-          minder <i class="k0"></i><i class="k1"></i><i class="k2"></i><i class="k3"></i> meer
-        </div>
-      </div>
-
-      <!-- Lichaamsgewicht (alleen zichtbaar als je dit aanzet bij Mijn gegevens) -->
-      <div class="kaart" id="gewicht-kaart" hidden>
-        <div class="kaart-kop">
-          <h3>Lichaamsgewicht</h3>
-          <span id="gewicht-verschil" class="gedempt"></span>
-        </div>
-        <div id="gewicht-grafiek" class="grafiek"></div>
-        <form id="gewicht-formulier" class="rij gewicht-invoer">
-          <input type="number" id="gewicht-kg" placeholder="Gewicht vandaag (kg)" min="20" max="400" step="0.1" required>
-          <button type="submit">Opslaan</button>
-        </form>
-        <ul id="gewicht-lijst" class="lijst compact"></ul>
-      </div>
-
-      <!-- Persoonlijke records -->
-      <div class="kaart">
-        <h3>🏆 Persoonlijke records</h3>
-        <ul id="records-lijst" class="lijst compact"></ul>
-      </div>
 
       <!-- Gegevens -->
       <form id="profiel-formulier" class="kaart">
@@ -427,10 +436,9 @@
   <!-- ===== Navigatiebalk onderaan (zoals een echte mobiele app) ===== -->
   <nav>
     <button class="nav-knop actief" data-tab="vandaag">🏠<span>Vandaag</span></button>
-    <button class="nav-knop" data-tab="workout">🏋️<span>Workout</span></button>
-    <button class="nav-knop" data-tab="cardio">🚶<span>Bewegen</span></button>
+    <button class="nav-knop" data-tab="bewegen">➕<span>Bewegen</span></button>
     <button class="nav-knop" data-tab="schema">📅<span>Planning</span></button>
-    <button class="nav-knop" data-tab="berichten">🔔<span>Berichten</span><b id="berichten-teller" class="teller-bolletje" hidden></b></button>
+    <button class="nav-knop" data-tab="vooruitgang">📈<span>Vooruitgang</span></button>
   </nav>
 
   <script src="../config.js"></script>

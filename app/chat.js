@@ -34,7 +34,7 @@ chatEl("wissel-nieuws").addEventListener("click", () => toonChatPaneel(false));
 chatEl("wissel-chat").addEventListener("click", () => toonChatPaneel(true));
 
 // Berichten-tab verlaten = terug naar Nieuws (dan tellen nieuwe antwoorden weer als ongelezen)
-document.querySelectorAll(".nav-knop, #profiel-knop, .snel-knop").forEach(k =>
+document.querySelectorAll(".nav-knop, #profiel-knop, #berichten-knop, .snel-knop").forEach(k =>
   k.addEventListener("click", () => { if (k.dataset.tab !== "berichten" && chatOpen) toonChatPaneel(false); })
 );
 
