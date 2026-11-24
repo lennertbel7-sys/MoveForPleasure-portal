@@ -306,9 +306,10 @@ function vernieuwPlanningVandaag() {
   }
   const vandaag = vandaagTekst();
   items.forEach(item => {
-    const gedaan = item.sport === "Krachttraining"
-      ? workouts.some(w => w.datum === vandaag)
-      : cardio.some(c => c.datum === vandaag && c.type === item.sport);
+    const zelfde = (naam) => String(naam).trim().toLowerCase() === item.sport.toLowerCase();
+    const gedaan = (item.sport === "Krachttraining" && workouts.some(w => w.datum === vandaag))
+      || cardio.some(c => c.datum === vandaag && zelfde(c.type))
+      || workouts.some(w => w.datum === vandaag && zelfde(w.oefening));
     const rij = document.createElement("div");
     rij.className = "vandaag-plan" + (gedaan ? " gedaan" : "");
     const tekst = document.createElement("span");
@@ -331,18 +332,14 @@ function vernieuwPlanningVandaag() {
   });
 }
 
-// Naar het juiste formulier, alvast ingevuld
+// Naar het beweegformulier, alvast ingevuld
 function logGeplandItem(item) {
-  if (item.sport === "Krachttraining") {
-    toonTab("workout");
-    document.getElementById("workout-oefening").focus();
-    return;
+  toonTab("bewegen");
+  kiesBeweging(item.sport);
+  if (item.minuten) {
+    document.getElementById("beweeg-minuten").value = item.minuten;
+    document.getElementById("beweeg-minuten").dataset.auto = "";
   }
-  toonTab("cardio");
-  document.getElementById("cardio-type").value = item.sport;
-  pasTypeAan();
-  if (item.minuten) document.getElementById("cardio-minuten").value = item.minuten;
-  document.getElementById("cardio-minuten").focus();
 }
 
 // Het hele Planning-scherm (wordt via vernieuwAlles aangeroepen)

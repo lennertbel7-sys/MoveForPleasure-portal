@@ -21,8 +21,9 @@ const opslag = {
 };
 
 // ===== De data van de app =====
-// workouts: [{ id, datum: "2026-06-11", oefening, gewicht, sets, reps }]
-// cardio:   [{ id, datum, type, minuten, km, rondes? }]  rondes = [{ seconden, aantal }]
+// workouts: [{ id, datum: "2026-06-11", oefening, gewicht, sets, reps, minuten? }]  (bewegingen met sets × reps)
+// cardio:   [{ id, datum, type, minuten, km, rondes? }]  alle andere beweging; type = wat je intypte
+//           rondes = [{ seconden, aantal }]
 // weekdoel: getal (actieve dagen per week)
 
 let workouts = opslag.laad("workouts", []);
@@ -129,8 +130,11 @@ function sorteerNieuwsteEerst(lijst) {
 }
 
 // datum is optioneel: zonder datum wordt het vandaag
-function logWorkout(oefening, gewicht, sets, reps, datum = vandaagTekst()) {
-  workouts.unshift({ id: Date.now(), datum, oefening, gewicht, sets, reps });
+// minuten is optioneel (hoe lang je krachttraining duurde)
+function logWorkout(oefening, gewicht, sets, reps, datum = vandaagTekst(), minuten = 0) {
+  const item = { id: Date.now(), datum, oefening, gewicht, sets, reps };
+  if (minuten) item.minuten = minuten;
+  workouts.unshift(item);
   sorteerNieuwsteEerst(workouts);
   opslag.bewaar("workouts", workouts);
 }

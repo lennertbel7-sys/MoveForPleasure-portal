@@ -8,7 +8,7 @@
   <link rel="manifest" href="manifest.json">
   <link rel="icon" href="../icon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="../apple-touch-icon.png">
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css?v=22">
 </head>
 <body>
   <!-- ===== Welkomstscherm: eerst (gratis) account maken of inloggen (account.js) ===== -->
@@ -123,8 +123,7 @@
         <h3>Vandaag op je planning</h3>
         <div id="vandaag-schema"></div>
         <div class="snel-knoppen">
-          <button class="snel-knop" data-naar="workout">🏋️ Kracht</button>
-          <button class="snel-knop" data-naar="cardio">🚶 Cardio &amp; sport</button>
+          <button class="snel-knop" data-naar="bewegen">➕ Beweging loggen</button>
         </div>
       </div>
 
@@ -150,64 +149,52 @@
       <!-- Agenda: kies de dag waarop je logt (agenda.js) -->
       <div class="kaart agenda" aria-label="Kies een dag"></div>
 
-      <!-- Wat heb je gedaan? Wisselt tussen de twee formulieren -->
-      <div class="account-wissel soort-wissel" role="tablist" aria-label="Soort beweging">
-        <button type="button" id="soort-kracht" role="tab">🏋️ Kracht</button>
-        <button type="button" id="soort-cardio" role="tab">🚶 Cardio &amp; sport</button>
-      </div>
-
-      <form id="workout-formulier" class="kaart">
+      <!-- Eén formulier voor alle beweging (beweging.js) -->
+      <form id="beweeg-formulier" class="kaart" novalidate>
         <p class="log-datum"></p>
-        <input type="text" id="workout-oefening" placeholder="Oefening, bv. squat" required maxlength="40" list="oefeningen-lijst" autocomplete="off">
-        <!-- Oefeningen die je al eens deed (voor automatisch aanvullen) -->
-        <datalist id="oefeningen-lijst"></datalist>
-        <div class="rij">
-          <input type="number" id="workout-gewicht" placeholder="kg" min="0" step="0.5">
-          <input type="number" id="workout-sets" placeholder="sets" min="1" required>
-          <input type="number" id="workout-reps" placeholder="reps" min="1" required>
-        </div>
-        <p id="workout-vorige" class="vorige-keer" hidden></p>
+        <label class="veld-label" for="beweeg-wat">Wat heb je gedaan?</label>
+        <input type="text" id="beweeg-wat" list="beweeg-suggesties" maxlength="40" autocomplete="off"
+               placeholder="bv. wandelen, padel, squats, yoga…">
+        <datalist id="beweeg-suggesties"></datalist>
+        <!-- Snelknopjes: wat je eerder deed (de app onthoudt het) -->
+        <div id="beweeg-chips" class="beweeg-chips"></div>
+        <p id="beweeg-vorige" class="vorige-keer" hidden></p>
+
+        <label class="veld-label" for="beweeg-minuten">Hoe lang?</label>
+        <input type="number" id="beweeg-minuten" placeholder="minuten" min="1" max="1440" inputmode="numeric">
+
+        <details id="beweeg-details" class="beweeg-details">
+          <summary>➕ Meer details <span>(afstand, gewicht, sets, rondes)</span></summary>
+          <label class="veld-label" for="beweeg-km">Afstand</label>
+          <input type="number" id="beweeg-km" placeholder="km" min="0" step="0.1" inputmode="decimal">
+
+          <label class="veld-label">Krachtoefening</label>
+          <div class="rij">
+            <input type="number" id="beweeg-kg" placeholder="kg" min="0" step="0.5" inputmode="decimal" aria-label="Gewicht in kg">
+            <input type="number" id="beweeg-sets" placeholder="sets" min="1" inputmode="numeric" aria-label="Sets">
+            <input type="number" id="beweeg-reps" placeholder="reps" min="1" inputmode="numeric" aria-label="Herhalingen">
+          </div>
+
+          <!-- Optioneel: rondes met tijd en aantal (bv. touwspringen) -->
+          <button type="button" id="rondes-knop" class="rondes-knop">➕ Rondes toevoegen <span>(tijd &amp; aantal per ronde)</span></button>
+          <div id="rondes-blok" class="rondes-blok" hidden>
+            <div class="rondes-kop">
+              <span>#</span><span>Tijd (min : sec)</span><span id="aantal-kop">Aantal</span><span></span>
+            </div>
+            <div id="rondes-lijst"></div>
+            <div class="rondes-acties">
+              <button type="button" id="ronde-erbij" class="ronde-erbij">+ Ronde</button>
+              <button type="button" id="rondes-weg" class="rondes-weg">Rondes verwijderen</button>
+            </div>
+            <p id="rondes-totaal" class="rondes-totaal"></p>
+          </div>
+        </details>
+
+        <p id="beweeg-fout" class="veld-fout-app" role="alert"></p>
         <button type="submit">Loggen</button>
       </form>
 
-      <form id="cardio-formulier" class="kaart" hidden>
-        <p class="log-datum"></p>
-        <select id="cardio-type">
-          <option>Hardlopen</option>
-          <option>Fietsen</option>
-          <option>Wandelen</option>
-          <option>Zwemmen</option>
-          <option>Traplopen</option>
-          <option>Touwspringen</option>
-          <option>HYROX</option>
-          <option>Padel</option>
-          <option>CrossFit</option>
-          <option>Anders</option>
-        </select>
-        <p id="cardio-vorige" class="vorige-keer" hidden></p>
-        <div class="rij">
-          <input type="number" id="cardio-minuten" placeholder="minuten" min="1" max="1440">
-          <input type="number" id="cardio-km" placeholder="km (optioneel)" min="0" step="0.1">
-        </div>
-
-        <!-- Optioneel: rondes met tijd en aantal (bv. touwspringen) -->
-        <button type="button" id="rondes-knop" class="rondes-knop">➕ Rondes toevoegen <span>(tijd &amp; aantal per ronde)</span></button>
-        <div id="rondes-blok" class="rondes-blok" hidden>
-          <div class="rondes-kop">
-            <span>#</span><span>Tijd (min : sec)</span><span id="aantal-kop">Aantal</span><span></span>
-          </div>
-          <div id="rondes-lijst"></div>
-          <div class="rondes-acties">
-            <button type="button" id="ronde-erbij" class="ronde-erbij">+ Ronde</button>
-            <button type="button" id="rondes-weg" class="rondes-weg">Rondes verwijderen</button>
-          </div>
-          <p id="rondes-totaal" class="rondes-totaal"></p>
-        </div>
-
-        <p id="cardio-fout" class="veld-fout-app" role="alert"></p>
-        <button type="submit">Loggen</button>
-      </form>
-      <!-- Wat er op de gekozen dag gelogd is: kracht en cardio samen -->
+      <!-- Wat er op de gekozen dag gelogd is -->
       <h3 id="dag-kop" class="dag-kop"></h3>
       <ul id="workout-lijst" class="lijst"></ul>
       <ul id="cardio-lijst" class="lijst"></ul>
@@ -441,19 +428,22 @@
     <button class="nav-knop" data-tab="vooruitgang">📈<span>Vooruitgang</span></button>
   </nav>
 
-  <script src="../config.js"></script>
+  <!-- ?v=22 achter onze eigen bestanden: verhoog dit getal bij elke update
+       (samen met CACHE_NAAM in sw.js), zodat telefoons alles tegelijk vernieuwen. -->
+  <script src="../config.js?v=22"></script>
   <!-- Supabase (inloggen + online opslag). Lukt dit niet (offline), dan werkt de app gewoon lokaal verder. -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="data.js"></script>
-  <script src="../weetjes.js"></script>
-  <script src="motivatie.js"></script>
-  <script src="berichten.js"></script>
-  <script src="profiel.js"></script>
-  <script src="cardio.js"></script>
-  <script src="planning.js"></script>
-  <script src="agenda.js"></script>
-  <script src="app.js"></script>
-  <script src="account.js"></script>
-  <script src="chat.js"></script>
+  <script src="data.js?v=22"></script>
+  <script src="../weetjes.js?v=22"></script>
+  <script src="motivatie.js?v=22"></script>
+  <script src="berichten.js?v=22"></script>
+  <script src="profiel.js?v=22"></script>
+  <script src="cardio.js?v=22"></script>
+  <script src="planning.js?v=22"></script>
+  <script src="agenda.js?v=22"></script>
+  <script src="beweging.js?v=22"></script>
+  <script src="app.js?v=22"></script>
+  <script src="account.js?v=22"></script>
+  <script src="chat.js?v=22"></script>
 </body>
 </html>

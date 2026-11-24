@@ -19,10 +19,10 @@ document.getElementById("berichten-knop").addEventListener("click", () => toonTa
 // De app heeft 4 tabs. Kracht en cardio zitten samen in "Bewegen";
 // toonTab("workout") of toonTab("cardio") opent die tab met het juiste formulier.
 function toonTab(naam) {
-  if (naam === "workout" || naam === "cardio") {
-    kiesSoort(naam === "workout" ? "kracht" : "cardio");
-    naam = "bewegen";
-  }
+  if (naam === "workout" || naam === "cardio") naam = "bewegen"; // oude namen
+
+  // Bestaat die tab niet (bv. half bijgewerkte app)? Dan naar Vandaag i.p.v. een leeg scherm.
+  if (!document.getElementById("tab-" + naam)) naam = "vandaag";
   document.querySelectorAll(".tab").forEach(tab => tab.classList.add("verborgen"));
   document.getElementById("tab-" + naam).classList.remove("verborgen");
   document.querySelectorAll(".nav-knop").forEach(knop => {
@@ -241,7 +241,7 @@ function vernieuwVandaag() {
 
   // Recente activiteit: workouts en cardio samen, nieuwste eerst
   const alles = [
-    ...workouts.map(w => ({ datum: w.datum, id: w.id, tekst: `🏋️ ${w.oefening} — ${w.sets}×${w.reps}${w.gewicht ? " @ " + w.gewicht + " kg" : ""}` })),
+    ...workouts.map(w => ({ datum: w.datum, id: w.id, tekst: krachtTekst(w) })),
     ...cardio.map(c => ({ datum: c.datum, id: c.id, tekst: cardioTekst(c) }))
   ].sort((a, b) => b.datum.localeCompare(a.datum) || b.id - a.id).slice(0, 8);
 
@@ -272,24 +272,6 @@ document.getElementById("weekdoel-invoer").addEventListener("change", (e) => {
   }
 });
 
-// ===== Tab: Workout =====
-document.getElementById("workout-formulier").addEventListener("submit", (e) => {
-  e.preventDefault();
-  const oefening = document.getElementById("workout-oefening").value.trim();
-  const gewicht = parseFloat(document.getElementById("workout-gewicht").value) || 0;
-  const sets = parseInt(document.getElementById("workout-sets").value);
-  const reps = parseInt(document.getElementById("workout-reps").value);
-  if (!oefening || !sets || !reps) return;
-  const voor = statusVoorLog();
-  const record = isNieuwRecord(oefening, gewicht, gekozenDatum); // vóór het opslaan checken!
-  logWorkout(oefening, gewicht, sets, reps, gekozenDatum);
-  e.target.reset();
-  workoutVelden.forEach(veld => { veld.dataset.auto = ""; });
-  document.getElementById("workout-vorige").hidden = true;
-  vernieuwAlles();
-  vierResultaat(voor, record, oefening);
-});
-
 // Kop boven wat er op de gekozen dag gelogd is (kracht + cardio samen)
 function vernieuwDagKop() {
   const aantal = workouts.filter(w => w.datum === gekozenDatum).length + cardio.filter(c => c.datum === gekozenDatum).length;
@@ -297,73 +279,10 @@ function vernieuwDagKop() {
     `${datumKop(gekozenDatum)} · ${aantal ? aantal + " gelogd" : "nog niets gelogd"}`;
 }
 
-// ===== Kracht of cardio? =====
-// We beginnen met wat je het laatst logde.
-let gekozenSoort = (cardio[0] && (!workouts[0] || cardio[0].datum + cardio[0].id > workouts[0].datum + workouts[0].id)) ? "cardio" : "kracht";
-
-function kiesSoort(soort) {
-  gekozenSoort = soort;
-  document.getElementById("workout-formulier").hidden = soort !== "kracht";
-  document.getElementById("cardio-formulier").hidden = soort !== "cardio";
-  document.getElementById("soort-kracht").classList.toggle("actief", soort === "kracht");
-  document.getElementById("soort-cardio").classList.toggle("actief", soort === "cardio");
-  document.getElementById("soort-kracht").setAttribute("aria-selected", soort === "kracht");
-  document.getElementById("soort-cardio").setAttribute("aria-selected", soort === "cardio");
-}
-document.getElementById("soort-kracht").addEventListener("click", () => kiesSoort("kracht"));
-document.getElementById("soort-cardio").addEventListener("click", () => kiesSoort("cardio"));
-kiesSoort(gekozenSoort);
-
-// ===== Sneller loggen: je vorige keer =====
-// Typ je een oefening die je al eens deed, dan vullen we je vorige
-// gewicht, sets en reps in. Jij past alleen aan wat veranderd is.
-const workoutVelden = ["workout-gewicht", "workout-sets", "workout-reps"].map(id => document.getElementById(id));
-workoutVelden.forEach(veld => veld.addEventListener("input", () => { veld.dataset.auto = ""; }));
-
-function vorigeWorkout(oefening) {
-  if (!oefening.trim()) return null;
-  return workouts.find(w => zelfdeOefening(w.oefening, oefening)) || null; // lijst staat nieuwste eerst
-}
-
-function workoutKort(w) {
-  return `${w.sets}×${w.reps}${w.gewicht ? " @ " + w.gewicht + " kg" : ""}`;
-}
-
-document.getElementById("workout-oefening").addEventListener("input", (e) => {
-  const vorige = vorigeWorkout(e.target.value);
-  const hint = document.getElementById("workout-vorige");
-  const waarden = vorige ? [vorige.gewicht || "", vorige.sets, vorige.reps] : ["", "", ""];
-  workoutVelden.forEach((veld, i) => {
-    // Alleen invullen wat je zelf nog niet aanpaste
-    if (veld.value === "" || veld.dataset.auto === "1") {
-      veld.value = waarden[i];
-      veld.dataset.auto = vorige ? "1" : "";
-    }
-  });
-  hint.hidden = !vorige;
-  if (vorige) hint.textContent = `↺ Vorige keer (${leesbareDatum(vorige.datum)}): ${workoutKort(vorige)}. Pas aan wat anders was.`;
-});
-
-function vernieuwOefeningenLijst() {
-  const namen = new Map(); // zonder dubbels, ongeacht hoofdletters
-  workouts.forEach(w => { const k = w.oefening.trim().toLowerCase(); if (!namen.has(k)) namen.set(k, w.oefening.trim()); });
-  const lijst = document.getElementById("oefeningen-lijst");
-  lijst.innerHTML = "";
-  namen.forEach(naam => { const o = document.createElement("option"); o.value = naam; lijst.appendChild(o); });
-}
-
-// Bij Bewegen: toon wat je de vorige keer bij deze sport deed
-function vernieuwCardioVorige() {
-  const type = document.getElementById("cardio-type").value;
-  const vorige = cardio.find(c => c.type === type);
-  const hint = document.getElementById("cardio-vorige");
-  hint.hidden = !vorige;
-  if (vorige) hint.textContent = `↺ Vorige keer (${leesbareDatum(vorige.datum)}): ${cardioTekst(vorige).replace(/^\S+ \S+ — /, "")}`;
-}
-document.getElementById("cardio-type").addEventListener("change", vernieuwCardioVorige);
-
+// ===== Tab: Bewegen =====
+// Het formulier zit in beweging.js; hier tekenen we wat er op de gekozen dag gelogd is.
 function vernieuwWorkoutLijst() {
-  vernieuwOefeningenLijst();
+  vernieuwBeweegKeuzes();
   const lijst = document.getElementById("workout-lijst");
   lijst.innerHTML = "";
   const opDag = workouts.filter(w => w.datum === gekozenDatum);
@@ -371,7 +290,7 @@ function vernieuwWorkoutLijst() {
   opDag.forEach(w => {
     const li = document.createElement("li");
     const tekst = document.createElement("span");
-    tekst.textContent = `${w.oefening} — ${w.sets}×${w.reps}${w.gewicht ? " @ " + w.gewicht + " kg" : ""}`;
+    tekst.textContent = krachtTekst(w);
     const datum = document.createElement("span");
     datum.className = "datum";
     datum.textContent = leesbareDatum(w.datum);
@@ -384,37 +303,7 @@ function vernieuwWorkoutLijst() {
   });
 }
 
-// ===== Tab: Cardio =====
-document.getElementById("cardio-formulier").addEventListener("submit", (e) => {
-  e.preventDefault();
-  const fout = document.getElementById("cardio-fout");
-  const type = document.getElementById("cardio-type").value;
-  const rondes = verzamelRondes();
-  let minuten = parseInt(document.getElementById("cardio-minuten").value);
-  const km = infoVoor(type).km ? parseFloat(document.getElementById("cardio-km").value) || 0 : 0;
-
-  // Geen minuten ingevuld? Dan rekenen we ze uit de tijd van de rondes
-  const rondeSeconden = rondes.reduce((som, r) => som + r.seconden, 0);
-  if (!minuten && rondeSeconden) minuten = Math.max(1, Math.round(rondeSeconden / 60));
-
-  if (!minuten) {
-    fout.textContent = "Vul het aantal minuten in, of voeg rondes met een tijd toe.";
-    document.getElementById("cardio-minuten").focus();
-    return;
-  }
-  fout.textContent = "";
-
-  const voor = statusVoorLog();
-  logCardio(type, minuten, km, rondes, gekozenDatum);
-  e.target.reset();
-  sluitRondes();
-  pasTypeAan();
-  vernieuwAlles();
-  vierResultaat(voor, false);
-});
-
 function vernieuwCardioLijst() {
-  vernieuwCardioVorige();
   const lijst = document.getElementById("cardio-lijst");
   lijst.innerHTML = "";
   const opDag = cardio.filter(c => c.datum === gekozenDatum);

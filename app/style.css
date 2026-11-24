@@ -711,6 +711,17 @@ body.welkom-open { overflow: hidden; }
 .kop-knop.actief { border-color: #ffd23f; box-shadow: 0 0 0 3px rgba(255, 210, 63, 0.25); }
 .kop-knop .teller-bolletje { top: -5px; right: -6px; }
 
-/* ===== Kracht / cardio kiezen in de tab Bewegen ===== */
-.soort-wissel { margin-bottom: 14px; }
-.soort-wissel button { font-size: 0.95rem; padding: 10px; }
+/* ===== Beweegformulier: snelknopjes en "meer details" (beweging.js) ===== */
+.beweeg-chips { display: flex; flex-wrap: wrap; gap: 6px; margin: -2px 0 12px; }
+.beweeg-chip {
+  background: #36263f; border: 1px solid #402d4c; color: #eaeaea; border-radius: 999px;
+  padding: 7px 12px; font: inherit; font-size: 0.85rem; cursor: pointer; min-height: 36px;
+}
+.beweeg-chip:hover { border-color: #ff7a3d; }
+.beweeg-details { margin-bottom: 10px; }
+.beweeg-details summary {
+  cursor: pointer; color: #ff9a6b; font-weight: 600; font-size: 0.9rem; padding: 8px 0; list-style: none;
+}
+.beweeg-details summary::-webkit-details-marker { display: none; }
+.beweeg-details summary span { color: #a8919f; font-weight: 400; }
+.beweeg-details[open] summary { margin-bottom: 4px; }

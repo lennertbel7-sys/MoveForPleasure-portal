@@ -1,9 +1,9 @@
 // ============================================================
-// cardio.js: sporten en (optionele) rondes
+// cardio.js: bekende sporten, teksten voor de lijsten en (optionele) rondes
 //
-// Per sport weten we welk icoon erbij hoort, of afstand (km)
-// zinvol is, en hoe we het "aantal" per ronde noemen
-// (sprongen, treden, reps…).
+// Je mag elke beweging zelf intypen. Voor bekende sporten weten we
+// welk icoon erbij hoort en hoe we het "aantal" per ronde noemen
+// (sprongen, treden, reps…). Onbekende bewegingen krijgen 🏅.
 //
 // Rondes zijn optioneel. Een ronde = tijd (min:sec) + aantal.
 // Voorbeeld touwspringen: 5 rondes van 1:00 met 120 sprongen.
@@ -19,11 +19,18 @@ const sportInfo = {
   HYROX:        { icoon: "⚡", km: true,  aantal: "reps" },
   Padel:        { icoon: "🎾", km: false, aantal: "games" },
   CrossFit:     { icoon: "💥", km: false, aantal: "reps" },
+  Yoga:         { icoon: "🧘", km: false, aantal: "aantal" },
+  Dansen:       { icoon: "💃", km: false, aantal: "aantal" },
+  Krachttraining: { icoon: "🏋️", km: false, aantal: "reps" },
+  Tennis:       { icoon: "🎾", km: false, aantal: "games" },
+  Voetbal:      { icoon: "⚽", km: true,  aantal: "aantal" },
   Anders:       { icoon: "🏅", km: true,  aantal: "aantal" }
 };
 
+// Hoofdletters maken niet uit: "wandelen" = "Wandelen"
 function infoVoor(type) {
-  return sportInfo[type] || { icoon: "🏃", km: true, aantal: "aantal" };
+  const sleutel = Object.keys(sportInfo).find(k => k.toLowerCase() === String(type || "").trim().toLowerCase());
+  return sleutel ? sportInfo[sleutel] : { icoon: "🏅", km: true, aantal: "aantal" };
 }
 
 // "1:05" uit 65 seconden
@@ -46,24 +53,29 @@ function cardioTekst(c) {
   return tekst;
 }
 
-// ===== Formulier: sport kiezen =====
-const typeKeuze = document.getElementById("cardio-type");
-const kmVeld = document.getElementById("cardio-km");
-const minutenVeld = document.getElementById("cardio-minuten");
+// Eén regel tekst voor een krachtoefening
+function krachtTekst(w) {
+  let tekst = `🏋️ ${w.oefening} — ${w.sets}×${w.reps}`;
+  if (w.gewicht) tekst += ` @ ${w.gewicht} kg`;
+  if (w.minuten) tekst += `, ${w.minuten} min`;
+  return tekst;
+}
+
+// ===== Rondes (in het beweegformulier, onder "Meer details") =====
+const watVeld = document.getElementById("beweeg-wat");
+const minutenVeld = document.getElementById("beweeg-minuten");
 const rondesKnop = document.getElementById("rondes-knop");
 const rondesBlok = document.getElementById("rondes-blok");
 const rondesLijst = document.getElementById("rondes-lijst");
 
-// Past het formulier aan de gekozen sport aan
+// Noemt het "aantal" per ronde naar de sport (sprongen, treden…)
 function pasTypeAan() {
-  const info = infoVoor(typeKeuze.value);
-  kmVeld.hidden = !info.km;
-  if (!info.km) kmVeld.value = "";
+  const info = infoVoor(watVeld.value);
   document.getElementById("aantal-kop").textContent = info.aantal.charAt(0).toUpperCase() + info.aantal.slice(1);
   rondesLijst.querySelectorAll(".r-aantal").forEach(veld => { veld.placeholder = info.aantal; });
   vernieuwRondesTotaal();
 }
-typeKeuze.addEventListener("change", pasTypeAan);
+watVeld.addEventListener("input", pasTypeAan);
 
 // ===== Rondes =====
 function maakRonde(vorige) {
@@ -78,7 +90,7 @@ function maakRonde(vorige) {
     </div>
     <input type="number" class="r-aantal" inputmode="numeric" min="0" max="100000" aria-label="Aantal">
     <button type="button" class="ronde-wis" aria-label="Ronde verwijderen">✕</button>`;
-  rij.querySelector(".r-aantal").placeholder = infoVoor(typeKeuze.value).aantal;
+  rij.querySelector(".r-aantal").placeholder = infoVoor(watVeld.value).aantal;
 
   // Nieuwe ronde neemt de waarden van de vorige over: sneller invullen
   if (vorige) {
@@ -143,7 +155,7 @@ function vernieuwRondesTotaal() {
   const aantal = rondes.reduce((som, r) => som + r.aantal, 0);
   const delen = [`${rondes.length} ${rondes.length === 1 ? "ronde" : "rondes"}`];
   if (seconden) delen.push(tijdTekst(seconden));
-  if (aantal) delen.push(`${aantal.toLocaleString("nl-BE")} ${infoVoor(typeKeuze.value).aantal}`);
+  if (aantal) delen.push(`${aantal.toLocaleString("nl-BE")} ${infoVoor(watVeld.value).aantal}`);
   totaalTekst.textContent = "Totaal: " + delen.join(" · ");
   // Minuten leeg gelaten? Dan rekenen we ze uit de rondes
   minutenVeld.placeholder = seconden ? `minuten (auto: ${Math.max(1, Math.round(seconden / 60))})` : "minuten";

@@ -12,7 +12,7 @@
 // altijd gewoon direct naar het internet.
 // ============================================================
 
-const CACHE_NAAM = "sportlog-v20";
+const CACHE_NAAM = "sportlog-v22";
 
 self.addEventListener("fetch", (gebeurtenis) => {
   const verzoek = gebeurtenis.request;
@@ -20,7 +20,10 @@ self.addEventListener("fetch", (gebeurtenis) => {
   if (verzoek.method !== "GET" || !eigenSite) return; // browser regelt het zelf
 
   gebeurtenis.respondWith(
-    fetch(verzoek)
+    // cache: "no-cache" = altijd even bij de server checken of er een nieuwere
+    // versie is (de browser bewaart bestanden anders tot 10 minuten). Zo krijg
+    // je nooit een mix van oude en nieuwe bestanden.
+    fetch(verzoek, { cache: "no-cache" })
       .then((antwoord) => {
         // Gelukt: kopie bewaren voor offline gebruik
         const kopie = antwoord.clone();
@@ -31,10 +34,14 @@ self.addEventListener("fetch", (gebeurtenis) => {
   );
 });
 
+// Nieuwe versie van dit bestand? Meteen actief worden, niet wachten
+// tot alle vensters van de app gesloten zijn.
+self.addEventListener("install", () => self.skipWaiting());
+
 // Oude caches opruimen als er een nieuwe versie is
 self.addEventListener("activate", (gebeurtenis) => {
   gebeurtenis.waitUntil(
-    caches.keys().then((namen) =>
+    self.clients.claim().then(() => caches.keys()).then((namen) =>
       Promise.all(namen.filter((n) => n !== CACHE_NAAM).map((n) => caches.delete(n)))
     )
   );
