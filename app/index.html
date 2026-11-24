@@ -97,12 +97,12 @@
 
         <div class="cijfers">
           <div class="cijfer">
-            <strong id="cijfer-streak">0</strong>
-            <span>🔥 dagen op rij</span>
+            <strong id="cijfer-weekreeks">0</strong>
+            <span>📈 weken op rij je doel</span>
           </div>
           <div class="cijfer">
-            <strong id="cijfer-weekreeks">0</strong>
-            <span>📈 weken doel gehaald</span>
+            <strong id="cijfer-streak">0</strong>
+            <span>🔥 dagen op rij</span>
           </div>
           <div class="cijfer">
             <strong id="cijfer-totaal">0</strong>
@@ -157,12 +157,15 @@
       <div class="kaart agenda" aria-label="Kies een dag"></div>
       <form id="workout-formulier" class="kaart">
         <p class="log-datum"></p>
-        <input type="text" id="workout-oefening" placeholder="Oefening, bv. squat" required maxlength="40">
+        <input type="text" id="workout-oefening" placeholder="Oefening, bv. squat" required maxlength="40" list="oefeningen-lijst" autocomplete="off">
+        <!-- Oefeningen die je al eens deed (voor automatisch aanvullen) -->
+        <datalist id="oefeningen-lijst"></datalist>
         <div class="rij">
           <input type="number" id="workout-gewicht" placeholder="kg" min="0" step="0.5">
           <input type="number" id="workout-sets" placeholder="sets" min="1" required>
           <input type="number" id="workout-reps" placeholder="reps" min="1" required>
         </div>
+        <p id="workout-vorige" class="vorige-keer" hidden></p>
         <button type="submit">Loggen</button>
       </form>
       <h3 id="workout-dag-kop" class="dag-kop"></h3>
@@ -187,6 +190,7 @@
           <option>CrossFit</option>
           <option>Anders</option>
         </select>
+        <p id="cardio-vorige" class="vorige-keer" hidden></p>
         <div class="rij">
           <input type="number" id="cardio-minuten" placeholder="minuten" min="1" max="1440">
           <input type="number" id="cardio-km" placeholder="km (optioneel)" min="0" step="0.1">

@@ -102,7 +102,11 @@ function vierResultaat(voor, isRecord, oefening) {
 
   const level = huidigLevel();
 
-  if (isRecord) {
+  // Terug na een pauze: dat is het belangrijkste moment om te vieren
+  if (voor.pauze !== null && voor.pauze >= PAUZE_DAGEN && voor.vandaagActief === false && gekozenDatum === vandaagTekst()) {
+    toonViering("👋", "Welkom terug!",
+      `Na ${voor.pauze} dagen pauze weer in beweging. Opnieuw beginnen is misschien wel de knapste stap van allemaal. 🧡` + badgeTekst);
+  } else if (isRecord) {
     toonViering("🏆", "Nieuw persoonlijk record!", `Zwaarder dan ooit bij ${oefening}. Voel je hoe sterk je wordt? 💪` + badgeTekst);
   } else if (level.nummer > voor.level) {
     toonViering("⭐", `Level up! Level ${level.nummer}`,
@@ -123,14 +127,29 @@ function vierResultaat(voor, isRecord, oefening) {
 }
 
 function statusVoorLog() {
-  return { actief: actieveDagenDezeWeek(), streak: berekenStreak(), level: huidigLevel().nummer };
+  return {
+    actief: actieveDagenDezeWeek(), streak: berekenStreak(), level: huidigLevel().nummer,
+    pauze: dagenSindsLaatsteBeweging(), vandaagActief: actieveDagen().has(vandaagTekst())
+  };
 }
 
+// Bovenaan staat je weekritme (weken op rij je weekdoel gehaald).
+// Dat is milder dan dagen op rij: één gemiste dag verandert er niets aan.
+// Nog geen week gehaald? Dan tonen we de dagen op rij, als die er zijn.
 function vernieuwStreakBadge() {
+  const badge = document.getElementById("streak-badge");
+  const weken = berekenWeekreeks();
   const streak = berekenStreak();
-  // De vlam flakkert (zie .vlam in style.css)
-  document.getElementById("streak-badge").innerHTML =
-    streak > 0 ? `<span class="vlam">🔥</span> ${streak} ${streak === 1 ? "dag" : "dagen"}` : "";
+  if (weken > 0) {
+    badge.innerHTML = `📈 ${weken} ${weken === 1 ? "week" : "weken"}`;
+    badge.title = "Zoveel weken op rij haalde je je weekchallenge";
+  } else if (streak > 1) {
+    // De vlam flakkert (zie .vlam in style.css)
+    badge.innerHTML = `<span class="vlam">🔥</span> ${streak} dagen`;
+    badge.title = "Zoveel dagen op rij in beweging";
+  } else {
+    badge.innerHTML = "";
+  }
 }
 
 // ===== Tab: Vandaag =====
@@ -255,6 +274,8 @@ document.getElementById("workout-formulier").addEventListener("submit", (e) => {
   const record = isNieuwRecord(oefening, gewicht, gekozenDatum); // vóór het opslaan checken!
   logWorkout(oefening, gewicht, sets, reps, gekozenDatum);
   e.target.reset();
+  workoutVelden.forEach(veld => { veld.dataset.auto = ""; });
+  document.getElementById("workout-vorige").hidden = true;
   vernieuwAlles();
   vierResultaat(voor, record, oefening);
 });
@@ -264,7 +285,56 @@ function dagLijstKop(id, aantal, leeg) {
   document.getElementById(id).textContent = `${datumKop(gekozenDatum)} · ${aantal ? aantal + " gelogd" : leeg}`;
 }
 
+// ===== Sneller loggen: je vorige keer =====
+// Typ je een oefening die je al eens deed, dan vullen we je vorige
+// gewicht, sets en reps in. Jij past alleen aan wat veranderd is.
+const workoutVelden = ["workout-gewicht", "workout-sets", "workout-reps"].map(id => document.getElementById(id));
+workoutVelden.forEach(veld => veld.addEventListener("input", () => { veld.dataset.auto = ""; }));
+
+function vorigeWorkout(oefening) {
+  if (!oefening.trim()) return null;
+  return workouts.find(w => zelfdeOefening(w.oefening, oefening)) || null; // lijst staat nieuwste eerst
+}
+
+function workoutKort(w) {
+  return `${w.sets}×${w.reps}${w.gewicht ? " @ " + w.gewicht + " kg" : ""}`;
+}
+
+document.getElementById("workout-oefening").addEventListener("input", (e) => {
+  const vorige = vorigeWorkout(e.target.value);
+  const hint = document.getElementById("workout-vorige");
+  const waarden = vorige ? [vorige.gewicht || "", vorige.sets, vorige.reps] : ["", "", ""];
+  workoutVelden.forEach((veld, i) => {
+    // Alleen invullen wat je zelf nog niet aanpaste
+    if (veld.value === "" || veld.dataset.auto === "1") {
+      veld.value = waarden[i];
+      veld.dataset.auto = vorige ? "1" : "";
+    }
+  });
+  hint.hidden = !vorige;
+  if (vorige) hint.textContent = `↺ Vorige keer (${leesbareDatum(vorige.datum)}): ${workoutKort(vorige)}. Pas aan wat anders was.`;
+});
+
+function vernieuwOefeningenLijst() {
+  const namen = new Map(); // zonder dubbels, ongeacht hoofdletters
+  workouts.forEach(w => { const k = w.oefening.trim().toLowerCase(); if (!namen.has(k)) namen.set(k, w.oefening.trim()); });
+  const lijst = document.getElementById("oefeningen-lijst");
+  lijst.innerHTML = "";
+  namen.forEach(naam => { const o = document.createElement("option"); o.value = naam; lijst.appendChild(o); });
+}
+
+// Bij Bewegen: toon wat je de vorige keer bij deze sport deed
+function vernieuwCardioVorige() {
+  const type = document.getElementById("cardio-type").value;
+  const vorige = cardio.find(c => c.type === type);
+  const hint = document.getElementById("cardio-vorige");
+  hint.hidden = !vorige;
+  if (vorige) hint.textContent = `↺ Vorige keer (${leesbareDatum(vorige.datum)}): ${cardioTekst(vorige).replace(/^\S+ \S+ — /, "")}`;
+}
+document.getElementById("cardio-type").addEventListener("change", vernieuwCardioVorige);
+
 function vernieuwWorkoutLijst() {
+  vernieuwOefeningenLijst();
   const lijst = document.getElementById("workout-lijst");
   lijst.innerHTML = "";
   const opDag = workouts.filter(w => w.datum === gekozenDatum);
@@ -315,6 +385,7 @@ document.getElementById("cardio-formulier").addEventListener("submit", (e) => {
 });
 
 function vernieuwCardioLijst() {
+  vernieuwCardioVorige();
   const lijst = document.getElementById("cardio-lijst");
   lijst.innerHTML = "";
   const opDag = cardio.filter(c => c.datum === gekozenDatum);

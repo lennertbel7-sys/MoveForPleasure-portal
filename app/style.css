@@ -698,3 +698,6 @@ body.welkom-open { overflow: hidden; }
 .log-datum.verleden { color: #ffd23f; font-weight: 600; }
 .log-datum.verleden::before { content: "📅 "; }
 .dag-kop { font-size: 0.95rem; color: #a8919f; margin: 4px 0 8px; }
+
+/* "Vorige keer"-hint bij het loggen */
+.vorige-keer { font-size: 0.85rem; color: #ffd23f; margin: -2px 0 10px; line-height: 1.4; }

@@ -72,6 +72,17 @@ function langsteStreak() {
   return langste;
 }
 
+// Hoeveel dagen geleden bewoog je voor het laatst (vóór vandaag)?
+// null = nog nooit iets gelogd. Gebruikt voor "Welkom terug!".
+function dagenSindsLaatsteBeweging() {
+  const vandaag = vandaagTekst();
+  const eerder = [...actieveDagen()].filter(d => d < vandaag).sort();
+  if (!eerder.length) return null;
+  const laatste = new Date(eerder[eerder.length - 1] + "T12:00:00");
+  return Math.round((new Date(vandaag + "T12:00:00") - laatste) / 86400000);
+}
+const PAUZE_DAGEN = 7; // vanaf zoveel dagen zonder beweging zeggen we "welkom terug"
+
 // Heb je in één en dezelfde week zowel kracht als cardio gedaan?
 function ooitKrachtEnCardioInEenWeek() {
   const krachtWeken = new Set(workouts.map(w => maandagVan(w.datum)));
@@ -227,6 +238,11 @@ function aanmoediging() {
 
   if (totaal === 0) {
     return "Welkom! Elke beweging telt, ook een korte wandeling. Waar heb jij vandaag zin in? 😃";
+  }
+  // Even weg geweest? Geen verwijten, gewoon blij dat je er bent.
+  const pauze = dagenSindsLaatsteBeweging();
+  if (!vandaagActief && pauze !== null && pauze >= PAUZE_DAGEN) {
+    return "Fijn dat je er weer bent! 🧡 Geen inhaalwerk nodig: één rustige wandeling is een prima herstart.";
   }
   if (vandaagActief && nogNodig === 0) {
     return "Je weekchallenge is binnen! Alles wat je nu nog doet is pure bonus. Geniet ervan! 🌟";
