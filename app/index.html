@@ -8,7 +8,7 @@
   <link rel="manifest" href="manifest.json">
   <link rel="icon" href="../icon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="../apple-touch-icon.png">
-  <link rel="stylesheet" href="style.css?v=24">
+  <link rel="stylesheet" href="style.css?v=25">
 </head>
 <body>
   <!-- ===== Welkomstscherm: eerst (gratis) account maken of inloggen (account.js) ===== -->
@@ -149,8 +149,17 @@
         <div id="beweeg-chips" class="beweeg-chips"></div>
         <p id="beweeg-vorige" class="vorige-keer" hidden></p>
 
-        <label class="veld-label" for="beweeg-minuten">Hoe lang?</label>
-        <input type="number" id="beweeg-minuten" placeholder="minuten" min="1" max="1440" inputmode="numeric">
+        <div class="rij">
+          <div>
+            <label class="veld-label" for="beweeg-minuten" id="beweeg-minuten-label">Hoe lang?</label>
+            <input type="number" id="beweeg-minuten" placeholder="minuten" min="1" max="1440" inputmode="numeric">
+          </div>
+          <!-- Alleen bij sporten die je telt (traplopen: treden, touwspringen: sprongen, zwemmen: banen) -->
+          <div id="beweeg-aantal-vak" hidden>
+            <label class="veld-label" for="beweeg-aantal" id="beweeg-aantal-label">Hoeveel?</label>
+            <input type="number" id="beweeg-aantal" min="1" max="100000" inputmode="numeric">
+          </div>
+        </div>
 
         <details id="beweeg-details" class="beweeg-details">
           <summary>➕ Meer details <span>(afstand, gewicht, sets, rondes)</span></summary>
@@ -426,22 +435,22 @@
     <button class="nav-knop" data-tab="vooruitgang">📈<span>Vooruitgang</span></button>
   </nav>
 
-  <!-- ?v=24 achter onze eigen bestanden: verhoog dit getal bij elke update
+  <!-- ?v=25 achter onze eigen bestanden: verhoog dit getal bij elke update
        (samen met CACHE_NAAM in sw.js), zodat telefoons alles tegelijk vernieuwen. -->
-  <script src="../config.js?v=24"></script>
+  <script src="../config.js?v=25"></script>
   <!-- Supabase (inloggen + online opslag). Lukt dit niet (offline), dan werkt de app gewoon lokaal verder. -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="data.js?v=24"></script>
-  <script src="../weetjes.js?v=24"></script>
-  <script src="motivatie.js?v=24"></script>
-  <script src="berichten.js?v=24"></script>
-  <script src="profiel.js?v=24"></script>
-  <script src="cardio.js?v=24"></script>
-  <script src="planning.js?v=24"></script>
-  <script src="agenda.js?v=24"></script>
-  <script src="beweging.js?v=24"></script>
-  <script src="app.js?v=24"></script>
-  <script src="account.js?v=24"></script>
-  <script src="chat.js?v=24"></script>
+  <script src="data.js?v=25"></script>
+  <script src="../weetjes.js?v=25"></script>
+  <script src="motivatie.js?v=25"></script>
+  <script src="berichten.js?v=25"></script>
+  <script src="profiel.js?v=25"></script>
+  <script src="cardio.js?v=25"></script>
+  <script src="planning.js?v=25"></script>
+  <script src="agenda.js?v=25"></script>
+  <script src="beweging.js?v=25"></script>
+  <script src="app.js?v=25"></script>
+  <script src="account.js?v=25"></script>
+  <script src="chat.js?v=25"></script>
 </body>
 </html>

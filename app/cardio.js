@@ -13,9 +13,9 @@ const sportInfo = {
   Hardlopen:    { icoon: "🏃", km: true,  aantal: "meter" },
   Fietsen:      { icoon: "🚴", km: true,  aantal: "aantal" },
   Wandelen:     { icoon: "🚶", km: true,  aantal: "aantal" },
-  Zwemmen:      { icoon: "🏊", km: true,  aantal: "banen" },
-  Traplopen:    { icoon: "🪜", km: false, aantal: "treden" },
-  Touwspringen: { icoon: "🪢", km: false, aantal: "sprongen" },
+  Zwemmen:      { icoon: "🏊", km: true,  aantal: "banen",    tellen: true },
+  Traplopen:    { icoon: "🪜", km: false, aantal: "treden",   tellen: true },
+  Touwspringen: { icoon: "🪢", km: false, aantal: "sprongen", tellen: true },
   HYROX:        { icoon: "⚡", km: true,  aantal: "reps" },
   Padel:        { icoon: "🎾", km: false, aantal: "games" },
   CrossFit:     { icoon: "💥", km: false, aantal: "reps" },
@@ -40,17 +40,22 @@ function tijdTekst(seconden) {
   return `${m}:${String(s).padStart(2, "0")}`;
 }
 
-// Eén regel tekst voor een cardio-item (gebruikt in de lijsten)
+// Eén regel tekst voor een cardio-item (gebruikt in de lijsten).
+// Minuten zijn optioneel: "🪜 Traplopen — 300 treden" kan ook.
 function cardioTekst(c) {
   const info = infoVoor(c.type);
-  let tekst = `${info.icoon} ${c.type} — ${c.minuten} min`;
-  if (c.km) tekst += `, ${c.km} km`;
+  const hoofd = [];
+  if (c.minuten) hoofd.push(`${c.minuten} min`);
+  if (c.km) hoofd.push(`${c.km} km`);
+  const delen = hoofd.length ? [hoofd.join(", ")] : [];
   if (c.rondes && c.rondes.length) {
     const totaalAantal = c.rondes.reduce((som, r) => som + (r.aantal || 0), 0);
-    tekst += ` · ${c.rondes.length} ${c.rondes.length === 1 ? "ronde" : "rondes"}`;
-    if (totaalAantal) tekst += ` · ${totaalAantal.toLocaleString("nl-BE")} ${info.aantal}`;
+    delen.push(`${c.rondes.length} ${c.rondes.length === 1 ? "ronde" : "rondes"}`);
+    if (totaalAantal) delen.push(`${totaalAantal.toLocaleString("nl-BE")} ${info.aantal}`);
+  } else if (c.aantal) {
+    delen.push(`${c.aantal.toLocaleString("nl-BE")} ${info.aantal}`);
   }
-  return tekst;
+  return `${info.icoon} ${c.type}` + (delen.length ? ` — ${delen.join(" · ")}` : "");
 }
 
 // Eén regel tekst voor een krachtoefening
@@ -71,6 +76,14 @@ const rondesLijst = document.getElementById("rondes-lijst");
 // Noemt het "aantal" per ronde naar de sport (sprongen, treden…)
 function pasTypeAan() {
   const info = infoVoor(watVeld.value);
+  // Telbare sport? Dan een veld "Hoeveel treden?" en is tijd optioneel
+  const aantalVak = document.getElementById("beweeg-aantal-vak");
+  const aantalVeld = document.getElementById("beweeg-aantal");
+  aantalVak.hidden = !info.tellen;
+  if (!info.tellen) aantalVeld.value = "";
+  document.getElementById("beweeg-aantal-label").textContent = `Hoeveel ${info.aantal}?`;
+  aantalVeld.placeholder = info.aantal;
+  document.getElementById("beweeg-minuten-label").textContent = info.tellen ? "Hoe lang? (optioneel)" : "Hoe lang?";
   document.getElementById("aantal-kop").textContent = info.aantal.charAt(0).toUpperCase() + info.aantal.slice(1);
   rondesLijst.querySelectorAll(".r-aantal").forEach(veld => { veld.placeholder = info.aantal; });
   vernieuwRondesTotaal();

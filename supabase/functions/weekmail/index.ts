@@ -27,7 +27,10 @@ const db = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SE
 const APP_URL = "https://moveforpleasure.be/app/";
 const PROFIEL_URL = "https://moveforpleasure.be/app/#profiel";
 
-type Item = { datum: string; id: number; oefening?: string; type?: string; minuten?: number; sets?: number; reps?: number; gewicht?: number; km?: number };
+type Item = { datum: string; id: number; oefening?: string; type?: string; minuten?: number; sets?: number; reps?: number; gewicht?: number; km?: number; aantal?: number; rondes?: { aantal?: number }[] };
+
+// Hoe noemen we het "aantal" bij sporten die je telt?
+const eenheid: Record<string, string> = { traplopen: "treden", touwspringen: "sprongen", zwemmen: "banen" };
 
 const antwoord = (tekst: string, status = 200) =>
   new Response(tekst, { status, headers: { "Access-Control-Allow-Origin": "*", "Access-Control-Allow-Headers": "authorization, content-type, apikey" } });
@@ -54,6 +57,16 @@ function dagKort(datum: string) {
   return dagNamen[new Date(datum + "T12:00:00Z").getUTCDay()];
 }
 
+// "30 min, 5 km" of "300 treden" (minuten zijn niet verplicht)
+function cardioDelen(i: Item) {
+  const delen: string[] = [];
+  if (i.minuten) delen.push(`${i.minuten} min`);
+  if (i.km) delen.push(`${i.km} km`);
+  const geteld = i.rondes?.length ? i.rondes.reduce((s, r) => s + (r.aantal || 0), 0) : (i.aantal || 0);
+  if (geteld) delen.push(`${geteld} ${eenheid[String(i.type).trim().toLowerCase()] ?? "keer"}`);
+  return delen.join(", ") || "bewogen";
+}
+
 // ===== Het overzicht van één lid =====
 function maakOverzicht(workouts: Item[], cardio: Item[], weekdoel: number, maandag: string) {
   const zondag = plusDagen(maandag, 6);
@@ -77,7 +90,7 @@ function maakOverzicht(workouts: Item[], cardio: Item[], weekdoel: number, maand
   const regels = deze.slice(0, 8).map((i) => {
     const wat = i.oefening
       ? `${i.oefening}: ${i.sets}×${i.reps}${i.gewicht ? " @ " + i.gewicht + " kg" : ""}`
-      : `${i.type}: ${i.minuten} min${i.km ? ", " + i.km + " km" : ""}`;
+      : `${i.type}: ${cardioDelen(i)}`;
     return `${dagKort(i.datum)} · ${wat}`;
   });
   if (deze.length > 8) regels.push(`… en nog ${deze.length - 8} keer`);

@@ -22,7 +22,7 @@ const opslag = {
 
 // ===== De data van de app =====
 // workouts: [{ id, datum: "2026-06-11", oefening, gewicht, sets, reps, minuten? }]  (bewegingen met sets × reps)
-// cardio:   [{ id, datum, type, minuten, km, rondes? }]  alle andere beweging; type = wat je intypte
+// cardio:   [{ id, datum, type, minuten, km, rondes?, aantal? }]  alle andere beweging; type = wat je intypte
 //           rondes = [{ seconden, aantal }]
 // weekdoel: getal (actieve dagen per week)
 
@@ -145,9 +145,12 @@ function verwijderWorkout(id) {
 }
 
 // rondes is optioneel: [{ seconden, aantal }]
-function logCardio(type, minuten, km, rondes = [], datum = vandaagTekst()) {
-  const item = { id: Date.now(), datum, type, minuten, km };
+// minuten mag 0 zijn als je iets anders invulde (treden, km of rondes)
+// aantal = totaal geteld (treden, sprongen, banen), alleen zonder rondes
+function logCardio(type, minuten, km, rondes = [], datum = vandaagTekst(), aantal = 0) {
+  const item = { id: Date.now(), datum, type, minuten: minuten || 0, km };
   if (rondes.length) item.rondes = rondes;
+  else if (aantal) item.aantal = aantal;
   cardio.unshift(item);
   sorteerNieuwsteEerst(cardio);
   opslag.bewaar("cardio", cardio);

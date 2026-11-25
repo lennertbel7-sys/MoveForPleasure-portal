@@ -16,6 +16,7 @@ const standaardBewegingen = ["Wandelen", "Fietsen", "Hardlopen", "Zwemmen", "Tra
 
 const beweegVelden = {
   minuten: document.getElementById("beweeg-minuten"),
+  aantal: document.getElementById("beweeg-aantal"),
   km: document.getElementById("beweeg-km"),
   kg: document.getElementById("beweeg-kg"),
   sets: document.getElementById("beweeg-sets"),
@@ -93,7 +94,7 @@ function kiesBeweging(naam) {
   pasTypeAan();
   // Naar het eerste veld dat je waarschijnlijk wilt aanpassen
   const vorige = vorigeKeer(naam);
-  (vorige && vorige.kracht ? beweegVelden.sets : beweegVelden.minuten).focus();
+  (vorige && vorige.kracht ? beweegVelden.sets : infoVoor(naam).tellen ? beweegVelden.aantal : beweegVelden.minuten).focus();
 }
 
 // ===== Vorige keer automatisch invullen =====
@@ -107,7 +108,7 @@ function vulVorigeKeerIn() {
   const it = vorige && vorige.item;
   const waarden = !vorige ? {} : vorige.kracht
     ? { minuten: it.minuten || "", kg: it.gewicht || "", sets: it.sets, reps: it.reps }
-    : { minuten: it.minuten || "", km: it.km || "" };
+    : { minuten: it.minuten || "", km: it.km || "", aantal: it.aantal || "" };
 
   let detailsNodig = false;
   Object.entries(beweegVelden).forEach(([sleutel, veld]) => {
@@ -115,7 +116,7 @@ function vulVorigeKeerIn() {
       const nieuw = waarden[sleutel] ?? "";
       veld.value = nieuw;
       veld.dataset.auto = nieuw === "" ? "" : "1";
-      if (nieuw !== "" && sleutel !== "minuten") detailsNodig = true;
+      if (nieuw !== "" && sleutel !== "minuten" && sleutel !== "aantal") detailsNodig = true;
     }
   });
   if (detailsNodig) beweegDetails.open = true;
@@ -140,6 +141,7 @@ document.getElementById("beweeg-formulier").addEventListener("submit", (e) => {
   const sets = Math.round(getal(beweegVelden.sets));
   const reps = Math.round(getal(beweegVelden.reps));
   const km = getal(beweegVelden.km);
+  const aantal = Math.round(getal(beweegVelden.aantal));
   const rondes = verzamelRondes();
   let minuten = Math.round(getal(beweegVelden.minuten));
 
@@ -163,9 +165,16 @@ document.getElementById("beweeg-formulier").addEventListener("submit", (e) => {
   // Geen minuten ingevuld? Dan rekenen we ze uit de tijd van de rondes
   const rondeSeconden = rondes.reduce((som, r) => som + r.seconden, 0);
   if (!minuten && rondeSeconden) minuten = Math.max(1, Math.round(rondeSeconden / 60));
-  if (!minuten) return meld("Hoe lang heb je bewogen? Vul de minuten in.", beweegVelden.minuten);
+  // Tijd is niet verplicht: treden, een afstand of rondes volstaan ook
+  if (!minuten && !aantal && !km && !rondes.length) {
+    const info = infoVoor(naam);
+    return meld(info.tellen
+      ? `Vul in hoeveel ${info.aantal} je deed, of hoe lang je bewoog.`
+      : "Hoe lang heb je bewogen? Vul de minuten in (of de afstand bij Meer details).",
+      info.tellen ? beweegVelden.aantal : beweegVelden.minuten);
+  }
 
-  logCardio(naam, minuten, km, rondes, gekozenDatum);
+  logCardio(naam, minuten, km, rondes, gekozenDatum, aantal);
   naLoggen();
   vierResultaat(voor, false);
 });
