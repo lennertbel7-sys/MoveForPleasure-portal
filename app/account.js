@@ -349,6 +349,8 @@ if (db) {
       await verstuur();
       if (laadMeta().teVersturen.length && !confirm("Niet alles is al online bewaard (geen verbinding?). Als je nu uitlogt, ben je die laatste wijzigingen kwijt. Toch uitloggen?")) return;
     }
+    // Dit toestel afmelden voor pushmeldingen (herinneringen.js)
+    if (typeof pushAfmelden === "function") await pushAfmelden();
     await db.auth.signOut();
     wisLokaleData();
     location.reload();

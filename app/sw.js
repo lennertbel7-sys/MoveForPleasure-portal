@@ -15,7 +15,7 @@
 // Nieuwe release? Verhoog VERSIE hier ÉN de ?v=… in index.html.
 // ============================================================
 
-const VERSIE = 31;
+const VERSIE = 32;
 const CACHE_NAAM = "sportlog-v" + VERSIE;
 const WACHTTIJD_MS = 4000;
 
@@ -23,7 +23,7 @@ const WACHTTIJD_MS = 4000;
 const KERN = [
   "./", "index.html", "manifest.json", "../config.js", "../icon.svg",
   "style.css", "fouten.js", "data.js", "motivatie.js", "berichten.js", "profiel.js", "cardio.js",
-  "planning.js", "agenda.js", "beweging.js", "app.js", "account.js", "chat.js", "onboarding.js",
+  "planning.js", "agenda.js", "beweging.js", "app.js", "account.js", "chat.js", "onboarding.js", "herinneringen.js",
 ].map((pad) => (/\.(js|css)$/.test(pad) && !pad.startsWith("..") ? `${pad}?v=${VERSIE}` : pad));
 
 self.addEventListener("install", (gebeurtenis) => {
@@ -39,9 +39,56 @@ self.addEventListener("install", (gebeurtenis) => {
 self.addEventListener("activate", (gebeurtenis) => {
   gebeurtenis.waitUntil(
     self.clients.claim().then(() => caches.keys()).then((namen) =>
-      Promise.all(namen.filter((n) => n !== CACHE_NAAM).map((n) => caches.delete(n)))
+      // (de map met instellingen voor herinneringen laten we staan)
+      Promise.all(namen.filter((n) => n !== CACHE_NAAM && n !== INSTELLINGEN).map((n) => caches.delete(n)))
     )
   );
+});
+
+// ===== Herinneringen (pushmeldingen) =====
+// De server stuurt een LEEG seintje (geen persoonlijke inhoud via Google/Apple).
+// De tekst halen we uit wat de app zelf klaarzette: je planning per weekdag
+// (herinneringen.js bewaart die in de cache "mfp-instellingen").
+const INSTELLINGEN = "mfp-instellingen";
+const DAGEN = ["zo", "ma", "di", "wo", "do", "vr", "za"];
+
+self.addEventListener("push", (gebeurtenis) => {
+  gebeurtenis.waitUntil((async () => {
+    let titel = "MoveForPleasure";
+    let tekst = "Zin om even te bewegen? Elke minuut telt. 🧡";
+    try {
+      const cache = await caches.open(INSTELLINGEN);
+      const test = await cache.match("test.json");
+      if (test && (await test.json()).tot > Date.now()) {
+        titel = "🔔 Het werkt!";
+        tekst = "Zo krijg je je herinneringen op dagen waarop je iets plande.";
+        await cache.delete("test.json");
+      } else {
+        const opgeslagen = await cache.match("herinnering.json");
+        const perDag = opgeslagen ? await opgeslagen.json() : {};
+        const vandaag = perDag[DAGEN[new Date().getDay()]];
+        if (vandaag) { titel = vandaag.titel; tekst = vandaag.tekst; }
+      }
+    } catch { /* standaardtekst */ }
+    await self.registration.showNotification(titel, {
+      body: tekst,
+      icon: "../logo/icon-192.png",
+      badge: "../logo/icon-192.png",
+      tag: "herinnering",          // nooit meerdere herinneringen tegelijk
+      data: { url: "./" },
+    });
+  })());
+});
+
+// Tik op de melding: open (of toon) de app
+self.addEventListener("notificationclick", (gebeurtenis) => {
+  gebeurtenis.notification.close();
+  gebeurtenis.waitUntil((async () => {
+    const vensters = await self.clients.matchAll({ type: "window", includeUncontrolled: true });
+    const app = vensters.find((v) => v.url.includes("/app/"));
+    if (app) return app.focus();
+    return self.clients.openWindow("./");
+  })());
 });
 
 async function uitCache(verzoek) {

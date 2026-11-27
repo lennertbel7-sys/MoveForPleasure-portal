@@ -818,3 +818,13 @@ input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 3px
 /* Level en cijfers staan nu op Vooruitgang */
 #tab-vooruitgang .cijfers { margin-bottom: 14px; }
 #tab-vooruitgang .level { margin-bottom: 0; }
+
+/* ===== Herinneringen ===== */
+.h-instellingen { margin: -6px 0 14px; padding: 12px 14px; border-radius: 12px; background: rgba(0, 0, 0, 0.18); border: 1px solid #402d4c; }
+.h-instellingen select { margin-bottom: 12px; }
+.h-toestel { margin-bottom: 10px; }
+.h-toestel .gedempt { margin-bottom: 6px; }
+.h-toestel .knop-rand-app { margin-top: 4px; }
+.h-toestel .link-knop { margin-top: 8px; }
+.h-vinkje { display: flex; gap: 10px; align-items: center; font-size: 0.88rem; color: #d9c6d2; cursor: pointer; min-height: 44px; }
+.h-vinkje input { width: 20px; height: 20px; margin: 0; accent-color: #ff7a3d; }

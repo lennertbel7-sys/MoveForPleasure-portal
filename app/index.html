@@ -8,7 +8,7 @@
   <link rel="manifest" href="manifest.json">
   <link rel="icon" href="../icon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="../apple-touch-icon.png">
-  <link rel="stylesheet" href="style.css?v=31">
+  <link rel="stylesheet" href="style.css?v=32">
 </head>
 <body>
   <!-- ===== Welkomstscherm: eerst (gratis) account maken of inloggen (account.js) ===== -->
@@ -353,6 +353,38 @@
             <input type="checkbox" id="p-zondagmail" class="schakel-invoer" role="switch">
             <span class="schakel-knop" aria-hidden="true"></span>
           </label>
+
+          <!-- Herinneringen op geplande dagen (herinneringen.js) -->
+          <label class="schakel-rij" for="h-aan">
+            <span class="schakel-tekst">
+              <strong>🔔 Herinneringen</strong>
+              <small>Een seintje op dagen waarop je iets plande en nog niet bewoog.</small>
+            </span>
+            <input type="checkbox" id="h-aan" class="schakel-invoer" role="switch">
+            <span class="schakel-knop" aria-hidden="true"></span>
+          </label>
+          <div id="h-instellingen" class="h-instellingen" hidden>
+            <label class="veld-label" for="h-uur">Wanneer?</label>
+            <select id="h-uur">
+              <option value="7">'s Ochtends om 7u</option>
+              <option value="8">'s Ochtends om 8u</option>
+              <option value="9">'s Ochtends om 9u</option>
+              <option value="12">'s Middags om 12u</option>
+              <option value="16">Na het werk om 16u</option>
+              <option value="17">Na het werk om 17u</option>
+              <option value="18">'s Avonds om 18u</option>
+              <option value="19">'s Avonds om 19u</option>
+            </select>
+
+            <div class="h-toestel">
+              <p id="h-toestel-status" class="gedempt"></p>
+              <button type="button" id="h-push-aan" class="knop-rand-app" hidden>📲 Meldingen aanzetten op dit toestel</button>
+              <button type="button" id="h-test" class="link-knop" hidden>Stuur een testmelding</button>
+              <p id="h-ios-tip" class="gedempt klein-uitleg" hidden>Op een iPhone: zet de app eerst op je beginscherm (Delen → "Zet op beginscherm") en open hem van daaruit.</p>
+            </div>
+
+            <label class="h-vinkje"><input type="checkbox" id="h-mail" checked> Geen melding mogelijk? Stuur dan een mail.</label>
+          </div>
           <div class="account-knoppen">
             <button type="button" id="account-uitloggen" class="knop-rand-app">Uitloggen</button>
             <button type="button" id="account-verwijder" class="link-knop gevaar">Account verwijderen</button>
@@ -519,25 +551,26 @@
     <button class="nav-knop" data-tab="vooruitgang">📈<span>Vooruitgang</span></button>
   </nav>
 
-  <!-- ?v=31 achter onze eigen bestanden: verhoog dit getal bij elke update
+  <!-- ?v=32 achter onze eigen bestanden: verhoog dit getal bij elke update
        (samen met CACHE_NAAM in sw.js), zodat telefoons alles tegelijk vernieuwen. -->
-  <script src="../config.js?v=31"></script>
+  <script src="../config.js?v=32"></script>
   <!-- Foutmeldingen automatisch doorsturen (laadt als eerste) -->
-  <script src="fouten.js?v=31"></script>
+  <script src="fouten.js?v=32"></script>
   <!-- Supabase (inloggen + online opslag). Lukt dit niet (offline), dan werkt de app gewoon lokaal verder. -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.119.2/dist/umd/supabase.js" integrity="sha256-iBavBNmRXbuhiC1vhPC0AtxAJoBjpj2cZtJPUvNxwmM=" crossorigin="anonymous"></script>
-  <script src="data.js?v=31"></script>
-  <script src="../weetjes.js?v=31"></script>
-  <script src="motivatie.js?v=31"></script>
-  <script src="berichten.js?v=31"></script>
-  <script src="profiel.js?v=31"></script>
-  <script src="cardio.js?v=31"></script>
-  <script src="planning.js?v=31"></script>
-  <script src="agenda.js?v=31"></script>
-  <script src="beweging.js?v=31"></script>
-  <script src="app.js?v=31"></script>
-  <script src="account.js?v=31"></script>
-  <script src="chat.js?v=31"></script>
-  <script src="onboarding.js?v=31"></script>
+  <script src="data.js?v=32"></script>
+  <script src="../weetjes.js?v=32"></script>
+  <script src="motivatie.js?v=32"></script>
+  <script src="berichten.js?v=32"></script>
+  <script src="profiel.js?v=32"></script>
+  <script src="cardio.js?v=32"></script>
+  <script src="planning.js?v=32"></script>
+  <script src="agenda.js?v=32"></script>
+  <script src="beweging.js?v=32"></script>
+  <script src="app.js?v=32"></script>
+  <script src="account.js?v=32"></script>
+  <script src="chat.js?v=32"></script>
+  <script src="onboarding.js?v=32"></script>
+  <script src="herinneringen.js?v=32"></script>
 </body>
 </html>

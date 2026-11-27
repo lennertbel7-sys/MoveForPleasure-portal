@@ -54,6 +54,7 @@ function vernieuwAlles() {
   vernieuwProfiel();
   vernieuwPlanning();
   vernieuwAgendas();
+  if (typeof vernieuwHerinneringen === "function") vernieuwHerinneringen();
 }
 
 // ===== Felicitaties =====
