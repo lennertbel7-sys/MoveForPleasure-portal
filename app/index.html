@@ -8,7 +8,7 @@
   <link rel="manifest" href="manifest.json">
   <link rel="icon" href="../icon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="../apple-touch-icon.png">
-  <link rel="stylesheet" href="style.css?v=28">
+  <link rel="stylesheet" href="style.css?v=29">
 </head>
 <body>
   <!-- ===== Welkomstscherm: eerst (gratis) account maken of inloggen (account.js) ===== -->
@@ -415,6 +415,54 @@
   </main>
 
   <!-- ===== Felicitatie (verschijnt bij records, badges en mijlpalen) ===== -->
+  <!-- ===== Onboarding: 3 korte vragen na je eerste login (onboarding.js) ===== -->
+  <div id="onboarding" class="welkom-scherm onboarding" hidden role="dialog" aria-modal="true" aria-labelledby="ob-titel">
+    <div class="welkom-inhoud">
+      <div class="ob-bolletjes" aria-hidden="true"><i></i><i></i><i></i></div>
+
+      <!-- Stap 1: naam -->
+      <form class="ob-stap" data-stap="1">
+        <p class="ob-boven">Stap 1 van 3</p>
+        <h1 id="ob-titel" class="ob-titel">Fijn dat je er bent! 🧡</h1>
+        <p class="welkom-sub">Hoe mogen we je noemen?</p>
+        <input type="text" id="ob-naam" maxlength="30" autocomplete="given-name" placeholder="Je voornaam" aria-label="Je voornaam">
+        <button type="submit">Volgende</button>
+      </form>
+
+      <!-- Stap 2: waarom -->
+      <div class="ob-stap" data-stap="2" hidden>
+        <p class="ob-boven">Stap 2 van 3</p>
+        <h1 class="ob-titel">Waarom wil jij bewegen?</h1>
+        <p class="welkom-sub">Kies wat het best bij je past. Er is geen fout antwoord.</p>
+        <div id="ob-doelen" class="doel-tegels" role="radiogroup" aria-label="Waarom wil je bewegen?"></div>
+        <button type="button" id="ob-naar-3">Volgende</button>
+      </div>
+
+      <!-- Stap 3: hoeveel dagen + wat graag -->
+      <div class="ob-stap" data-stap="3" hidden>
+        <p class="ob-boven">Stap 3 van 3</p>
+        <h1 class="ob-titel">Hoeveel dagen per week?</h1>
+        <p class="welkom-sub">Begin gerust klein. Je kan dit altijd aanpassen.</p>
+        <div id="ob-dagen" class="weekdoel-keuze" role="radiogroup" aria-label="Beweegdagen per week"></div>
+        <p id="ob-dagen-uitleg" class="gedempt ob-uitleg"></p>
+        <p class="ob-vraag">En wat doe je het liefst?</p>
+        <div id="ob-sporten" class="ob-sporten" role="radiogroup" aria-label="Wat doe je het liefst?"></div>
+        <button type="button" id="ob-klaar">Maak mijn week ✨</button>
+      </div>
+
+      <!-- Klaar -->
+      <div class="ob-stap" data-stap="4" hidden>
+        <div class="ob-feest" aria-hidden="true">🎉</div>
+        <h1 id="ob-klaar-titel" class="ob-titel">Klaar!</h1>
+        <p id="ob-klaar-tekst" class="welkom-sub"></p>
+        <button type="button" id="ob-eerste-log">Log je eerste beweging</button>
+        <button type="button" id="ob-planning" class="knop-rand-app">Bekijk mijn planning</button>
+      </div>
+
+      <button type="button" id="ob-later" class="ob-later">Later</button>
+    </div>
+  </div>
+
   <!-- ===== Toestemming gewicht (gezondheidsgegevens, AVG art. 9) — profiel.js ===== -->
   <div id="toestemming" class="viering toestemming" hidden role="dialog" aria-modal="true" aria-labelledby="toestemming-titel">
     <div class="viering-kaart">
@@ -467,24 +515,25 @@
     <button class="nav-knop" data-tab="vooruitgang">📈<span>Vooruitgang</span></button>
   </nav>
 
-  <!-- ?v=28 achter onze eigen bestanden: verhoog dit getal bij elke update
+  <!-- ?v=29 achter onze eigen bestanden: verhoog dit getal bij elke update
        (samen met CACHE_NAAM in sw.js), zodat telefoons alles tegelijk vernieuwen. -->
-  <script src="../config.js?v=28"></script>
+  <script src="../config.js?v=29"></script>
   <!-- Foutmeldingen automatisch doorsturen (laadt als eerste) -->
-  <script src="fouten.js?v=28"></script>
+  <script src="fouten.js?v=29"></script>
   <!-- Supabase (inloggen + online opslag). Lukt dit niet (offline), dan werkt de app gewoon lokaal verder. -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.119.2/dist/umd/supabase.js" integrity="sha256-iBavBNmRXbuhiC1vhPC0AtxAJoBjpj2cZtJPUvNxwmM=" crossorigin="anonymous"></script>
-  <script src="data.js?v=28"></script>
-  <script src="../weetjes.js?v=28"></script>
-  <script src="motivatie.js?v=28"></script>
-  <script src="berichten.js?v=28"></script>
-  <script src="profiel.js?v=28"></script>
-  <script src="cardio.js?v=28"></script>
-  <script src="planning.js?v=28"></script>
-  <script src="agenda.js?v=28"></script>
-  <script src="beweging.js?v=28"></script>
-  <script src="app.js?v=28"></script>
-  <script src="account.js?v=28"></script>
-  <script src="chat.js?v=28"></script>
+  <script src="data.js?v=29"></script>
+  <script src="../weetjes.js?v=29"></script>
+  <script src="motivatie.js?v=29"></script>
+  <script src="berichten.js?v=29"></script>
+  <script src="profiel.js?v=29"></script>
+  <script src="cardio.js?v=29"></script>
+  <script src="planning.js?v=29"></script>
+  <script src="agenda.js?v=29"></script>
+  <script src="beweging.js?v=29"></script>
+  <script src="app.js?v=29"></script>
+  <script src="account.js?v=29"></script>
+  <script src="chat.js?v=29"></script>
+  <script src="onboarding.js?v=29"></script>
 </body>
 </html>

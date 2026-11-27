@@ -769,3 +769,38 @@ input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 3px
   background: #23152f; color: #ffd23f; border: 0; border-radius: 999px; min-height: 36px;
   padding: 6px 14px; font: inherit; font-weight: 700; cursor: pointer;
 }
+
+/* ===== Onboarding (3 vragen na eerste login) ===== */
+.onboarding { z-index: 60; }
+.onboarding .welkom-inhoud { display: flex; flex-direction: column; }
+.ob-bolletjes { display: flex; justify-content: center; gap: 8px; margin-bottom: 26px; }
+.ob-bolletjes i { width: 28px; height: 6px; border-radius: 3px; background: #402d4c; transition: background 0.3s; }
+.ob-bolletjes i.actief { background: linear-gradient(90deg, #ff7a3d, #ff4f8b); }
+.ob-stap { animation: ob-in 0.3s ease; }
+@keyframes ob-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+.ob-boven { color: #a8919f; font-size: 0.8rem; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 6px; }
+.ob-titel { font-size: 1.6rem; line-height: 1.25; margin-bottom: 8px; }
+.onboarding input[type="text"] { text-align: center; font-size: 1.1rem; padding: 14px; margin: 6px 0 14px; }
+.onboarding .doel-tegels { margin: 6px 0 18px; text-align: left; }
+.onboarding .weekdoel-keuze { margin: 8px 0 6px; }
+.ob-uitleg { min-height: 2.6em; margin-bottom: 14px; }
+.ob-vraag { font-weight: 700; margin: 4px 0 10px; }
+.ob-sporten { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-bottom: 20px; }
+.ob-sport {
+  min-height: 44px; padding: 8px 14px; border-radius: 22px; cursor: pointer; font: inherit; font-size: 0.92rem;
+  background: rgba(0, 0, 0, 0.2); border: 1px solid #402d4c; color: #d9c6d2;
+}
+.ob-sport.gekozen { background: rgba(255, 122, 61, 0.18); border-color: #ff7a3d; color: #fff; font-weight: 600; }
+.ob-feest { font-size: 3.4rem; margin: 10px 0 6px; }
+.onboarding .knop-rand-app { margin-top: 10px; }
+.ob-later {
+  align-self: center; margin-top: 18px; min-height: 44px; padding: 8px 18px;
+  background: none; border: 0; color: #a8919f; font: inherit; font-size: 0.9rem; cursor: pointer; text-decoration: underline;
+}
+.onboarding .welkom-inhoud { margin: auto 0; } /* verticaal centreren, scrollt nog als het niet past */
+/* Hoofdknoppen in de onboarding (ook die geen formulierknop zijn) */
+.onboarding #ob-naar-3, .onboarding #ob-klaar, .onboarding #ob-eerste-log {
+  width: 100%; padding: 13px; border: none; border-radius: 10px; cursor: pointer;
+  background: #ff7a3d; color: #23152f; font: inherit; font-size: 1rem; font-weight: 700;
+}
+.onboarding #ob-naar-3:hover, .onboarding #ob-klaar:hover, .onboarding #ob-eerste-log:hover { background: #ef6328; }

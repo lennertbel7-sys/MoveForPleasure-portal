@@ -385,6 +385,12 @@ if (db) {
       setTimeout(async () => {
         const eersteKeer = laadMeta().userId !== gebruiker.id;
         await synchroniseer();
+        // Nieuw lid? Dan eerst de 3 korte vragen (onboarding.js). Pas na de sync,
+        // zodat we zeker weten of er online al gegevens stonden.
+        if (typeof startOnboardingIndienNodig === "function" && nodigOnboarding()) {
+          startOnboardingIndienNodig();
+          return;
+        }
         if (eersteKeer && gebeurtenis !== "INITIAL_SESSION") toonToast("☁️ Ingelogd! Je beweging staat nu veilig online.");
       }, 0);
     }

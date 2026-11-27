@@ -246,22 +246,29 @@ const spreiding = {
   1: ["wo"], 2: ["di", "za"], 3: ["ma", "wo", "za"], 4: ["ma", "wo", "vr", "zo"],
   5: ["ma", "di", "do", "vr", "zo"], 6: ["ma", "di", "wo", "do", "vr", "za"], 7: WEEKDAGEN,
 };
-plEl("vul-week").addEventListener("click", () => {
+// Geeft de dagen terug die erbij gepland werden (leeg = er was al genoeg gepland)
+function vulWeekVoor(sport = favorieteSport()) {
   let tekort = weekdoel - geplandeDagen();
-  if (tekort <= 0) { toonToast("✅ Je week staat al vol genoeg. Goed bezig!"); return; }
-  const sport = favorieteSport();
+  if (tekort <= 0) return [];
   const minuten = profiel.niveau === "gevorderd" ? 45 : profiel.niveau === "gemiddeld" ? 30 : 20;
   const nieuw = { ...schema };
+  const erbij = [];
   // Eerst de goed verspreide dagen, daarna eventueel andere lege dagen
   const volgorde = [...spreiding[weekdoel], ...WEEKDAGEN];
   volgorde.forEach(dag => {
     if (tekort > 0 && !nieuw[dag].length) {
       nieuw[dag] = [{ id: Date.now() + WEEKDAGEN.indexOf(dag), sport, minuten, tijd: "", notitie: "" }];
+      erbij.push(dag);
       tekort--;
     }
   });
   bewaarSchema(nieuw);
   vernieuwAlles();
+  return erbij;
+}
+
+plEl("vul-week").addEventListener("click", () => {
+  if (!vulWeekVoor().length) { toonToast("✅ Je week staat al vol genoeg. Goed bezig!"); return; }
   toonToast("✨ Voorstel klaar! Pas gerust aan wat je wil.");
 });
 
