@@ -10,8 +10,11 @@
 
 const opslag = {
   laad(sleutel, standaardWaarde) {
-    const tekst = localStorage.getItem("sportlog-" + sleutel);
-    return tekst ? JSON.parse(tekst) : standaardWaarde;
+    // Beschadigde opslag mag de app nooit laten crashen
+    try {
+      const tekst = localStorage.getItem("sportlog-" + sleutel);
+      return tekst ? JSON.parse(tekst) : standaardWaarde;
+    } catch { return standaardWaarde; }
   },
   bewaar(sleutel, waarde) {
     localStorage.setItem("sportlog-" + sleutel, JSON.stringify(waarde));
@@ -139,8 +142,18 @@ function logWorkout(oefening, gewicht, sets, reps, datum = vandaagTekst(), minut
   opslag.bewaar("workouts", workouts);
 }
 
+// Onthoud dat een item gewist is, zodat het niet terugkomt
+// wanneer een ander toestel synchroniseert (zie account.js)
+function markeerVerwijderd(soort, ids) {
+  const verwijderd = opslag.laad("verwijderd", {});
+  verwijderd[soort] = verwijderd[soort] || {};
+  [].concat(ids).forEach(id => { verwijderd[soort][id] = Date.now(); });
+  opslag.bewaar("verwijderd", verwijderd);
+}
+
 function verwijderWorkout(id) {
   workouts = workouts.filter(w => w.id !== id);
+  markeerVerwijderd("workouts", id);
   opslag.bewaar("workouts", workouts);
 }
 
@@ -158,6 +171,7 @@ function logCardio(type, minuten, km, rondes = [], datum = vandaagTekst(), aanta
 
 function verwijderCardio(id) {
   cardio = cardio.filter(c => c.id !== id);
+  markeerVerwijderd("cardio", id);
   opslag.bewaar("cardio", cardio);
 }
 
@@ -179,6 +193,8 @@ function bewaarProfiel(nieuwProfiel) {
 // Lichaamsgewicht: weeg je twee keer op één dag, dan telt de laatste
 function logGewicht(kg) {
   const vandaag = vandaagTekst();
+  const vervangen = gewichten.filter(g => g.datum === vandaag).map(g => g.id);
+  if (vervangen.length) markeerVerwijderd("gewichten", vervangen);
   gewichten = gewichten.filter(g => g.datum !== vandaag);
   gewichten.push({ id: Date.now(), datum: vandaag, kg });
   gewichten.sort((a, b) => a.datum.localeCompare(b.datum)); // oudste eerst
@@ -187,5 +203,13 @@ function logGewicht(kg) {
 
 function verwijderGewicht(id) {
   gewichten = gewichten.filter(g => g.id !== id);
+  markeerVerwijderd("gewichten", id);
+  opslag.bewaar("gewichten", gewichten);
+}
+
+// Alle gewichtsmetingen wissen (bij intrekken van toestemming)
+function wisAlleGewichten() {
+  if (gewichten.length) markeerVerwijderd("gewichten", gewichten.map(g => g.id));
+  gewichten = [];
   opslag.bewaar("gewichten", gewichten);
 }

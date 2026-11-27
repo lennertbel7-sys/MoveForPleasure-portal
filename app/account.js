@@ -7,10 +7,12 @@
 // 2. Ben je ingelogd, dan sturen we elke wijziging een paar
 //    seconden later door naar de tabel "gebruikersdata"
 //    (één rij per onderdeel: workouts, cardio, profiel, ...).
-// 3. Bij het openen van de app halen we op wat online staat.
-//    Per onderdeel wint de nieuwste versie.
-// 4. Eerste keer inloggen op een toestel? Dan voegen we wat je
-//    lokaal had samen met wat online staat. Niets gaat verloren.
+// 3. Lijsten (workouts, bewegingen, gewichten) worden ALTIJD per
+//    item samengevoegd: wat je op je gsm logt en wat je op je
+//    tablet logt, komt allebei in je account. Wat je wist, onthouden
+//    we in "verwijderd", zodat het niet terugkomt van een ander toestel.
+// 4. Voor de rest (profiel, planning, weekdoel) wint de nieuwste versie.
+//    Eerste login op een toestel: lokaal en online worden samengevoegd.
 //
 // Beveiliging: de database laat elke gebruiker alleen zijn eigen
 // rijen zien (Row Level Security). De sleutel in config.js is
@@ -18,9 +20,11 @@
 // ============================================================
 
 // Onderdelen die we online bewaren (de berichten-cache niet: die komt van de server)
-const SYNC_SLEUTELS = ["workouts", "cardio", "schema", "weekdoel", "profiel", "gewichten", "badges-gezien", "berichten-gelezen"];
-// Lijsten met een id per item: die kunnen we bij de eerste login samenvoegen
+const SYNC_SLEUTELS = ["workouts", "cardio", "schema", "weekdoel", "profiel", "gewichten", "badges-gezien", "berichten-gelezen", "verwijderd"];
+// Lijsten met een id per item: die voegen we bij elke synchronisatie samen
 const LIJST_SLEUTELS = ["workouts", "cardio", "gewichten"];
+// Lijstjes van ids (gezien/gelezen): gewoon alles bij elkaar
+const SET_SLEUTELS = ["badges-gezien", "berichten-gelezen"];
 const META_SLEUTEL = "sportlog-sync"; // administratie: wat moet nog verstuurd worden?
 
 // Supabase laden (als de CDN niet bereikbaar was, werkt de app gewoon lokaal)
@@ -31,6 +35,7 @@ const db = (typeof supabase !== "undefined")
 let gebruiker = null;     // ingelogde gebruiker (of null)
 let verstuurTimer = null;
 let bezigMetSync = false;
+let syncOpnieuw = false;  // tijdens een sync iets gewijzigd? Dan straks nog eens
 
 // ===== Administratie (welke onderdelen zijn lokaal gewijzigd?) =====
 // { userId, gewijzigd: { sleutel: tijdstip }, teVersturen: [sleutels] }
@@ -50,59 +55,61 @@ function naOpslaan(sleutel) {
   meta.gewijzigd[sleutel] = new Date().toISOString();
   if (!meta.teVersturen.includes(sleutel)) meta.teVersturen.push(sleutel);
   bewaarMeta(meta);
-  if (gebruiker && !bezigMetSync) {
+  if (gebruiker) {
+    if (bezigMetSync) syncOpnieuw = true;
     clearTimeout(verstuurTimer);
-    verstuurTimer = setTimeout(verstuur, 1500);
+    verstuurTimer = setTimeout(synchroniseer, 1500);
   }
   toonSyncStatus();
 }
 
-// ===== Versturen naar Supabase =====
+// Wordt nog gebruikt bij uitloggen: alles wat openstaat meteen versturen
 async function verstuur() {
-  const meta = laadMeta();
-  if (!gebruiker || !meta.teVersturen.length) { toonSyncStatus(); return; }
-  if (!navigator.onLine) { toonSyncStatus(); return; }
-
-  const rijen = meta.teVersturen
-    .map(s => ({ user_id: gebruiker.id, sleutel: s, waarde: opslag.laad(s, null), bijgewerkt: meta.gewijzigd[s] || new Date().toISOString() }))
-    .filter(r => r.waarde !== null);
-  toonSyncStatus("bezig");
-  const { error } = await db.from("gebruikersdata").upsert(rijen);
-  if (error) {
-    console.warn("Online bewaren mislukt:", error.message);
-    toonSyncStatus("fout");
-    return;
-  }
-  // Alleen afvinken wat sindsdien niet opnieuw gewijzigd is
-  const nu = laadMeta();
-  nu.teVersturen = nu.teVersturen.filter(s => {
-    const verstuurd = rijen.find(r => r.sleutel === s);
-    return !verstuurd || nu.gewijzigd[s] !== verstuurd.bijgewerkt;
-  });
-  bewaarMeta(nu);
-  toonSyncStatus();
+  clearTimeout(verstuurTimer);
+  await synchroniseer();
 }
 
-// ===== Samenvoegen bij de eerste login op dit toestel =====
+// ===== Samenvoegen =====
+// Gewiste items bewaren we maximaal een jaar in "verwijderd"
+const BEWAAR_VERWIJDERD_DAGEN = 365;
+
+// "verwijderd" = { workouts: { id: gewistOpMs }, cardio: {...}, gewichten: {...} }
+function voegVerwijderdSamen(a, b) {
+  const samen = {};
+  const grens = Date.now() - BEWAAR_VERWIJDERD_DAGEN * 86400000;
+  [a || {}, b || {}].forEach(bron => {
+    Object.entries(bron).forEach(([soort, ids]) => {
+      samen[soort] = samen[soort] || {};
+      Object.entries(ids || {}).forEach(([id, op]) => {
+        if (op > grens) samen[soort][id] = Math.max(op, samen[soort][id] || 0);
+      });
+    });
+  });
+  return samen;
+}
+
+// Lijst per id samenvoegen; wat ergens gewist is, valt weg
+function voegLijstSamen(sleutel, lokaal, online, verwijderd) {
+  if (!lokaal && !online) return null;
+  const weg = (verwijderd && verwijderd[sleutel]) || {};
+  const perId = new Map();
+  [...(online || []), ...(lokaal || [])].forEach(item => {
+    if (item && !weg[item.id]) perId.set(item.id, item);
+  });
+  let lijst = [...perId.values()];
+  if (sleutel === "gewichten") {
+    // max. één meting per dag: de laatst ingevoerde telt
+    const perDag = new Map();
+    lijst.sort((a, b) => a.id - b.id).forEach(g => perDag.set(g.datum, g));
+    return [...perDag.values()].sort((a, b) => a.datum.localeCompare(b.datum));
+  }
+  return lijst.sort((a, b) => b.datum.localeCompare(a.datum) || b.id - a.id); // nieuwste eerst
+}
+
+// Bij de eerste login op een toestel: profiel, planning en weekdoel samenvoegen
 function voegSamen(sleutel, lokaal, online) {
   if (lokaal === null || lokaal === undefined) return online;
   if (online === null || online === undefined) return lokaal;
-
-  if (LIJST_SLEUTELS.includes(sleutel)) {
-    const perId = new Map();
-    [...online, ...lokaal].forEach(item => perId.set(item.id, item));
-    let lijst = [...perId.values()];
-    if (sleutel === "gewichten") {
-      // max. één meting per dag: de laatste telt
-      const perDag = new Map();
-      lijst.sort((a, b) => a.id - b.id).forEach(g => perDag.set(g.datum, g));
-      return [...perDag.values()].sort((a, b) => a.datum.localeCompare(b.datum));
-    }
-    return lijst.sort((a, b) => b.id - a.id); // nieuwste eerst
-  }
-  if (sleutel === "badges-gezien" || sleutel === "berichten-gelezen") {
-    return [...new Set([...online, ...lokaal])];
-  }
   if (sleutel === "schema") {
     // per dag: lokaal ingevuld wint, anders wat online stond
     const lok = normaliseerSchema(lokaal), onl = normaliseerSchema(online);
@@ -121,68 +128,98 @@ function voegSamen(sleutel, lokaal, online) {
   return online; // weekdoel: wat al online stond
 }
 
-// ===== Ophalen + samenvoegen =====
+function lokaleWaarde(sleutel) {
+  try {
+    const tekst = localStorage.getItem("sportlog-" + sleutel);
+    return tekst ? JSON.parse(tekst) : null;
+  } catch { return null; }
+}
+
+// ===== Ophalen, samenvoegen en versturen (in één beweging) =====
 async function synchroniseer() {
-  if (!gebruiker || bezigMetSync || !navigator.onLine) { toonSyncStatus(); return; }
+  if (!db || !gebruiker || !navigator.onLine) { toonSyncStatus(); return; }
+  if (bezigMetSync) { syncOpnieuw = true; return; }
   bezigMetSync = true;
+  syncOpnieuw = false;
   toonSyncStatus("bezig");
 
-  const { data: rijen, error } = await db.from("gebruikersdata").select("sleutel, waarde, bijgewerkt");
-  if (error) {
-    console.warn("Ophalen mislukt:", error.message);
+  let gelukt = false;
+  try {
+    const { data: rijen, error } = await db.from("gebruikersdata").select("sleutel, waarde, bijgewerkt");
+    if (error) throw error;
+
+    const meta = laadMeta();
+    const eersteKeer = meta.userId !== gebruiker.id;
+    const online = Object.fromEntries(rijen.map(r => [r.sleutel, r]));
+    const stempels = { ...meta.gewijzigd }; // om straks te zien of er tussendoor iets wijzigde
+    const teVersturen = [];
+    let veranderd = false;
+    let verwijderd = null;
+
+    // "verwijderd" eerst, want de lijsten hebben die nodig
+    const volgorde = ["verwijderd", ...SYNC_SLEUTELS.filter(s => s !== "verwijderd")];
+    volgorde.forEach(s => {
+      const rij = online[s];
+      const onlineWaarde = rij ? rij.waarde : null;
+      const lokaal = lokaleWaarde(s);
+      let nieuw;
+
+      if (s === "verwijderd") {
+        nieuw = voegVerwijderdSamen(lokaal, onlineWaarde);
+        verwijderd = nieuw;
+      } else if (LIJST_SLEUTELS.includes(s)) {
+        nieuw = voegLijstSamen(s, lokaal, onlineWaarde, verwijderd);
+      } else if (SET_SLEUTELS.includes(s)) {
+        nieuw = (lokaal || onlineWaarde) ? [...new Set([...(onlineWaarde || []), ...(lokaal || [])])] : null;
+      } else if (eersteKeer) {
+        nieuw = voegSamen(s, lokaal, onlineWaarde);
+      } else if (!rij) {
+        nieuw = lokaal;
+      } else if (meta.teVersturen.includes(s) && new Date(meta.gewijzigd[s]) > new Date(rij.bijgewerkt)) {
+        nieuw = lokaal; // hier recenter gewijzigd (bv. offline): lokaal wint
+      } else {
+        nieuw = onlineWaarde; // online is nieuwer
+      }
+
+      if (nieuw === null || nieuw === undefined) return;
+      const nieuwTekst = JSON.stringify(nieuw);
+      if (nieuwTekst !== JSON.stringify(lokaal)) {
+        localStorage.setItem("sportlog-" + s, nieuwTekst); // direct, zonder naOpslaan
+        veranderd = true;
+      }
+      if (nieuwTekst !== JSON.stringify(onlineWaarde)) {
+        teVersturen.push({ user_id: gebruiker.id, sleutel: s, waarde: nieuw, bijgewerkt: new Date().toISOString() });
+      }
+    });
+
+    if (teVersturen.length) {
+      const { error: fout } = await db.from("gebruikersdata").upsert(teVersturen);
+      if (fout) throw fout;
+    }
+
+    // Administratie: afvinken wat tijdens deze sync niet opnieuw gewijzigd is
+    const nu = laadMeta();
+    nu.userId = gebruiker.id;
+    nu.teVersturen = nu.teVersturen.filter(s => nu.gewijzigd[s] !== stempels[s]);
+    bewaarMeta(nu);
+
+    if (veranderd) {
+      herlaadData();
+      gezienBadges = opslag.laad("badges-gezien", gezienBadges);
+      gelezenBerichten = opslag.laad("berichten-gelezen", []);
+      vernieuwAlles();
+      if (typeof vulProfielFormulier === "function") vulProfielFormulier();
+    }
+    gelukt = true;
+  } catch (fout) {
+    console.warn("Synchroniseren mislukt:", fout && fout.message);
+  } finally {
     bezigMetSync = false;
-    toonSyncStatus("fout");
-    return;
   }
 
-  const meta = laadMeta();
-  const eersteKeer = meta.userId !== gebruiker.id;
-  let veranderd = false;
-
-  SYNC_SLEUTELS.forEach(s => {
-    const rij = rijen.find(r => r.sleutel === s);
-    const lokaalTekst = localStorage.getItem("sportlog-" + s);
-    const lokaal = lokaalTekst ? JSON.parse(lokaalTekst) : null;
-
-    let nieuw;
-    let moetVersturen = false;
-    if (eersteKeer) {
-      nieuw = voegSamen(s, lokaal, rij ? rij.waarde : null);
-      moetVersturen = nieuw !== null && JSON.stringify(nieuw) !== JSON.stringify(rij ? rij.waarde : null);
-    } else if (!rij) {
-      nieuw = lokaal;
-      moetVersturen = lokaal !== null;
-    } else if (meta.teVersturen.includes(s) && new Date(meta.gewijzigd[s]) > new Date(rij.bijgewerkt)) {
-      nieuw = lokaal; // hier recenter gewijzigd (bv. offline): lokaal wint
-      moetVersturen = true;
-    } else {
-      nieuw = rij.waarde; // online is nieuwer
-      meta.teVersturen = meta.teVersturen.filter(x => x !== s);
-      meta.gewijzigd[s] = rij.bijgewerkt;
-    }
-
-    if (nieuw !== null && JSON.stringify(nieuw) !== lokaalTekst) {
-      localStorage.setItem("sportlog-" + s, JSON.stringify(nieuw)); // direct, zonder naOpslaan
-      veranderd = true;
-    }
-    if (moetVersturen) {
-      if (!meta.teVersturen.includes(s)) meta.teVersturen.push(s);
-      if (eersteKeer || !meta.gewijzigd[s]) meta.gewijzigd[s] = new Date().toISOString();
-    }
-  });
-
-  meta.userId = gebruiker.id;
-  bewaarMeta(meta);
-
-  if (veranderd) {
-    herlaadData();
-    gezienBadges = opslag.laad("badges-gezien", gezienBadges);
-    gelezenBerichten = opslag.laad("berichten-gelezen", []);
-    vernieuwAlles();
-    vulProfielFormulier();
-  }
-  bezigMetSync = false;
-  await verstuur();
+  toonSyncStatus(gelukt ? undefined : "fout");
+  // Tijdens het synchroniseren iets gewijzigd? Dan meteen nog een ronde.
+  if (gelukt && syncOpnieuw) setTimeout(synchroniseer, 500);
 }
 
 // ===== Scherm =====

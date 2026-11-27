@@ -8,7 +8,7 @@
   <link rel="manifest" href="manifest.json">
   <link rel="icon" href="../icon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="../apple-touch-icon.png">
-  <link rel="stylesheet" href="style.css?v=25">
+  <link rel="stylesheet" href="style.css?v=26">
 </head>
 <body>
   <!-- ===== Welkomstscherm: eerst (gratis) account maken of inloggen (account.js) ===== -->
@@ -395,7 +395,7 @@
         <label class="schakel-rij" for="p-gewicht">
           <span class="schakel-tekst">
             <strong>⚖️ Gewicht bijhouden</strong>
-            <small id="p-gewicht-uitleg">Alleen als dit voor jou een persoonlijk doel is. Je kunt het altijd weer uitzetten.</small>
+            <small id="p-gewicht-uitleg">Alleen als dit voor jou een persoonlijk doel is. We vragen eerst je toestemming; je kan die altijd intrekken.</small>
           </span>
           <input type="checkbox" id="p-gewicht" class="schakel-invoer" role="switch">
           <span class="schakel-knop" aria-hidden="true"></span>
@@ -415,6 +415,38 @@
   </main>
 
   <!-- ===== Felicitatie (verschijnt bij records, badges en mijlpalen) ===== -->
+  <!-- ===== Toestemming gewicht (gezondheidsgegevens, AVG art. 9) — profiel.js ===== -->
+  <div id="toestemming" class="viering toestemming" hidden role="dialog" aria-modal="true" aria-labelledby="toestemming-titel">
+    <div class="viering-kaart">
+      <!-- Stap: aanzetten -->
+      <div id="toestemming-aan">
+        <div class="viering-icoon">⚖️</div>
+        <h2 id="toestemming-titel">Gewicht bijhouden</h2>
+        <p>Je lichaamsgewicht is een <strong>gezondheidsgegeven</strong>. Daarom vragen we eerst je toestemming.</p>
+        <ul class="toestemming-punten">
+          <li>We bewaren je metingen alleen om <strong>jou</strong> je verloop te tonen.</li>
+          <li>Ze staan veilig in je account (servers in de EU). Niemand anders ziet ze, ook niet in de zondagmail.</li>
+          <li>Je kan je toestemming altijd intrekken. Dan wissen we al je metingen.</li>
+        </ul>
+        <label class="toestemming-vinkje">
+          <input type="checkbox" id="toestemming-vink">
+          <span>Ik geef MoveForPleasure toestemming om mijn lichaamsgewicht te bewaren voor deze functie.</span>
+        </label>
+        <button type="button" id="toestemming-akkoord" disabled>Akkoord, zet aan</button>
+        <button type="button" class="toestemming-annuleer" data-sluit>Liever niet</button>
+      </div>
+      <!-- Stap: uitzetten -->
+      <div id="toestemming-uit" hidden>
+        <div class="viering-icoon">⚖️</div>
+        <h2>Gewicht bijhouden uitzetten</h2>
+        <p>Wat wil je doen met je metingen?</p>
+        <button type="button" id="toestemming-intrekken">Toestemming intrekken en metingen wissen</button>
+        <button type="button" id="toestemming-pauze" class="toestemming-tweede">Alleen verbergen, metingen bewaren</button>
+        <button type="button" class="toestemming-annuleer" data-sluit>Annuleren</button>
+      </div>
+    </div>
+  </div>
+
   <div id="viering" class="viering" hidden role="dialog" aria-modal="true" aria-labelledby="viering-titel">
     <div class="viering-kaart">
       <div id="viering-icoon" class="viering-icoon"></div>
@@ -435,22 +467,22 @@
     <button class="nav-knop" data-tab="vooruitgang">📈<span>Vooruitgang</span></button>
   </nav>
 
-  <!-- ?v=25 achter onze eigen bestanden: verhoog dit getal bij elke update
+  <!-- ?v=26 achter onze eigen bestanden: verhoog dit getal bij elke update
        (samen met CACHE_NAAM in sw.js), zodat telefoons alles tegelijk vernieuwen. -->
-  <script src="../config.js?v=25"></script>
+  <script src="../config.js?v=26"></script>
   <!-- Supabase (inloggen + online opslag). Lukt dit niet (offline), dan werkt de app gewoon lokaal verder. -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="data.js?v=25"></script>
-  <script src="../weetjes.js?v=25"></script>
-  <script src="motivatie.js?v=25"></script>
-  <script src="berichten.js?v=25"></script>
-  <script src="profiel.js?v=25"></script>
-  <script src="cardio.js?v=25"></script>
-  <script src="planning.js?v=25"></script>
-  <script src="agenda.js?v=25"></script>
-  <script src="beweging.js?v=25"></script>
-  <script src="app.js?v=25"></script>
-  <script src="account.js?v=25"></script>
-  <script src="chat.js?v=25"></script>
+  <script src="data.js?v=26"></script>
+  <script src="../weetjes.js?v=26"></script>
+  <script src="motivatie.js?v=26"></script>
+  <script src="berichten.js?v=26"></script>
+  <script src="profiel.js?v=26"></script>
+  <script src="cardio.js?v=26"></script>
+  <script src="planning.js?v=26"></script>
+  <script src="agenda.js?v=26"></script>
+  <script src="beweging.js?v=26"></script>
+  <script src="app.js?v=26"></script>
+  <script src="account.js?v=26"></script>
+  <script src="chat.js?v=26"></script>
 </body>
 </html>

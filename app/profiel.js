@@ -137,8 +137,10 @@ function vernieuwKalender() {
 // ===== Lichaamsgewicht =====
 function vernieuwGewicht() {
   // Gewicht is optioneel: de kaart is alleen zichtbaar als je het aanzet
-  document.getElementById("gewicht-kaart").hidden = !profiel.gewichtVolgen;
-  if (!profiel.gewichtVolgen) return;
+  // én er toestemming is (gezondheidsgegeven)
+  const zichtbaar = Boolean(profiel.gewichtVolgen && profiel.gewichtToestemming);
+  document.getElementById("gewicht-kaart").hidden = !zichtbaar;
+  if (!zichtbaar) return;
 
   const grafiek = document.getElementById("gewicht-grafiek");
   const verschil = document.getElementById("gewicht-verschil");
@@ -254,7 +256,7 @@ function vulProfielFormulier() {
   document.getElementById("p-niveau").value = profiel.niveau || "";
   document.getElementById("p-lengte").value = profiel.lengte || "";
   document.getElementById("p-geboortejaar").value = profiel.geboortejaar || "";
-  document.getElementById("p-gewicht").checked = Boolean(profiel.gewichtVolgen);
+  document.getElementById("p-gewicht").checked = Boolean(profiel.gewichtVolgen && profiel.gewichtToestemming);
 }
 
 // ===== Schakelaar "Zondagmail" =====
@@ -266,27 +268,96 @@ zondagmailSchakelaar.addEventListener("change", () => {
 });
 
 // ===== Schakelaar "Gewicht bijhouden" =====
-// Wordt meteen bewaard, zodat je direct ziet wat er verandert.
+// Lichaamsgewicht is een gezondheidsgegeven (AVG artikel 9). Daarom:
+//  - aanzetten kan alleen met uitdrukkelijke toestemming (vinkje),
+//    die we met datum bewaren in profiel.gewichtToestemming;
+//  - we zetten dit NOOIT vanzelf aan;
+//  - bij uitzetten kies je: toestemming intrekken + alles wissen,
+//    of alleen verbergen (toestemming blijft, metingen blijven).
 const gewichtSchakelaar = document.getElementById("p-gewicht");
+const toestemmingVenster = document.getElementById("toestemming");
 
-gewichtSchakelaar.addEventListener("change", () => {
-  const aan = gewichtSchakelaar.checked;
-  bewaarProfiel({ ...profiel, gewichtVolgen: aan });
-  vernieuwAlles();
-  if (aan) {
-    toonToast("⚖️ Gewicht bijhouden staat aan");
-    // Even naar de gewichtskaart scrollen, zodat je ziet waar hij staat
-    document.getElementById("gewicht-kaart").scrollIntoView({ behavior: "smooth", block: "center" });
-  } else {
-    toonToast(gewichten.length ? "Uitgezet. Je metingen blijven bewaard." : "Gewicht bijhouden staat uit");
+function toonToestemming(stap) {
+  document.getElementById("toestemming-aan").hidden = stap !== "aan";
+  document.getElementById("toestemming-uit").hidden = stap !== "uit";
+  document.getElementById("toestemming-vink").checked = false;
+  document.getElementById("toestemming-akkoord").disabled = true;
+  toestemmingVenster.hidden = false;
+}
+function sluitToestemming() {
+  // Bestaande gebruiker die "liever niet" zegt maar al metingen heeft: vraag wat ermee moet
+  if (!document.getElementById("toestemming-aan").hidden && !profiel.gewichtToestemming && gewichten.length) {
+    toonToestemming("uit");
+    return;
+  }
+  toestemmingVenster.hidden = true;
+  if (profiel.gewichtVolgen && !profiel.gewichtToestemming) {
+    bewaarProfiel({ ...profiel, gewichtVolgen: false });
+    vernieuwAlles();
+  }
+  gewichtSchakelaar.checked = Boolean(profiel.gewichtVolgen && profiel.gewichtToestemming); // echte stand
+}
+
+// Wie gewicht al aan had staan van vóór deze toestemmingsvraag, krijgt
+// de vraag de eerste keer dat hij zijn profiel opent.
+let toestemmingGevraagd = false;
+document.getElementById("profiel-knop").addEventListener("click", () => {
+  if (!toestemmingGevraagd && profiel.gewichtVolgen && !profiel.gewichtToestemming) {
+    toestemmingGevraagd = true;
+    toonToestemming("aan");
   }
 });
 
-// Kies je "Gewicht verliezen" als doel, dan zetten we de schakelaar vanzelf aan
+function zetGewichtAan() {
+  bewaarProfiel({ ...profiel, gewichtVolgen: true });
+  vernieuwAlles();
+  toonToast("⚖️ Gewicht bijhouden staat aan");
+  document.getElementById("gewicht-kaart").scrollIntoView({ behavior: "smooth", block: "center" });
+}
+
+gewichtSchakelaar.addEventListener("change", () => {
+  if (gewichtSchakelaar.checked) {
+    // Al eerder toestemming gegeven (en niet ingetrokken)? Dan meteen aan.
+    if (profiel.gewichtToestemming) zetGewichtAan();
+    else toonToestemming("aan");
+  } else {
+    if (gewichten.length || profiel.gewichtToestemming) toonToestemming("uit");
+    else {
+      bewaarProfiel({ ...profiel, gewichtVolgen: false });
+      vernieuwAlles();
+      toonToast("Gewicht bijhouden staat uit");
+    }
+  }
+});
+
+document.getElementById("toestemming-vink").addEventListener("change", (e) => {
+  document.getElementById("toestemming-akkoord").disabled = !e.target.checked;
+});
+document.getElementById("toestemming-akkoord").addEventListener("click", () => {
+  bewaarProfiel({ ...profiel, gewichtToestemming: new Date().toISOString() });
+  toestemmingVenster.hidden = true;
+  zetGewichtAan();
+});
+document.getElementById("toestemming-intrekken").addEventListener("click", () => {
+  wisAlleGewichten();
+  bewaarProfiel({ ...profiel, gewichtVolgen: false, gewichtToestemming: null });
+  toestemmingVenster.hidden = true;
+  vernieuwAlles();
+  toonToast("Toestemming ingetrokken. Je metingen zijn gewist.");
+});
+document.getElementById("toestemming-pauze").addEventListener("click", () => {
+  bewaarProfiel({ ...profiel, gewichtVolgen: false });
+  toestemmingVenster.hidden = true;
+  vernieuwAlles();
+  toonToast("Verborgen. Je metingen blijven bewaard.");
+});
+toestemmingVenster.querySelectorAll("[data-sluit]").forEach(k => k.addEventListener("click", sluitToestemming));
+
+// Kies je "Gewicht verliezen" als doel, dan zetten we NIETS vanzelf aan:
+// we wijzen alleen op de mogelijkheid.
 document.getElementById("p-doel").addEventListener("change", (e) => {
-  if (e.target.value === "afvallen" && !gewichtSchakelaar.checked) {
-    gewichtSchakelaar.checked = true;
-    gewichtSchakelaar.dispatchEvent(new Event("change"));
+  if (e.target.value === "afvallen" && !profiel.gewichtVolgen) {
+    toonToast("Tip: wil je je gewicht volgen? Zet 'Gewicht bijhouden' hieronder aan.");
   }
 });
 
@@ -300,8 +371,8 @@ document.getElementById("profiel-formulier").addEventListener("submit", (e) => {
     doel: document.getElementById("p-doel").value,
     niveau: document.getElementById("p-niveau").value,
     lengte: lengte >= 100 && lengte <= 250 ? lengte : null,
-    geboortejaar: jaar >= 1920 && jaar <= 2020 ? jaar : null,
-    gewichtVolgen: gewichtSchakelaar.checked
+    geboortejaar: jaar >= 1920 && jaar <= 2020 ? jaar : null
+    // gewichtVolgen niet hier: dat loopt via de toestemming (schakelaar hierboven)
   });
   vernieuwAlles();
   toonToast(profiel.naam ? `Opgeslagen, ${profiel.naam}! ✓` : "Gegevens opgeslagen ✓");

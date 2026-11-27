@@ -91,10 +91,9 @@ function tekenDoel() {
 function kiesDoel(id) {
   const nieuw = { ...profiel, doel: profiel.doel === id ? "" : id };
   let extra = "";
-  // Gewicht verliezen = gewicht bijhouden aanzetten (kan je in je profiel weer uitzetten)
+  // Gewicht bijhouden zetten we nooit vanzelf aan (gezondheidsgegeven: eerst toestemming).
   if (nieuw.doel === "afvallen" && !profiel.gewichtVolgen) {
-    nieuw.gewichtVolgen = true;
-    extra = " Gewicht bijhouden staat nu aan in je profiel.";
+    extra = " Wil je ook je gewicht volgen? Dat kan in je profiel.";
   }
   bewaarProfiel(nieuw);
   vernieuwAlles();

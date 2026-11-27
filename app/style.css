@@ -728,3 +728,20 @@ body.welkom-open { overflow: hidden; }
 
 /* De ring is een knop (naar Planning), maar ziet er niet zo uit */
 button.ring { background: none; border: 0; padding: 0; cursor: pointer; color: inherit; font: inherit; }
+
+/* ===== Toestemming gewicht (gezondheidsgegevens) ===== */
+.toestemming .viering-kaart { text-align: left; max-width: 380px; }
+.toestemming .viering-icoon { text-align: center; }
+.toestemming h2 { text-align: center; }
+.toestemming-punten { margin: 0 0 16px 18px; color: #dccbd5; font-size: 0.9rem; line-height: 1.5; }
+.toestemming-punten li { margin-bottom: 6px; }
+.toestemming-vinkje {
+  display: flex; gap: 10px; align-items: flex-start; cursor: pointer; margin-bottom: 16px;
+  padding: 12px; border-radius: 12px; background: rgba(0, 0, 0, 0.25); border: 1px solid #50395c;
+  font-size: 0.9rem; line-height: 1.45; color: #ffffff;
+}
+.toestemming-vinkje input { width: 22px; height: 22px; margin: 1px 0 0; flex-shrink: 0; accent-color: #ff7a3d; }
+.toestemming .viering-kaart button { margin-top: 8px; }
+.toestemming .viering-kaart button:disabled { opacity: 0.45; cursor: not-allowed; }
+.toestemming .viering-kaart .toestemming-tweede { background: transparent; color: #eaeaea; border: 1px solid #50395c; }
+.toestemming .viering-kaart .toestemming-annuleer { background: none; color: #a8919f; font-weight: 600; }
