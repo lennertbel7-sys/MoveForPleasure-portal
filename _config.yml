@@ -1,0 +1,8 @@
+# Instellingen voor GitHub Pages (Jekyll).
+# Deze bestanden en mappen staan wel in GitHub, maar worden NIET
+# gepubliceerd op moveforpleasure.be (interne werkbestanden).
+exclude:
+  - supabase
+  - mailsjablonen
+  - MoveForPleasure
+  - README.md

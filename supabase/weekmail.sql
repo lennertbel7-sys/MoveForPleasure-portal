@@ -5,8 +5,11 @@
 -- zodat niemand er ooit twee in één week krijgt. Alleen de server
 -- (service role) mag erin: RLS aan, geen regels voor gewone gebruikers.
 --
--- Planner: elke zondag om 17:00 UTC (= 18u in de winter, 19u in de
--- zomer in België) roept de database de Edge Function "weekmail" aan.
+-- Planner: elke zondag vanaf 17:00 UTC (= 18u in de winter, 19u in de
+-- zomer in België) roept de database de Edge Function "weekmail" aan,
+-- elke 10 minuten tot 20:50 UTC. Elke ronde doet max. 80 leden en gaat
+-- verder waar de vorige stopte (zie functions/weekmail/index.ts).
+-- (Oorspronkelijk één keer per zondag om 17:00; aangepast 27 nov 2026.)
 -- ============================================================
 
 create table if not exists public.weekmail_verstuurd (
@@ -22,7 +25,7 @@ create extension if not exists pg_cron;
 
 select cron.schedule(
   'zondagmail',
-  '0 17 * * 0',
+  '*/10 17-20 * * 0',
   $$ select net.http_post(
        url := 'https://wrwwwgquqaqnmphrhvyr.supabase.co/functions/v1/weekmail',
        body := '{}'::jsonb,

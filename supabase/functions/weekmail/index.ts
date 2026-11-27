@@ -15,6 +15,11 @@
 // maar ze verstuurt alleen op zondag, en elk lid krijgt maximaal één
 // mail per week (tabel weekmail_verstuurd). Misbruik levert dus niets op.
 //
+// Schaal: per ronde maximaal 80 leden; de planner start op zondagavond
+// elke 10 minuten een ronde (17:00-20:50 UTC) tot iedereen hem heeft.
+// Lukt een mail niet, dan wordt hij in een volgende ronde opnieuw geprobeerd.
+// LET OP: het gratis Resend-plan laat maar 100 mails per dag toe.
+//
 // Voorbeeld: een ingelogde ADMIN kan zichzelf op elk moment een voorbeeld
 // sturen (knop op de adminpagina). Dat telt niet als "verstuurd".
 //
@@ -144,9 +149,11 @@ function onderwerp(weekdoel: number, o: ReturnType<typeof maakOverzicht>) {
   return `🌱 Jouw beweegweek bij MoveForPleasure`;
 }
 
-async function stuurMail(aan: string, titel: string, html: string) {
+// Geeft "ok", "limiet" (Resend zegt: te veel, bv. daglimiet van het gratis plan),
+// "tijdelijk" (storing bij Resend, later opnieuw proberen) of "fout" (bv. ongeldig adres)
+async function stuurMail(aan: string, titel: string, html: string): Promise<"ok" | "limiet" | "tijdelijk" | "fout"> {
   const sleutel = Deno.env.get("RESEND_API_KEY")?.trim();
-  if (!sleutel) { console.log("Geen RESEND_API_KEY: niets verstuurd"); return false; }
+  if (!sleutel) { console.log("Geen RESEND_API_KEY: niets verstuurd"); return "fout"; }
   const r = await fetch("https://api.resend.com/emails", {
     method: "POST",
     headers: { "Authorization": `Bearer ${sleutel}`, "Content-Type": "application/json" },
@@ -155,9 +162,13 @@ async function stuurMail(aan: string, titel: string, html: string) {
       to: [aan], subject: titel, html,
     }),
   });
-  if (!r.ok) console.error("Resend-fout", r.status, await r.text());
-  return r.ok;
+  if (r.ok) return "ok";
+  console.error("Resend-fout", r.status, await r.text());
+  if (r.status === 429) return "limiet";
+  return r.status >= 500 ? "tijdelijk" : "fout";
 }
+
+const wacht = (ms: number) => new Promise((klaar) => setTimeout(klaar, ms));
 
 // Alle data van één lid ophalen en (eventueel) de mail sturen
 async function verwerkLid(userId: string, email: string, aangemaakt: string, maandag: string, voorbeeld: boolean) {
@@ -165,21 +176,39 @@ async function verwerkLid(userId: string, email: string, aangemaakt: string, maa
     .eq("user_id", userId).in("sleutel", ["workouts", "cardio", "weekdoel", "profiel"]);
   const w = Object.fromEntries((rijen ?? []).map((r) => [r.sleutel, r.waarde]));
   const profiel = (w.profiel ?? {}) as { naam?: string; zondagmail?: boolean };
-  if (!voorbeeld && profiel.zondagmail === false) return "uitgezet";
+  // Leden die we overslaan, noteren we ook als "afgehandeld" voor deze week,
+  // zodat ze in de volgende ronde geen plaats innemen van wie nog moet.
+  const overslaan = async (reden: string) => {
+    await db.from("weekmail_verstuurd").insert({ user_id: userId, week: maandag });
+    return reden;
+  };
+  if (!voorbeeld && profiel.zondagmail === false) return await overslaan("uitgezet");
 
   const weekdoel = Number(w.weekdoel) >= 1 ? Number(w.weekdoel) : 3;
   const o = maakOverzicht(Array.isArray(w.workouts) ? w.workouts : [], Array.isArray(w.cardio) ? w.cardio : [], weekdoel, maandag);
   const vierWekenOud = Date.now() - new Date(aangemaakt).getTime() > 28 * 86400_000;
-  if (!voorbeeld && !o.ooitIets && vierWekenOud) return "nooit actief";
+  if (!voorbeeld && !o.ooitIets && vierWekenOud) return await overslaan("nooit actief");
 
   if (!voorbeeld) {
-    // Eén keer per week: "claim" deze week voor dit lid (lukt maar één keer)
+    // Eén keer per week: "claim" deze week voor dit lid (lukt maar één keer,
+    // ook als twee rondes tegelijk zouden lopen)
     const { error } = await db.from("weekmail_verstuurd").insert({ user_id: userId, week: maandag });
     if (error) return "al verstuurd";
   }
-  const ok = await stuurMail(email, (voorbeeld ? "[Voorbeeld] " : "") + onderwerp(weekdoel, o), mailHtml(profiel.naam ?? "", weekdoel, o));
-  return ok ? "verstuurd" : "mislukt";
+  const resultaat = await stuurMail(email, (voorbeeld ? "[Voorbeeld] " : "") + onderwerp(weekdoel, o), mailHtml(profiel.naam ?? "", weekdoel, o));
+  if ((resultaat === "limiet" || resultaat === "tijdelijk") && !voorbeeld) {
+    // Limiet of storing: claim weer weghalen, zodat een volgende ronde het opnieuw probeert.
+    // (Bij een blijvende fout, bv. een ongeldig adres, proberen we deze week niet opnieuw.)
+    await db.from("weekmail_verstuurd").delete().eq("user_id", userId).eq("week", maandag);
+  }
+  return resultaat === "ok" ? "verstuurd" : resultaat === "limiet" ? "limiet" : "mislukt";
 }
+
+// Per ronde maximaal zoveel leden, en nooit langer dan dit (Edge Functions
+// hebben een tijdslimiet). De planner start op zondagavond elke 10 minuten
+// een nieuwe ronde, die verdergaat waar de vorige stopte.
+const MAX_PER_RONDE = 80;
+const TIJDSLIMIET_MS = 100_000;
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return antwoord("ok");
@@ -202,14 +231,33 @@ Deno.serve(async (req) => {
   // --- De echte zondagmail: alleen op zondag ---
   if (new Date(vandaagBE() + "T12:00:00Z").getUTCDay() !== 0) return antwoord("het is geen zondag");
 
+  const start = Date.now();
   const telling: Record<string, number> = {};
-  for (let pagina = 1; ; pagina++) {
+  const tel = (s: string) => { telling[s] = (telling[s] ?? 0) + 1; };
+
+  // Wie kreeg hem deze week al? Die slaan we zonder extra werk over.
+  const { data: alGedaan } = await db.from("weekmail_verstuurd").select("user_id").eq("week", maandag);
+  const gedaan = new Set((alGedaan ?? []).map((r) => r.user_id));
+
+  let verwerkt = 0;
+  let stoppen = false;
+  for (let pagina = 1; !stoppen; pagina++) {
     const { data, error } = await db.auth.admin.listUsers({ page: pagina, perPage: 200 });
     if (error) { console.error(error.message); break; }
     for (const u of data.users) {
-      if (!u.email || !u.email_confirmed_at) { telling["niet bevestigd"] = (telling["niet bevestigd"] ?? 0) + 1; continue; }
+      if (gedaan.has(u.id)) { tel("al verstuurd"); continue; }
+      if (!u.email || !u.email_confirmed_at) { tel("niet bevestigd"); continue; }
+      if (verwerkt >= MAX_PER_RONDE || Date.now() - start > TIJDSLIMIET_MS) { tel("volgende ronde"); continue; }
       const status = await verwerkLid(u.id, u.email, u.created_at, maandag, false);
-      telling[status] = (telling[status] ?? 0) + 1;
+      verwerkt++;
+      tel(status);
+      if (status === "limiet") {
+        // Resend weigert (daglimiet bereikt?): stoppen, de rest volgt in een latere ronde
+        console.error("Zondagmail gestopt: mail-limiet van Resend bereikt");
+        stoppen = true;
+        break;
+      }
+      if (status === "verstuurd") await wacht(600); // max. ±2 mails per seconde (limiet Resend)
     }
     if (data.users.length < 200) break;
   }
