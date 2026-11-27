@@ -804,3 +804,17 @@ input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 3px
   background: #ff7a3d; color: #23152f; font: inherit; font-size: 1rem; font-weight: 700;
 }
 .onboarding #ob-naar-3:hover, .onboarding #ob-klaar:hover, .onboarding #ob-eerste-log:hover { background: #ef6328; }
+
+/* ===== Vandaag, rustiger (1 boodschap + weekritme) ===== */
+.ritme-zin { margin-top: 12px; text-align: center; font-size: 0.95rem; color: #ffd0b8; line-height: 1.45; }
+.ritme-zin:empty { display: none; }
+/* De hoofdactie: groot en vol, niet meer een randknopje */
+.snel-knop-hoofd {
+  display: block; width: 100%; margin-top: 12px; min-height: 48px; font-size: 1rem; font-weight: 700;
+  background: linear-gradient(135deg, #ff7a3d, #ff4f8b); color: #fff; border: 0;
+}
+.snel-knop-hoofd:hover { filter: brightness(1.05); }
+#recent-alles { margin: 0; font-size: 0.88rem; }
+/* Level en cijfers staan nu op Vooruitgang */
+#tab-vooruitgang .cijfers { margin-bottom: 14px; }
+#tab-vooruitgang .level { margin-bottom: 0; }

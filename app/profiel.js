@@ -56,7 +56,9 @@ function vernieuwProfiel() {
 
 // ===== Statistieken =====
 function vernieuwStatistieken() {
-  const cardioMinuten = cardio.reduce((som, c) => som + (c.minuten || 0), 0);
+  // Alle minuten samen (ook krachttraining met een duur): gewoon "bewogen"
+  const cardioMinuten = cardio.reduce((som, c) => som + (c.minuten || 0), 0)
+    + workouts.reduce((som, w) => som + (w.minuten || 0), 0);
   const km = cardio.reduce((som, c) => som + (c.km || 0), 0);
   const volume = workouts.reduce((som, w) => som + (w.gewicht || 0) * w.sets * w.reps, 0);
 
@@ -68,14 +70,15 @@ function vernieuwStatistieken() {
   });
   const favoriet = Object.entries(telling).sort((a, b) => b[1] - a[1])[0];
 
+  // Alleen cijfers tonen die bij jou passen: wie wandelt, ziet geen "0 kg getild"
   const cijfers = [
     ["💪", getal(workouts.length + cardio.length), "keer bewogen"],
     ["📅", getal(actieveDagen().size), "actieve dagen"],
-    ["🔥", getal(langsteStreak()), "langste reeks (dagen)"],
-    ["⏱️", cardioMinuten >= 120 ? getal(cardioMinuten / 60, 1) + " u" : getal(cardioMinuten) + " min", "cardio"],
-    ["📍", getal(km, 1) + " km", "afgelegd"],
-    ["🏋️", volume >= 1000 ? getal(volume / 1000, 1) + " ton" : getal(volume) + " kg", "totaal getild"]
   ];
+  if (cardioMinuten > 0) cijfers.push(["⏱️", cardioMinuten >= 120 ? getal(cardioMinuten / 60, 1) + " u" : getal(cardioMinuten) + " min", "bewogen"]);
+  if (km > 0) cijfers.push(["📍", getal(km, 1) + " km", "afgelegd"]);
+  if (volume > 0) cijfers.push(["🏋️", volume >= 1000 ? getal(volume / 1000, 1) + " ton" : getal(volume) + " kg", "totaal getild"]);
+  if (langsteStreak() > 1) cijfers.push(["🔥", getal(langsteStreak()), "dagen op rij (record)"]);
 
   const vak = document.getElementById("statistieken");
   vak.innerHTML = "";
@@ -229,6 +232,8 @@ function vernieuwRecords() {
   const lijst = document.getElementById("records-lijst");
   lijst.innerHTML = "";
   const records = Object.values(beste).sort((a, b) => b.gewicht - a.gewicht);
+  // Nog geen records (bv. je wandelt of fietst)? Dan de hele kaart niet tonen.
+  lijst.closest(".kaart").hidden = records.length === 0;
   if (records.length === 0) {
     lijst.innerHTML = `<li><span class="gedempt">Log een workout met gewicht en je records verschijnen hier.</span></li>`;
     return;

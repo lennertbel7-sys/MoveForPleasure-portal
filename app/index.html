@@ -8,7 +8,7 @@
   <link rel="manifest" href="manifest.json">
   <link rel="icon" href="../icon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="../apple-touch-icon.png">
-  <link rel="stylesheet" href="style.css?v=29">
+  <link rel="stylesheet" href="style.css?v=30">
 </head>
 <body>
   <!-- ===== Welkomstscherm: eerst (gratis) account maken of inloggen (account.js) ===== -->
@@ -88,46 +88,28 @@
           </button>
         </div>
 
-        <!-- Level en XP -->
-        <div class="level">
-          <div class="level-kop">
-            <span id="level-naam" class="level-naam">⭐ Level 1 · Starter</span>
-            <span id="level-xp" class="level-xp">0 XP</span>
-          </div>
-          <div class="level-balk"><div id="level-vulling"></div></div>
-        </div>
-
-        <div class="cijfers">
-          <div class="cijfer">
-            <strong id="cijfer-weekreeks">0</strong>
-            <span>📈 weken op rij je doel</span>
-          </div>
-          <div class="cijfer">
-            <strong id="cijfer-totaal">0</strong>
-            <span>🙌 keer bewogen</span>
-          </div>
-        </div>
-
         <!-- Zeven bolletjes: ma t/m zo, gevuld als je actief was -->
         <div id="week-bolletjes" class="week-bolletjes" aria-label="Actieve dagen deze week"></div>
+        <!-- Eén zinnetje over je weekritme (geen rij cijfers) -->
+        <p id="ritme-zin" class="ritme-zin"></p>
+      </div>
+
+      <!-- Wat staat er vandaag te doen? (eerst: dit is waarvoor je de app opent) -->
+      <div class="kaart">
+        <div id="vandaag-doel" class="vandaag-doel"></div>
+        <h3>Vandaag op je planning</h3>
+        <div id="vandaag-schema"></div>
+        <button class="snel-knop snel-knop-hoofd" data-naar="bewegen">➕ Beweging loggen</button>
       </div>
 
       <!-- Nieuwste bericht of spreuk van de dag -->
       <div id="vandaag-bericht"></div>
 
       <div class="kaart">
-        <div id="vandaag-doel" class="vandaag-doel"></div>
-        <h3>Vandaag op je planning</h3>
-        <div id="vandaag-schema"></div>
-        <div class="snel-knoppen">
-          <button class="snel-knop" data-naar="bewegen">➕ Beweging loggen</button>
+        <div class="kaart-kop">
+          <h3>Recent bewogen</h3>
+          <button type="button" class="link-knop" data-naar="vooruitgang" id="recent-alles" hidden>Alles →</button>
         </div>
-      </div>
-
-
-
-      <div class="kaart">
-        <h3>Recent bewogen</h3>
         <ul id="recente-lijst" class="lijst"></ul>
       </div>
     </section>
@@ -230,6 +212,28 @@
     <!-- ===== Tab: Mijn vooruitgang (cijfers en badges, getekend door profiel.js en app.js) ===== -->
     <section id="tab-vooruitgang" class="tab verborgen">
       <h2>Mijn vooruitgang</h2>
+
+      <!-- Je ritme en je level (verhuisd van Vandaag, zodat dat scherm rustig blijft) -->
+      <div class="kaart">
+        <div class="cijfers">
+          <div class="cijfer">
+            <strong id="cijfer-weekreeks">0</strong>
+            <span>📈 weken op rij je weekritme</span>
+          </div>
+          <div class="cijfer">
+            <strong id="cijfer-totaal">0</strong>
+            <span>🙌 keer bewogen</span>
+          </div>
+        </div>
+        <div class="level">
+          <div class="level-kop">
+            <span id="level-naam" class="level-naam">⭐ Level 1 · Starter</span>
+            <span id="level-xp" class="level-xp">0 XP</span>
+          </div>
+          <div class="level-balk"><div id="level-vulling"></div></div>
+        </div>
+      </div>
+
       <!-- Statistieken -->
       <div class="kaart">
         <h3>Jouw cijfers</h3>
@@ -515,25 +519,25 @@
     <button class="nav-knop" data-tab="vooruitgang">📈<span>Vooruitgang</span></button>
   </nav>
 
-  <!-- ?v=29 achter onze eigen bestanden: verhoog dit getal bij elke update
+  <!-- ?v=30 achter onze eigen bestanden: verhoog dit getal bij elke update
        (samen met CACHE_NAAM in sw.js), zodat telefoons alles tegelijk vernieuwen. -->
-  <script src="../config.js?v=29"></script>
+  <script src="../config.js?v=30"></script>
   <!-- Foutmeldingen automatisch doorsturen (laadt als eerste) -->
-  <script src="fouten.js?v=29"></script>
+  <script src="fouten.js?v=30"></script>
   <!-- Supabase (inloggen + online opslag). Lukt dit niet (offline), dan werkt de app gewoon lokaal verder. -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.119.2/dist/umd/supabase.js" integrity="sha256-iBavBNmRXbuhiC1vhPC0AtxAJoBjpj2cZtJPUvNxwmM=" crossorigin="anonymous"></script>
-  <script src="data.js?v=29"></script>
-  <script src="../weetjes.js?v=29"></script>
-  <script src="motivatie.js?v=29"></script>
-  <script src="berichten.js?v=29"></script>
-  <script src="profiel.js?v=29"></script>
-  <script src="cardio.js?v=29"></script>
-  <script src="planning.js?v=29"></script>
-  <script src="agenda.js?v=29"></script>
-  <script src="beweging.js?v=29"></script>
-  <script src="app.js?v=29"></script>
-  <script src="account.js?v=29"></script>
-  <script src="chat.js?v=29"></script>
-  <script src="onboarding.js?v=29"></script>
+  <script src="data.js?v=30"></script>
+  <script src="../weetjes.js?v=30"></script>
+  <script src="motivatie.js?v=30"></script>
+  <script src="berichten.js?v=30"></script>
+  <script src="profiel.js?v=30"></script>
+  <script src="cardio.js?v=30"></script>
+  <script src="planning.js?v=30"></script>
+  <script src="agenda.js?v=30"></script>
+  <script src="beweging.js?v=30"></script>
+  <script src="app.js?v=30"></script>
+  <script src="account.js?v=30"></script>
+  <script src="chat.js?v=30"></script>
+  <script src="onboarding.js?v=30"></script>
 </body>
 </html>

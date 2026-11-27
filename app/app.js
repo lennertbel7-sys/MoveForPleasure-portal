@@ -38,7 +38,7 @@ function toonTab(naam) {
 }
 
 // Snelknoppen op het Vandaag-scherm
-document.querySelectorAll(".snel-knop").forEach(knop => {
+document.querySelectorAll(".snel-knop, #recent-alles").forEach(knop => {
   knop.addEventListener("click", () => toonTab(knop.dataset.naar));
 });
 
@@ -201,6 +201,16 @@ function vernieuwVandaag() {
 
   // Weekdoel-ring: de gekleurde rand vult zich naarmate je dichter bij je doel komt
   const actiefDezeWeek = actieveDagenDezeWeek();
+
+  // Eén klein zinnetje over je ritme, alleen als er iets te vieren valt.
+  // (Hoeveel dagen je nog nodig hebt, zegt de aanmoediging hierboven al.)
+  const reeks = berekenWeekreeks();
+  let ritme = "";
+  if (reeks > 1) ritme = `🔥 Al ${reeks} weken op rij je weekritme gehaald`;
+  else if (reeks === 1) ritme = actiefDezeWeek >= weekdoel
+    ? "🎉 Weekritme gehaald deze week!"            // de reeks van 1 is deze week zelf
+    : "🔥 Vorige week je weekritme gehaald. Ga zo door!";
+  document.getElementById("ritme-zin").textContent = ritme;
   const omtrek = 2 * Math.PI * 34;
   const deel = Math.min(1, actiefDezeWeek / weekdoel);
   const ringVoor = document.getElementById("ring-voor");
@@ -255,7 +265,10 @@ function vernieuwVandaag() {
   const alles = [
     ...workouts.map(w => ({ datum: w.datum, id: w.id, tekst: krachtTekst(w) })),
     ...cardio.map(c => ({ datum: c.datum, id: c.id, tekst: cardioTekst(c) }))
-  ].sort((a, b) => b.datum.localeCompare(a.datum) || b.id - a.id).slice(0, 8);
+  ].sort((a, b) => b.datum.localeCompare(a.datum) || b.id - a.id);
+  // Op Vandaag alleen de laatste 3; de rest staat bij Vooruitgang
+  document.getElementById("recent-alles").hidden = alles.length <= 3;
+  alles.splice(3);
 
   const lijst = document.getElementById("recente-lijst");
   lijst.innerHTML = "";
