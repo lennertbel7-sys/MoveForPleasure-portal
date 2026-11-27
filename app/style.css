@@ -745,3 +745,27 @@ button.ring { background: none; border: 0; padding: 0; cursor: pointer; color: i
 .toestemming .viering-kaart button:disabled { opacity: 0.45; cursor: not-allowed; }
 .toestemming .viering-kaart .toestemming-tweede { background: transparent; color: #eaeaea; border: 1px solid #50395c; }
 .toestemming .viering-kaart .toestemming-annuleer { background: none; color: #a8919f; font-weight: 600; }
+
+/* ===== Toegankelijkheid (WCAG 2.2 AA) ===== */
+/* Wisknopjes: groot genoeg voor een vinger (min. 44 x 44 px) */
+.lijst .wissen {
+  min-width: 44px; min-height: 44px; margin: -10px -10px -10px 0;
+  display: inline-grid; place-items: center; border-radius: 10px;
+}
+.lijst .wissen:hover, .lijst .wissen:focus-visible { background: rgba(255, 107, 107, 0.12); }
+.plan-wis { min-width: 44px; min-height: 44px; border-radius: 10px; }
+
+/* Geen tekst kleiner dan 0.75rem (± 12 px) */
+.badge small, .statistiek small, .ring-midden small, .chat-tijd { font-size: 0.75rem; }
+.teller-bolletje { font-size: 0.75rem; }
+
+/* Zichtbare focus voor wie met het toetsenbord werkt */
+:focus-visible { outline: 3px solid #ffd23f; outline-offset: 2px; }
+input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 3px solid #ffd23f; outline-offset: 1px; }
+
+/* Melding met een knop ("Ongedaan maken") */
+.toast.met-actie { pointer-events: auto; display: flex; align-items: center; gap: 12px; padding: 8px 8px 8px 18px; }
+.toast-actie {
+  background: #23152f; color: #ffd23f; border: 0; border-radius: 999px; min-height: 36px;
+  padding: 6px 14px; font: inherit; font-weight: 700; cursor: pointer;
+}

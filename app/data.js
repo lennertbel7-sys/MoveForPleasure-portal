@@ -207,6 +207,20 @@ function verwijderGewicht(id) {
   opslag.bewaar("gewichten", gewichten);
 }
 
+// "Ongedaan maken" na wissen: het item komt terug met een NIEUW id.
+// (Het oude id blijft als gewist geregistreerd, zodat andere toestellen
+// het niet dubbel terugbrengen.)
+function herstelItem(soort, item) {
+  const kopie = { ...item, id: Date.now() };
+  if (soort === "workouts") { workouts.unshift(kopie); sorteerNieuwsteEerst(workouts); opslag.bewaar("workouts", workouts); }
+  if (soort === "cardio") { cardio.unshift(kopie); sorteerNieuwsteEerst(cardio); opslag.bewaar("cardio", cardio); }
+  if (soort === "gewichten" && !gewichten.some(g => g.datum === item.datum)) {
+    gewichten.push(kopie);
+    gewichten.sort((a, b) => a.datum.localeCompare(b.datum));
+    opslag.bewaar("gewichten", gewichten);
+  }
+}
+
 // Alle gewichtsmetingen wissen (bij intrekken van toestemming)
 function wisAlleGewichten() {
   if (gewichten.length) markeerVerwijderd("gewichten", gewichten.map(g => g.id));

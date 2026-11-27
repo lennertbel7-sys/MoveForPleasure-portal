@@ -73,10 +73,10 @@ async function openGesprek(gebruikerId) {
   const { data, error } = await db.from("chatberichten")
     .select("id, van_admin, tekst, aangemaakt")
     .eq("gebruiker_id", gebruikerId)
-    .order("aangemaakt", { ascending: true })
+    .order("aangemaakt", { ascending: false }) // de nieuwste 500...
     .limit(500);
   if (error) { $("gesprek-berichten").textContent = "Laden lukte niet."; return; }
-  gesprekBerichten = data;
+  gesprekBerichten = data.reverse();            // ...in leesvolgorde
   tekenGesprek();
   await db.rpc("chat_gelezen", { gesprek: gebruikerId });
   if (g) g.ongelezen = 0;
@@ -137,7 +137,14 @@ function startAdminChat() {
       }
       laadGesprekken();
     })
-    .subscribe();
-  // Vangnet: elke 30 seconden verversen
-  setInterval(laadGesprekken, 30000);
+    .subscribe((status) => {
+      // Vangnet: alleen zelf verversen als de live verbinding wegvalt
+      if (status === "SUBSCRIBED") {
+        clearInterval(adminPollTimer);
+        adminPollTimer = null;
+      } else if (["CHANNEL_ERROR", "TIMED_OUT", "CLOSED"].includes(status) && !adminPollTimer) {
+        adminPollTimer = setInterval(laadGesprekken, 30000);
+      }
+    });
 }
+let adminPollTimer = null;

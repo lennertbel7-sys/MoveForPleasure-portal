@@ -75,3 +75,42 @@ function tekenLeden() {
 }
 
 $("leden-zoek").addEventListener("input", tekenLeden);
+
+// ===== Foutmeldingen uit de app (tabel app_fouten) =====
+// Zelfde fout bij meerdere mensen? Dan tonen we hem één keer met een teller.
+async function laadFouten() {
+  const sinds = new Date(Date.now() - 7 * 86400000).toISOString();
+  const { data, error } = await db.from("app_fouten")
+    .select("tijd, bericht, bron, versie, browser, gebruiker_id")
+    .gte("tijd", sinds).order("tijd", { ascending: false }).limit(300);
+  const lijst = $("fouten-lijst");
+  lijst.innerHTML = "";
+  if (error) { $("fouten-aantal").textContent = "?"; lijst.textContent = "Fouten laden lukte niet."; return; }
+
+  const groepen = new Map();
+  data.forEach(f => {
+    const sleutel = f.bericht + "|" + (f.bron || "");
+    if (!groepen.has(sleutel)) groepen.set(sleutel, { ...f, aantal: 0, mensen: new Set() });
+    const g = groepen.get(sleutel);
+    g.aantal++;
+    g.mensen.add(f.gebruiker_id || "anoniem");
+  });
+  $("fouten-aantal").textContent = data.length;
+  $("fouten-kaart").classList.toggle("heeft-fouten", data.length > 0);
+  if (!groepen.size) {
+    const li = document.createElement("li");
+    li.className = "gedempt-klein";
+    li.textContent = "Geen fouten. 🎉";
+    lijst.appendChild(li);
+    return;
+  }
+  groepen.forEach(g => {
+    const li = document.createElement("li");
+    const titel = document.createElement("strong");
+    titel.textContent = g.bericht;
+    const info = document.createElement("small");
+    info.textContent = `${g.aantal}× bij ${g.mensen.size} ${g.mensen.size === 1 ? "persoon" : "personen"} · laatst ${datumTijd(g.tijd)} · versie ${g.versie || "?"} · ${g.bron || "onbekende plek"}`;
+    li.append(titel, info);
+    lijst.appendChild(li);
+  });
+}

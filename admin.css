@@ -138,3 +138,13 @@ body.admin { padding-bottom: 40px; }
 .weekmail-kaart > div { flex: 1 1 260px; }
 .weekmail-kaart .weetje-uitleg { margin: 4px 0 0; }
 .weekmail-kaart .melding { flex-basis: 100%; margin: 0; }
+
+/* ===== Foutmeldingen ===== */
+.fouten-kaart { margin-bottom: 16px; }
+.fouten-kaart summary { cursor: pointer; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.fouten-kaart.heeft-fouten { border-color: rgba(255, 176, 46, 0.6); }
+.gedempt-klein { color: #a8919f; font-size: 0.8rem; }
+.fouten-lijst { list-style: none; margin-top: 12px; display: flex; flex-direction: column; gap: 8px; }
+.fouten-lijst li { background: rgba(0, 0, 0, 0.2); border-radius: 10px; padding: 10px 12px; }
+.fouten-lijst strong { display: block; font-size: 0.9rem; word-break: break-word; }
+.fouten-lijst small { color: #a8919f; font-size: 0.78rem; word-break: break-word; }

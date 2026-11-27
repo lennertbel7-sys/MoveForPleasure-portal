@@ -44,10 +44,10 @@ async function haalChatOp() {
   const { data, error } = await db.from("chatberichten")
     .select("id, van_admin, tekst, aangemaakt, gelezen")
     .eq("gebruiker_id", gebruiker.id)
-    .order("aangemaakt", { ascending: true })
+    .order("aangemaakt", { ascending: false }) // de nieuwste 200 ophalen...
     .limit(200);
   if (error) { console.warn("Chat ophalen mislukt:", error.message); return; }
-  chatBerichten = data;
+  chatBerichten = data.reverse();               // ...en in leesvolgorde tonen (oud → nieuw)
   telOngelezen();
   if (chatOpen && !chatEl("tab-berichten").classList.contains("verborgen")) {
     tekenChat();
@@ -176,14 +176,23 @@ function startChat() {
           toonToast("💬 Nieuw antwoord van MoveForPleasure!");
         }
       })
-    .subscribe();
-  // Vangnet als live niet lukt
-  chatPollTimer = setInterval(() => { if (document.visibilityState === "visible") haalChatOp(); }, 30000);
+    .subscribe((status) => {
+      // Vangnet: alleen als de live verbinding wegvalt, kijken we elke 30 s zelf.
+      // Werkt live (weer), dan stopt het extra ophalen (spaart de server bij veel leden).
+      if (status === "SUBSCRIBED") {
+        clearInterval(chatPollTimer);
+        chatPollTimer = null;
+        haalChatOp(); // berichten van terwijl we niet verbonden waren
+      } else if (["CHANNEL_ERROR", "TIMED_OUT", "CLOSED"].includes(status) && !chatPollTimer) {
+        chatPollTimer = setInterval(() => { if (document.visibilityState === "visible") haalChatOp(); }, 30000);
+      }
+    });
 }
 
 function stopChat() {
   if (chatKanaal) { db.removeChannel(chatKanaal); chatKanaal = null; }
   clearInterval(chatPollTimer);
+  chatPollTimer = null;
   chatBerichten = [];
   telOngelezen();
 }

@@ -58,12 +58,35 @@ function vernieuwAlles() {
 
 // ===== Felicitaties =====
 let toastTimer;
-function toonToast(tekst) {
+// actie (optioneel): { label, doe } toont een knop in de melding, bv. "Ongedaan maken"
+function toonToast(tekst, actie) {
   const toast = document.getElementById("toast");
   toast.textContent = tekst;
+  toast.classList.toggle("met-actie", Boolean(actie));
+  if (actie) {
+    const knop = document.createElement("button");
+    knop.type = "button";
+    knop.className = "toast-actie";
+    knop.textContent = actie.label;
+    knop.onclick = () => {
+      toast.classList.remove("zichtbaar");
+      actie.doe();
+    };
+    toast.appendChild(knop);
+  }
   toast.classList.add("zichtbaar");
   clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => toast.classList.remove("zichtbaar"), 2600);
+  toastTimer = setTimeout(() => toast.classList.remove("zichtbaar"), actie ? 6000 : 2600);
+}
+
+// Wissen met een kans om het ongedaan te maken (per ongeluk tikken op een gsm)
+function wisMetHerstel(soort, item, wisFunctie) {
+  wisFunctie(item.id);
+  vernieuwAlles();
+  toonToast("Verwijderd", {
+    label: "Ongedaan maken",
+    doe: () => { herstelItem(soort, item); vernieuwAlles(); toonToast("Teruggezet ✓"); },
+  });
 }
 
 function toonViering(icoon, titel, tekst) {
@@ -279,8 +302,10 @@ function vernieuwWorkoutLijst() {
     datum.textContent = leesbareDatum(w.datum);
     const wis = document.createElement("button");
     wis.className = "wissen";
+    wis.type = "button";
     wis.textContent = "✕";
-    wis.onclick = () => { verwijderWorkout(w.id); vernieuwAlles(); };
+    wis.setAttribute("aria-label", "Verwijderen");
+    wis.onclick = () => wisMetHerstel("workouts", w, verwijderWorkout);
     li.append(tekst, datum, wis);
     lijst.appendChild(li);
   });
@@ -299,8 +324,10 @@ function vernieuwCardioLijst() {
     datum.textContent = leesbareDatum(c.datum);
     const wis = document.createElement("button");
     wis.className = "wissen";
+    wis.type = "button";
     wis.textContent = "✕";
-    wis.onclick = () => { verwijderCardio(c.id); vernieuwAlles(); };
+    wis.setAttribute("aria-label", "Verwijderen");
+    wis.onclick = () => wisMetHerstel("cardio", c, verwijderCardio);
     li.append(tekst, datum, wis);
     lijst.appendChild(li);
   });

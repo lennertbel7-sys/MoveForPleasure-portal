@@ -170,7 +170,8 @@ function vernieuwGewicht() {
     wis.className = "wissen";
     wis.textContent = "✕";
     wis.setAttribute("aria-label", "Meting verwijderen");
-    wis.onclick = () => { verwijderGewicht(g.id); vernieuwAlles(); };
+    wis.type = "button";
+    wis.onclick = () => wisMetHerstel("gewichten", g, verwijderGewicht);
     li.append(tekst, datum, wis);
     lijst.appendChild(li);
   });
@@ -379,11 +380,21 @@ document.getElementById("profiel-formulier").addEventListener("submit", (e) => {
 });
 
 // ===== Back-up downloaden =====
-document.getElementById("exporteer-knop").addEventListener("click", () => {
+// Bevat alles wat je zelf aanleverde, ook je chatberichten (AVG: recht op overdraagbaarheid)
+document.getElementById("exporteer-knop").addEventListener("click", async () => {
+  let chat = [];
+  if (typeof db !== "undefined" && db && typeof gebruiker !== "undefined" && gebruiker) {
+    const { data, error } = await db.from("chatberichten")
+      .select("aangemaakt, van_admin, tekst")
+      .eq("gebruiker_id", gebruiker.id)
+      .order("aangemaakt", { ascending: true });
+    if (!error) chat = data.map(b => ({ tijd: b.aangemaakt, van: b.van_admin ? "MoveForPleasure" : "jij", tekst: b.tekst }));
+  }
   const backup = {
     app: "MoveForPleasure",
     gemaakt_op: new Date().toISOString(),
-    profiel, weekdoel, schema, workouts, cardio, gewichten
+    account: typeof gebruiker !== "undefined" && gebruiker ? gebruiker.email : null,
+    profiel, weekdoel, schema, workouts, cardio, gewichten, chat
   };
   const bestand = new Blob([JSON.stringify(backup, null, 2)], { type: "application/json" });
   const link = document.createElement("a");
