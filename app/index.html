@@ -8,7 +8,7 @@
   <link rel="manifest" href="manifest.json">
   <link rel="icon" href="../icon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="../apple-touch-icon.png">
-  <link rel="stylesheet" href="style.css?v=36">
+  <link rel="stylesheet" href="style.css?v=37">
 </head>
 <body>
   <!-- ===== Welkomstscherm: eerst (gratis) account maken of inloggen (account.js) ===== -->
@@ -303,7 +303,7 @@
       <!-- Pro komt eraan (pro.js): interesse meten, nog niet betalen -->
       <div class="kaart pro-teaser">
         <div class="pro-teaser-kop"><span class="pro-diamant">💎</span><div><h3>MoveForPleasure Pro</h3><span class="pro-lint">Binnenkort</span></div></div>
-        <p class="gedempt">Een extra duwtje om het vol te houden, zoals een weekritme-redder voor drukke weken en beweegplannen. Alles wat je nu gebruikt, blijft gratis.</p>
+        <p class="gedempt">Hou het écht vol: een plan dat je ergens brengt, een vangnet voor drukke weken en samen bewegen in groepjes. Alles wat je nu gebruikt, blijft gratis.</p>
         <button type="button" class="knop-rand-app pro-open">Bekijk wat er komt</button>
       </div>
     </section>
@@ -569,19 +569,26 @@
       <button type="button" id="pro-sluit" class="pro-sluit" aria-label="Sluiten">✕</button>
       <div class="pro-diamant groot" aria-hidden="true">💎</div>
       <h1 id="pro-titel" class="ob-titel">MoveForPleasure Pro</h1>
-      <p class="welkom-sub">Komt binnenkort. Alles wat je nu gebruikt, blijft <strong>gratis</strong>. Pro is een extra duwtje voor wie wil.</p>
+      <p class="welkom-sub"><strong>Hou het écht vol</strong>: met een plan dat je ergens brengt, een vangnet voor drukke weken en je vrienden naast je.</p>
+
+      <p class="ob-vraag">Wat krijg je met Pro? <span class="optioneel">(tik aan wat jij zou gebruiken)</span></p>
+      <div id="pro-functies" class="pro-functies"></div>
 
       <div class="pro-prijs">
         <div class="account-wissel pro-wissel" role="group" aria-label="Betaalperiode">
-          <button type="button" data-periode="maand" class="actief">Per maand</button>
-          <button type="button" data-periode="jaar">Per jaar <small>-37%</small></button>
+          <button type="button" data-periode="maand">Per maand</button>
+          <button type="button" data-periode="jaar" class="actief">Per jaar <small>-37%</small></button>
         </div>
-        <p class="pro-bedrag"><strong id="pro-bedrag">€3,99</strong> <span id="pro-per">/ maand</span></p>
-        <p id="pro-onder" class="gedempt klein-uitleg">Maandelijks opzegbaar. Verwachte prijs, incl. btw.</p>
+        <p class="pro-bedrag"><strong id="pro-bedrag">€29,99</strong> <span id="pro-per">/ jaar</span></p>
+        <p id="pro-onder" class="gedempt klein-uitleg"></p>
+        <p class="pro-proef">🎁 Eerst <strong>7 dagen gratis</strong> proberen</p>
+        <p class="gedempt klein-uitleg">Verwachte prijs, incl. btw. Je steunt een kleine, onafhankelijke Belgische app zonder reclame. 🇧🇪</p>
       </div>
 
-      <p class="ob-vraag">Wat zou jij gebruiken? <span class="optioneel">(tik aan wat je aanspreekt)</span></p>
-      <div id="pro-functies" class="pro-functies"></div>
+      <div class="pro-gratis">
+        <p class="pro-gratis-kop">Altijd gratis, ook zonder Pro:</p>
+        <p class="gedempt">Bewegen bijhouden · weekritme · planning · herinneringen · beweegmaatjes · badges · je account en al je gegevens</p>
+      </div>
 
       <p id="pro-melding" class="account-melding goed" hidden></p>
       <button type="button" id="pro-ja" class="pro-ja">💎 Ik wil Pro, hou me op de hoogte</button>
@@ -626,28 +633,28 @@
     <button class="nav-knop" data-tab="vooruitgang">📈<span>Vooruitgang</span></button>
   </nav>
 
-  <!-- ?v=36 achter onze eigen bestanden: verhoog dit getal bij elke update
+  <!-- ?v=37 achter onze eigen bestanden: verhoog dit getal bij elke update
        (samen met CACHE_NAAM in sw.js), zodat telefoons alles tegelijk vernieuwen. -->
-  <script src="../config.js?v=36"></script>
+  <script src="../config.js?v=37"></script>
   <!-- Foutmeldingen automatisch doorsturen (laadt als eerste) -->
-  <script src="fouten.js?v=36"></script>
+  <script src="fouten.js?v=37"></script>
   <!-- Supabase (inloggen + online opslag). Lukt dit niet (offline), dan werkt de app gewoon lokaal verder. -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.119.2/dist/umd/supabase.js" integrity="sha256-iBavBNmRXbuhiC1vhPC0AtxAJoBjpj2cZtJPUvNxwmM=" crossorigin="anonymous"></script>
-  <script src="data.js?v=36"></script>
-  <script src="../weetjes.js?v=36"></script>
-  <script src="motivatie.js?v=36"></script>
-  <script src="berichten.js?v=36"></script>
-  <script src="profiel.js?v=36"></script>
-  <script src="cardio.js?v=36"></script>
-  <script src="planning.js?v=36"></script>
-  <script src="agenda.js?v=36"></script>
-  <script src="beweging.js?v=36"></script>
-  <script src="app.js?v=36"></script>
-  <script src="account.js?v=36"></script>
-  <script src="chat.js?v=36"></script>
-  <script src="onboarding.js?v=36"></script>
-  <script src="herinneringen.js?v=36"></script>
-  <script src="maatjes.js?v=36"></script>
-  <script src="pro.js?v=36"></script>
+  <script src="data.js?v=37"></script>
+  <script src="../weetjes.js?v=37"></script>
+  <script src="motivatie.js?v=37"></script>
+  <script src="berichten.js?v=37"></script>
+  <script src="profiel.js?v=37"></script>
+  <script src="cardio.js?v=37"></script>
+  <script src="planning.js?v=37"></script>
+  <script src="agenda.js?v=37"></script>
+  <script src="beweging.js?v=37"></script>
+  <script src="app.js?v=37"></script>
+  <script src="account.js?v=37"></script>
+  <script src="chat.js?v=37"></script>
+  <script src="onboarding.js?v=37"></script>
+  <script src="herinneringen.js?v=37"></script>
+  <script src="maatjes.js?v=37"></script>
+  <script src="pro.js?v=37"></script>
 </body>
 </html>

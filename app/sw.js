@@ -15,7 +15,7 @@
 // Nieuwe release? Verhoog VERSIE hier ÉN de ?v=… in index.html.
 // ============================================================
 
-const VERSIE = 36;
+const VERSIE = 37;
 const CACHE_NAAM = "sportlog-v" + VERSIE;
 const WACHTTIJD_MS = 4000;
 

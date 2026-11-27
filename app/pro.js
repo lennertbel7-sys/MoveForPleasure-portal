@@ -10,45 +10,73 @@
 // ============================================================
 
 const pEl = (id) => document.getElementById(id);
-const PRO_FUNCTIES = [
-  { id: "redder",        icoon: "🛟", naam: "Weekritme-redder",        uitleg: "Lukt het een week niet? Met een joker blijft je reeks gewoon staan." },
-  { id: "plannen",       icoon: "🗺️", naam: "Beweegplannen",           uitleg: "Stap voor stap naar een doel, bv. van 0 naar 5 km of elke dag wandelen." },
-  { id: "groepjes",      icoon: "👯", naam: "Groepjes",                uitleg: "Met vrienden, familie of collega's samen een weekdoel halen." },
-  { id: "herinneringen", icoon: "🔔", naam: "Slimme herinneringen",    uitleg: "Meerdere momenten per dag en je eigen, persoonlijke tekst." },
-  { id: "rapport",       icoon: "📊", naam: "Maandrapport",            uitleg: "Elke maand een mooi overzicht van je beweging in je mailbox." },
-  { id: "coach",         icoon: "🤖", naam: "Persoonlijke coach",      uitleg: "Een slimme coach die je planning kent en je helpt als het even niet lukt." },
+// Pro = 3 duidelijke beloftes (wat je eraan hebt), plus een paar bonussen.
+// De id's zijn dezelfde als in de tabel pro_interesse.
+const PRO_BELOFTES = [
+  { id: "plannen", icoon: "🗺️", naam: "Een plan dat je ergens brengt",
+    uitleg: "Plannen van 4 tot 8 weken, bv. van 0 naar 5 km, sterker in 6 weken of elke dag wandelen.",
+    punten: ["Elke week precies weten wat je doet", "Past zich aan als je een dag mist", "Een feestje als je de finish haalt 🎉"] },
+  { id: "redder", icoon: "🛟", naam: "Je weekritme is veilig",
+    uitleg: "Drukke week, ziek of op vakantie? Je reeks blijft gewoon staan.",
+    punten: ["Elke maand een weekritme-redder", "Plan een rustweek zonder je reeks te verliezen", "Nooit meer \"alles kwijt\" na één slechte week"] },
+  { id: "groepjes", icoon: "👯", naam: "Samen sterker",
+    uitleg: "Beweeg met je vrienden, familie of collega's als groepje.",
+    punten: ["Samen één weekdoel halen", "Zie wie er deze week al bewoog", "Samen vieren als het lukt"] },
 ];
-const pro = { gekozen: new Set(), periode: "maand", opLijst: false };
+const PRO_BONUSSEN = [
+  { id: "coach",         icoon: "🤖", naam: "Persoonlijke coach", uitleg: "Denkt mee als het even niet lukt (later)." },
+  { id: "herinneringen", icoon: "🔔", naam: "Slimme herinneringen", uitleg: "Meerdere momenten, je eigen tekst." },
+  { id: "rapport",       icoon: "📊", naam: "Maandrapport", uitleg: "Je beweegmaand in je mailbox." },
+];
+// Standaard toont de pagina het jaarabonnement (beste prijs per maand)
+const pro = { gekozen: new Set(), periode: "jaar", opLijst: false };
 
 function tekenProPrijs() {
   const jaar = pro.periode === "jaar";
   pEl("pro-bedrag").textContent = jaar ? "€29,99" : "€3,99";
   pEl("pro-per").textContent = jaar ? "/ jaar" : "/ maand";
   pEl("pro-onder").textContent = jaar
-    ? "Slechts €2,50 per maand. Verwachte prijs, incl. btw."
-    : "Maandelijks opzegbaar. Verwachte prijs, incl. btw.";
+    ? "Slechts €2,50 per maand: minder dan één koffie. ☕"
+    : "Maandelijks opzegbaar. Met een jaar betaal je maar €2,50 per maand.";
   document.querySelectorAll(".pro-wissel button").forEach(b => b.classList.toggle("actief", b.dataset.periode === pro.periode));
+}
+
+// Eén kaart (belofte of bonus) die je kan aantikken: "dit zou ik gebruiken"
+function maakProKaart(f, groot) {
+  const knop = document.createElement("button");
+  knop.type = "button";
+  const aan = pro.gekozen.has(f.id);
+  knop.className = "pro-functie" + (groot ? " pro-belofte" : " pro-bonus") + (aan ? " gekozen" : "");
+  knop.setAttribute("aria-pressed", aan);
+  knop.innerHTML = `<span class="pro-functie-icoon"></span><span class="pro-functie-tekst"><strong></strong><small></small></span><span class="pro-vinkje" aria-hidden="true">${aan ? "✓" : ""}</span>`;
+  knop.querySelector(".pro-functie-icoon").textContent = f.icoon;
+  knop.querySelector("strong").textContent = f.naam;
+  knop.querySelector("small").textContent = f.uitleg;
+  if (groot && f.punten) {
+    const lijst = document.createElement("ul");
+    lijst.className = "pro-punten";
+    f.punten.forEach(p => { const li = document.createElement("li"); li.textContent = p; lijst.appendChild(li); });
+    knop.querySelector(".pro-functie-tekst").appendChild(lijst);
+  }
+  knop.onclick = () => {
+    if (pro.gekozen.has(f.id)) pro.gekozen.delete(f.id); else pro.gekozen.add(f.id);
+    tekenProFuncties();
+  };
+  return knop;
 }
 
 function tekenProFuncties() {
   const vak = pEl("pro-functies");
   vak.innerHTML = "";
-  PRO_FUNCTIES.forEach(f => {
-    const knop = document.createElement("button");
-    knop.type = "button";
-    const aan = pro.gekozen.has(f.id);
-    knop.className = "pro-functie" + (aan ? " gekozen" : "");
-    knop.setAttribute("aria-pressed", aan);
-    knop.innerHTML = `<span class="pro-functie-icoon"></span><span class="pro-functie-tekst"><strong></strong><small></small></span><span class="pro-vinkje" aria-hidden="true">${aan ? "✓" : ""}</span>`;
-    knop.querySelector(".pro-functie-icoon").textContent = f.icoon;
-    knop.querySelector("strong").textContent = f.naam;
-    knop.querySelector("small").textContent = f.uitleg;
-    knop.onclick = () => {
-      if (pro.gekozen.has(f.id)) pro.gekozen.delete(f.id); else pro.gekozen.add(f.id);
-      tekenProFuncties();
-    };
-    vak.appendChild(knop);
-  });
+  PRO_BELOFTES.forEach(f => vak.appendChild(maakProKaart(f, true)));
+  const kop = document.createElement("p");
+  kop.className = "pro-bonus-kop";
+  kop.textContent = "En als bonus:";
+  vak.appendChild(kop);
+  const bonussen = document.createElement("div");
+  bonussen.className = "pro-bonussen";
+  PRO_BONUSSEN.forEach(f => bonussen.appendChild(maakProKaart(f, false)));
+  vak.appendChild(bonussen);
 }
 
 function tekenProStatus() {

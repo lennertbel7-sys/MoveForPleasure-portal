@@ -920,3 +920,21 @@ input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 3px
 }
 .pro-ja:disabled { opacity: 0.6; }
 .pro-venster .account-melding { text-align: left; margin-bottom: 10px; }
+
+/* ----- Pro: 3 beloftes + bonussen ----- */
+.pro-belofte { align-items: flex-start; padding: 14px; }
+.pro-belofte .pro-functie-icoon { font-size: 1.8rem; margin-top: 2px; }
+.pro-belofte strong { font-size: 1.02rem; }
+.pro-punten { list-style: none; margin: 8px 0 0; padding: 0; }
+.pro-punten li { font-size: 0.85rem; color: #d9c6d2; line-height: 1.45; padding-left: 20px; position: relative; margin-top: 3px; }
+.pro-punten li::before { content: "✓"; position: absolute; left: 0; color: #63d68c; font-weight: 700; }
+.pro-bonus-kop { text-align: left; font-weight: 700; font-size: 0.9rem; color: #a8919f; margin: 6px 0 0; }
+.pro-bonussen { display: grid; grid-template-columns: 1fr; gap: 6px; }
+.pro-bonus { padding: 9px 12px; }
+.pro-bonus .pro-functie-icoon { font-size: 1.2rem; }
+.pro-bonus strong { font-size: 0.88rem; }
+.pro-bonus small { font-size: 0.76rem; }
+.pro-proef { margin: 10px 0 6px; padding: 8px 12px; border-radius: 10px; background: rgba(99, 214, 140, 0.12); color: #9fe8b8; font-size: 0.92rem; }
+.pro-gratis { margin: 0 0 16px; padding: 12px 14px; border-radius: 12px; border: 1px dashed #50395c; text-align: left; }
+.pro-gratis-kop { font-weight: 700; font-size: 0.9rem; margin-bottom: 4px; }
+.pro-gratis .gedempt { font-size: 0.85rem; }
