@@ -148,3 +148,14 @@ body.admin { padding-bottom: 40px; }
 .fouten-lijst li { background: rgba(0, 0, 0, 0.2); border-radius: 10px; padding: 10px 12px; }
 .fouten-lijst strong { display: block; font-size: 0.9rem; word-break: break-word; }
 .fouten-lijst small { color: #a8919f; font-size: 0.78rem; word-break: break-word; }
+
+/* ===== Interesse in Pro ===== */
+.pro-overzicht { margin-bottom: 16px; border-color: rgba(255, 210, 63, 0.45); }
+.pro-overzicht-kop { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
+.pro-overzicht-kop h3 { margin: 0; }
+.pro-balken { display: flex; flex-direction: column; gap: 6px; margin-top: 12px; }
+.pro-balk { display: grid; grid-template-columns: 190px 1fr 32px; align-items: center; gap: 10px; font-size: 0.88rem; }
+.pro-balk-spoor { height: 10px; border-radius: 5px; background: rgba(0, 0, 0, 0.25); overflow: hidden; }
+.pro-balk-spoor i { display: block; height: 100%; background: linear-gradient(90deg, #ff7a3d, #ff4f8b); border-radius: 5px; }
+.pro-balk strong { text-align: right; }
+@media (max-width: 520px) { .pro-balk { grid-template-columns: 1fr 60px 28px; } }

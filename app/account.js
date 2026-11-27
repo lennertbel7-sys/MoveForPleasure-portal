@@ -397,6 +397,7 @@ if (db) {
         // Beweegmaatjes laden en een openstaande uitnodiging tonen (maatjes.js).
         // Iets later, zodat een eventuele onboarding eerst opent (die gaat voor).
         if (typeof maatjesGebruikerGewijzigd === "function") setTimeout(maatjesGebruikerGewijzigd, 300);
+        if (typeof laadProInteresse === "function") laadProInteresse(); // "Op de lijst ✓" bij je profiel (pro.js)
         // Nieuw lid? Dan eerst de 3 korte vragen (onboarding.js). Pas na de sync,
         // zodat we zeker weten of er online al gegevens stonden.
         if (typeof startOnboardingIndienNodig === "function" && nodigOnboarding()) {

@@ -114,3 +114,35 @@ async function laadFouten() {
     lijst.appendChild(li);
   });
 }
+
+// ===== Interesse in Pro (tabel pro_interesse, nog zonder betalen) =====
+const proNamen = {
+  redder: "🛟 Weekritme-redder", plannen: "🗺️ Beweegplannen", groepjes: "👯 Groepjes",
+  herinneringen: "🔔 Slimme herinneringen", rapport: "📊 Maandrapport", coach: "🤖 Persoonlijke coach",
+};
+async function laadProInteresse() {
+  const { data, error } = await db.rpc("admin_pro_interesse");
+  if (error) { $("pro-samenvatting").textContent = "Laden lukte niet."; return; }
+  $("pro-aantal").textContent = data.totaal;
+  const pct = data.actieve_leden ? Math.round((data.totaal / data.actieve_leden) * 100) : 0;
+  const maand = data.periode.maand || 0, jaar = data.periode.jaar || 0;
+  $("pro-samenvatting").textContent = data.totaal
+    ? `${data.totaal} van de ${data.actieve_leden} actieve leden (laatste 30 dagen) = ${pct}%. Voorkeur: ${maand}× per maand, ${jaar}× per jaar.`
+    : "Nog niemand. Leden zien Pro bij Vooruitgang en in hun profiel.";
+
+  const balken = $("pro-functies-balken");
+  balken.innerHTML = "";
+  const max = Math.max(1, ...Object.values(data.functies));
+  Object.entries(proNamen)
+    .map(([id, naam]) => [naam, data.functies[id] || 0])
+    .sort((a, b) => b[1] - a[1])
+    .forEach(([naam, n]) => {
+      const rij = document.createElement("div");
+      rij.className = "pro-balk";
+      rij.innerHTML = `<span class="pro-balk-naam"></span><span class="pro-balk-spoor"><i></i></span><strong></strong>`;
+      rij.querySelector(".pro-balk-naam").textContent = naam;
+      rij.querySelector("i").style.width = (n / max) * 100 + "%";
+      rij.querySelector("strong").textContent = n;
+      balken.appendChild(rij);
+    });
+}

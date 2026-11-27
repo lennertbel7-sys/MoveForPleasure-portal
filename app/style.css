@@ -881,3 +881,42 @@ input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 3px
 .account-akkoord a, .juridische-links a, .welkom-medisch a { color: #ff9a6b; }
 .welkom-medisch { margin-top: 14px; font-size: 0.8rem; color: #a8919f; line-height: 1.45; }
 .juridische-links { text-align: center; font-size: 0.82rem; margin: 6px 0 20px; line-height: 1.7; }
+
+/* ===== Pro (binnenkort): interesse meten ===== */
+.pro-teaser { border-color: rgba(255, 210, 63, 0.4); background: linear-gradient(160deg, #33223e, #2b1d37); }
+.pro-teaser-kop { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+.pro-teaser-kop h3 { margin: 0; }
+.pro-diamant { font-size: 1.8rem; }
+.pro-diamant.groot { font-size: 3rem; margin-bottom: 6px; }
+.pro-lint { display: inline-block; font-size: 0.72rem; font-weight: 700; color: #23152f; background: #ffd23f; padding: 2px 8px; border-radius: 9px; }
+.pro-rij {
+  display: flex; justify-content: space-between; align-items: center; width: 100%; min-height: 48px; margin: 4px 0 10px;
+  padding: 10px 14px; border-radius: 12px; border: 1px solid rgba(255, 210, 63, 0.35); background: rgba(255, 210, 63, 0.06);
+  color: #eaeaea; font: inherit; font-weight: 600; cursor: pointer; text-align: left;
+}
+.pro-venster { z-index: 70; }
+.pro-venster .welkom-inhoud { position: relative; margin: auto 0; }
+.pro-sluit { position: absolute; top: -18px; right: 0; width: 44px; height: 44px; border: 0; border-radius: 50%; background: rgba(255, 255, 255, 0.06); color: #d9c6d2; font-size: 1.1rem; cursor: pointer; }
+.pro-prijs { margin: 6px 0 18px; padding: 14px; border-radius: 14px; background: rgba(0, 0, 0, 0.22); border: 1px solid #402d4c; }
+.pro-wissel { margin-bottom: 10px; }
+.pro-wissel small { font-size: 0.72rem; color: inherit; opacity: 0.85; }
+.pro-bedrag { font-size: 1rem; color: #d9c6d2; }
+.pro-bedrag strong { font-size: 2rem; color: #fff; }
+.pro-functies { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; text-align: left; }
+.pro-functie {
+  display: flex; align-items: center; gap: 12px; width: 100%; padding: 12px; border-radius: 12px; cursor: pointer;
+  background: rgba(0, 0, 0, 0.2); border: 1px solid #402d4c; color: #eaeaea; font: inherit; text-align: left;
+}
+.pro-functie.gekozen { border-color: #ff7a3d; background: rgba(255, 122, 61, 0.12); }
+.pro-functie-icoon { font-size: 1.5rem; flex-shrink: 0; width: 32px; text-align: center; }
+.pro-functie-tekst { flex: 1; }
+.pro-functie-tekst strong { display: block; font-size: 0.95rem; }
+.pro-functie-tekst small { display: block; color: #a8919f; font-size: 0.8rem; line-height: 1.4; margin-top: 2px; }
+.pro-vinkje { width: 24px; height: 24px; border-radius: 50%; border: 2px solid #50395c; display: grid; place-items: center; font-weight: 700; color: #23152f; flex-shrink: 0; }
+.pro-functie.gekozen .pro-vinkje { background: #ff7a3d; border-color: #ff7a3d; }
+.pro-ja {
+  width: 100%; min-height: 50px; border: 0; border-radius: 12px; cursor: pointer; margin: 6px 0 4px;
+  background: linear-gradient(135deg, #ff7a3d, #ff4f8b); color: #fff; font: inherit; font-weight: 700; font-size: 1rem;
+}
+.pro-ja:disabled { opacity: 0.6; }
+.pro-venster .account-melding { text-align: left; margin-bottom: 10px; }

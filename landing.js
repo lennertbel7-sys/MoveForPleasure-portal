@@ -56,8 +56,8 @@ if ("IntersectionObserver" in window) {
 
 // ---------- 4. Prijzen maand/jaar ----------
 const prijzen = {
-  maand: { bedrag: "€2,99", periode: "/ maand", sub: "Maandelijks opzegbaar" },
-  jaar:  { bedrag: "€24,99", periode: "/ jaar", sub: "Slechts €2,08 per maand" }
+  maand: { bedrag: "€3,99", periode: "/ maand", sub: "Maandelijks opzegbaar" },
+  jaar:  { bedrag: "€29,99", periode: "/ jaar", sub: "Slechts €2,50 per maand" }
 };
 document.querySelectorAll(".schakel").forEach((knop) => {
   knop.addEventListener("click", () => {

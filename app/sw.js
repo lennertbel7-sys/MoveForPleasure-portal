@@ -15,7 +15,7 @@
 // Nieuwe release? Verhoog VERSIE hier ÉN de ?v=… in index.html.
 // ============================================================
 
-const VERSIE = 34;
+const VERSIE = 36;
 const CACHE_NAAM = "sportlog-v" + VERSIE;
 const WACHTTIJD_MS = 4000;
 
@@ -23,7 +23,7 @@ const WACHTTIJD_MS = 4000;
 const KERN = [
   "./", "index.html", "manifest.json", "../config.js", "../icon.svg",
   "style.css", "fouten.js", "data.js", "motivatie.js", "berichten.js", "profiel.js", "cardio.js",
-  "planning.js", "agenda.js", "beweging.js", "app.js", "account.js", "chat.js", "onboarding.js", "herinneringen.js", "maatjes.js",
+  "planning.js", "agenda.js", "beweging.js", "app.js", "account.js", "chat.js", "onboarding.js", "herinneringen.js", "maatjes.js", "pro.js",
 ].map((pad) => (/\.(js|css)$/.test(pad) && !pad.startsWith("..") ? `${pad}?v=${VERSIE}` : pad));
 
 self.addEventListener("install", (gebeurtenis) => {

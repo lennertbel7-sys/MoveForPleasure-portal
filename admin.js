@@ -62,6 +62,7 @@ async function start() {
   if (typeof startAdminChat === "function") startAdminChat();
   if (typeof laadLeden === "function") laadLeden();
   if (typeof laadFouten === "function") laadFouten();
+  if (typeof laadProInteresse === "function") laadProInteresse();
   await laadBerichten();
 }
 
