@@ -108,7 +108,7 @@ function mailHtml(naam: string, weekdoel: number, o: ReturnType<typeof maakOverz
   const hoi = naam ? `Hoi ${ontsnap(naam)}!` : "Hoi!";
   let kop: string, tekst: string;
   if (o.gehaald) {
-    kop = `🎉 Weekchallenge gehaald: ${o.dagen} van ${weekdoel} dagen!`;
+    kop = `🎉 Weekritme gehaald: ${o.dagen} van ${weekdoel} dagen!`;
     tekst = o.reeks > 1
       ? `Al ${o.reeks} weken op rij. Zo groeit een gewoonte die blijft. Geniet van je zondag!`
       : "Wat fijn dat je zo in beweging was. Geniet van je zondag, je hebt het verdiend!";
@@ -144,7 +144,7 @@ function mailHtml(naam: string, weekdoel: number, o: ReturnType<typeof maakOverz
 }
 
 function onderwerp(weekdoel: number, o: ReturnType<typeof maakOverzicht>) {
-  if (o.gehaald) return `🎉 Weekchallenge gehaald! Jouw beweegweek`;
+  if (o.gehaald) return `🎉 Weekritme gehaald! Jouw beweegweek`;
   if (o.dagen > 0) return `📈 Jouw beweegweek: ${o.dagen} van ${weekdoel} dagen`;
   return `🌱 Jouw beweegweek bij MoveForPleasure`;
 }

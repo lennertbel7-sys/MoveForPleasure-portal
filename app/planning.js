@@ -2,7 +2,7 @@
 // planning.js — je doel en je weekplanning
 //
 // Mijn doel:  waarom je beweegt (keuze + eigen woorden + datum)
-//             en hoeveel dagen per week (= je weekchallenge).
+//             en hoeveel dagen per week (= je weekritme).
 // Planning:   per dag één of meer activiteiten met sport, duur,
 //             tijdstip en notitie. Alles wordt meteen bewaard.
 // Vandaag:    toont je doel en wat er vandaag gepland staat,
@@ -81,7 +81,7 @@ function tekenDoel() {
     knop.onclick = () => {
       bewaarWeekdoel(n);
       vernieuwAlles();
-      toonToast(`🎯 Je weekchallenge: ${n} ${n === 1 ? "dag" : "dagen"} bewegen`);
+      toonToast(`🎯 Je weekritme: ${n} ${n === 1 ? "dag" : "dagen"} bewegen`);
     };
     keuze.appendChild(knop);
   }
@@ -116,17 +116,17 @@ function geplandeDagen() {
 }
 
 function tekenPlanning() {
-  // Hoeveel dagen gepland t.o.v. je weekchallenge?
+  // Hoeveel dagen gepland t.o.v. je weekritme?
   const gepland = geplandeDagen();
   const status = plEl("planning-status");
   if (gepland === 0) {
-    status.textContent = `Nog niets gepland. Je weekchallenge is ${weekdoel} ${weekdoel === 1 ? "dag" : "dagen"}: tik op "✨ Stel mijn week voor" of plan zelf per dag.`;
+    status.textContent = `Nog niets gepland. Je weekritme is ${weekdoel} ${weekdoel === 1 ? "dag" : "dagen"}: tik op "✨ Stel mijn week voor" of plan zelf per dag.`;
     status.dataset.toestand = "leeg";
   } else if (gepland < weekdoel) {
     status.textContent = `Je plande ${gepland} van je ${weekdoel} beweegdagen. Nog ${weekdoel - gepland} te gaan!`;
     status.dataset.toestand = "bijna";
   } else {
-    status.textContent = `✅ Top! ${gepland} beweegdagen gepland, je weekchallenge (${weekdoel}) is haalbaar.`;
+    status.textContent = `✅ Top! ${gepland} beweegdagen gepland, je weekritme (${weekdoel}) is haalbaar.`;
     status.dataset.toestand = "klaar";
   }
 
@@ -241,7 +241,7 @@ function favorieteSport() {
   return top ? top[0] : "Wandelen";
 }
 
-// "✨ Stel mijn week voor": vult lege dagen tot je weekchallenge, goed verspreid
+// "✨ Stel mijn week voor": vult lege dagen tot je weekritme, goed verspreid
 const spreiding = {
   1: ["wo"], 2: ["di", "za"], 3: ["ma", "wo", "za"], 4: ["ma", "wo", "vr", "zo"],
   5: ["ma", "di", "do", "vr", "zo"], 6: ["ma", "di", "wo", "do", "vr", "za"], 7: WEEKDAGEN,

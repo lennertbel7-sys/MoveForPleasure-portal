@@ -146,7 +146,7 @@ function vierResultaat(voor, isRecord, oefening) {
       `Je bent nu officieel "${level.naam}". Elke training brengt je verder.` + badgeTekst);
   } else if (voor.actief < weekdoel && nuActief >= weekdoel) {
     const reeks = berekenWeekreeks();
-    toonViering("🎯", "Weekchallenge gehaald!",
+    toonViering("🎯", "Weekritme gehaald!",
       (reeks > 1 ? `Al ${reeks} weken op rij! ` : "") + "Zo groeit een gewoonte die blijft. Geniet ervan!" + badgeTekst);
   } else if (streak > voor.streak && [3, 7, 14, 21, 30, 50, 100].includes(streak)) {
     toonViering("🔥", `${streak} dagen op rij!`, "Wat een energie! Gun jezelf ook af en toe een rustdag. 😌" + badgeTekst);
@@ -175,7 +175,7 @@ function vernieuwStreakBadge() {
   const streak = berekenStreak();
   if (weken > 0) {
     badge.innerHTML = `📈 ${weken} ${weken === 1 ? "week" : "weken"}`;
-    badge.title = "Zoveel weken op rij haalde je je weekchallenge";
+    badge.title = "Zoveel weken op rij haalde je je weekritme";
   } else if (streak > 1) {
     // De vlam flakkert (zie .vlam in style.css)
     badge.innerHTML = `<span class="vlam">🔥</span> ${streak} dagen`;

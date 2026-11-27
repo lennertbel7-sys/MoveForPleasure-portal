@@ -127,8 +127,8 @@ const badges = [
     proficiat: "Je eerste beweegmoment staat erin! Het begin is gemaakt, en dat is altijd het moeilijkste stuk. 🧡" },
   { id: "streak3",  icoon: "🔥", naam: "Op stoom",         uitleg: "3 dagen op rij actief",           behaald: s => s.langste >= 3,
     proficiat: "Drie dagen op rij in beweging. Je zit lekker in je ritme!" },
-  { id: "week1",    icoon: "🎯", naam: "Doel geraakt",     uitleg: "Haal voor het eerst je weekchallenge", behaald: s => s.wekenGehaald >= 1,
-    proficiat: "Je eerste weekchallenge is binnen! Zo groeit een gewoonte die blijft." },
+  { id: "week1",    icoon: "🎯", naam: "Doel geraakt",     uitleg: "Haal voor het eerst je weekritme", behaald: s => s.wekenGehaald >= 1,
+    proficiat: "Je eerste weekritme is gehaald! Zo groeit een gewoonte die blijft." },
   { id: "record1",  icoon: "🏆", naam: "Sterker dan ooit", uitleg: "Verbeter een persoonlijk record", behaald: s => s.records >= 1,
     proficiat: "Je eerste persoonlijke record! Voel je hoe je lichaam sterker wordt?" },
   { id: "allround", icoon: "⚡", naam: "Allrounder",       uitleg: "Kracht én cardio in één week",    behaald: s => s.allround,
@@ -137,11 +137,11 @@ const badges = [
     proficiat: "Tien keer bewogen! Dit is geen toeval meer, dit wordt een gewoonte. 🌱" },
   { id: "streak7",  icoon: "🌟", naam: "Weekstrijder",     uitleg: "7 dagen op rij actief",           behaald: s => s.langste >= 7,
     proficiat: "Een volle week elke dag in beweging. Wat een energie! Gun jezelf ook een rustdag." },
-  { id: "reeks4",   icoon: "📈", naam: "Een maand sterk",  uitleg: "4 weken op rij je weekchallenge",      behaald: s => s.weekreeks >= 4,
+  { id: "reeks4",   icoon: "📈", naam: "Een maand sterk",  uitleg: "4 weken op rij je weekritme",      behaald: s => s.weekreeks >= 4,
     proficiat: "Vier weken op rij je challenge gehaald. Een hele maand: daar haken de meeste mensen af, jij niet!" },
   { id: "vijftig",  icoon: "🥇", naam: "Vijftig!",         uitleg: "50 keer bewogen",            behaald: s => s.totaal >= 50,
     proficiat: "Vijftig keer bewogen. Kijk eens hoe ver je al gekomen bent! 🥳" },
-  { id: "reeks12",  icoon: "👑", naam: "Gewoonte-held",    uitleg: "12 weken op rij je weekchallenge",     behaald: s => s.weekreeks >= 12,
+  { id: "reeks12",  icoon: "👑", naam: "Gewoonte-held",    uitleg: "12 weken op rij je weekritme",     behaald: s => s.weekreeks >= 12,
     proficiat: "Twaalf weken op rij. Bewegen hoort nu gewoon bij wie je bent. Echt knap!" }
 ];
 
@@ -245,13 +245,13 @@ function aanmoediging() {
     return "Fijn dat je er weer bent! 🧡 Geen inhaalwerk nodig: één rustige wandeling is een prima herstart.";
   }
   if (vandaagActief && nogNodig === 0) {
-    return "Je weekchallenge is binnen! Alles wat je nu nog doet is pure bonus. Geniet ervan! 🌟";
+    return "Je weekritme is gehaald! Alles wat je nu nog doet is pure bonus. Geniet ervan! 🌟";
   }
   if (vandaagActief) {
-    return `Fijn dat je bewogen hebt vandaag! Nog ${nogNodig} ${dag(nogNodig)} en je weekchallenge is binnen. 🧡`;
+    return `Fijn dat je bewogen hebt vandaag! Nog ${nogNodig} ${dag(nogNodig)} en je weekritme is gehaald. 🧡`;
   }
   if (nogNodig === 0) {
-    return "Je weekchallenge heb je al gehaald. Vandaag rusten of nog even bewegen voor de fun? Allebei goed. 😌";
+    return "Je weekritme heb je al gehaald. Vandaag rusten of nog even bewegen voor de fun? Allebei goed. 😌";
   }
   const weken = berekenWeekreeks();
   if (weken >= 2) {
@@ -263,7 +263,7 @@ function aanmoediging() {
   if (nogNodig === dagenOver) {
     return `Nog ${nogNodig} ${dag(nogNodig)} en nog ${dagenOver} ${dag(dagenOver)} over: perfect haalbaar. Waar heb je zin in? 💥`;
   }
-  return `Nog ${nogNodig} ${dag(nogNodig)} voor je weekchallenge, en je hebt nog ${dagenOver} ${dag(dagenOver)}. Zonder stress, gewoon op jouw tempo. 🙂`;
+  return `Nog ${nogNodig} ${dag(nogNodig)} voor je weekritme, en je hebt nog ${dagenOver} ${dag(dagenOver)}. Zonder stress, gewoon op jouw tempo. 🙂`;
 }
 
 // ===== Spreuk van de dag =====
