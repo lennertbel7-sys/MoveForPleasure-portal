@@ -8,7 +8,7 @@
   <link rel="manifest" href="manifest.json">
   <link rel="icon" href="../icon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="../apple-touch-icon.png">
-  <link rel="stylesheet" href="style.css?v=32">
+  <link rel="stylesheet" href="style.css?v=33">
 </head>
 <body>
   <!-- ===== Welkomstscherm: eerst (gratis) account maken of inloggen (account.js) ===== -->
@@ -100,6 +100,20 @@
         <h3>Vandaag op je planning</h3>
         <div id="vandaag-schema"></div>
         <button class="snel-knop snel-knop-hoofd" data-naar="bewegen">➕ Beweging loggen</button>
+      </div>
+
+      <!-- Samen bewegen: je beweegmaatjes (maatjes.js) -->
+      <div class="kaart samen-kaart" id="samen-kaart">
+        <div class="kaart-kop">
+          <h3>👯 Samen bewegen</h3>
+          <button type="button" id="maatje-uitnodigen" class="link-knop">+ Uitnodigen</button>
+        </div>
+        <div id="aanmoedigingen" class="aanmoedigingen" hidden></div>
+        <div id="maatjes-lijst" class="maatjes-lijst"></div>
+        <div id="maatje-link" class="maatje-link" hidden>
+          <p class="gedempt">Stuur deze link naar je maatje (geldig 14 dagen):</p>
+          <div class="rij"><input type="text" id="maatje-link-tekst" readonly aria-label="Uitnodigingslink"><button type="button" id="maatje-kopieer">Kopieer</button></div>
+        </div>
       </div>
 
       <!-- Nieuwste bericht of spreuk van de dag -->
@@ -531,6 +545,22 @@
     </div>
   </div>
 
+  <!-- ===== Uitnodiging als beweegmaatje aanvaarden (maatjes.js) ===== -->
+  <div id="maatje-venster" class="viering maatje-venster" hidden role="dialog" aria-modal="true" aria-labelledby="maatje-titel">
+    <div class="viering-kaart">
+      <div class="viering-icoon">👯</div>
+      <h2 id="maatje-titel"></h2>
+      <p id="maatje-uitleg"></p>
+      <ul class="toestemming-punten">
+        <li>Jullie zien van elkaar alleen: je voornaam, op welke dagen je deze week bewoog en je weekritme.</li>
+        <li>Niet wat je deed, niet je gewicht, niet je e-mailadres.</li>
+        <li>Je kan elkaar aanmoedigen met 👏 💪 🔥 🧡, en altijd stoppen.</li>
+      </ul>
+      <button type="button" id="maatje-ja">Ja, word maatjes</button>
+      <button type="button" id="maatje-nee" class="toestemming-annuleer">Nee, bedankt</button>
+    </div>
+  </div>
+
   <div id="viering" class="viering" hidden role="dialog" aria-modal="true" aria-labelledby="viering-titel">
     <div class="viering-kaart">
       <div id="viering-icoon" class="viering-icoon"></div>
@@ -551,26 +581,27 @@
     <button class="nav-knop" data-tab="vooruitgang">📈<span>Vooruitgang</span></button>
   </nav>
 
-  <!-- ?v=32 achter onze eigen bestanden: verhoog dit getal bij elke update
+  <!-- ?v=33 achter onze eigen bestanden: verhoog dit getal bij elke update
        (samen met CACHE_NAAM in sw.js), zodat telefoons alles tegelijk vernieuwen. -->
-  <script src="../config.js?v=32"></script>
+  <script src="../config.js?v=33"></script>
   <!-- Foutmeldingen automatisch doorsturen (laadt als eerste) -->
-  <script src="fouten.js?v=32"></script>
+  <script src="fouten.js?v=33"></script>
   <!-- Supabase (inloggen + online opslag). Lukt dit niet (offline), dan werkt de app gewoon lokaal verder. -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.119.2/dist/umd/supabase.js" integrity="sha256-iBavBNmRXbuhiC1vhPC0AtxAJoBjpj2cZtJPUvNxwmM=" crossorigin="anonymous"></script>
-  <script src="data.js?v=32"></script>
-  <script src="../weetjes.js?v=32"></script>
-  <script src="motivatie.js?v=32"></script>
-  <script src="berichten.js?v=32"></script>
-  <script src="profiel.js?v=32"></script>
-  <script src="cardio.js?v=32"></script>
-  <script src="planning.js?v=32"></script>
-  <script src="agenda.js?v=32"></script>
-  <script src="beweging.js?v=32"></script>
-  <script src="app.js?v=32"></script>
-  <script src="account.js?v=32"></script>
-  <script src="chat.js?v=32"></script>
-  <script src="onboarding.js?v=32"></script>
-  <script src="herinneringen.js?v=32"></script>
+  <script src="data.js?v=33"></script>
+  <script src="../weetjes.js?v=33"></script>
+  <script src="motivatie.js?v=33"></script>
+  <script src="berichten.js?v=33"></script>
+  <script src="profiel.js?v=33"></script>
+  <script src="cardio.js?v=33"></script>
+  <script src="planning.js?v=33"></script>
+  <script src="agenda.js?v=33"></script>
+  <script src="beweging.js?v=33"></script>
+  <script src="app.js?v=33"></script>
+  <script src="account.js?v=33"></script>
+  <script src="chat.js?v=33"></script>
+  <script src="onboarding.js?v=33"></script>
+  <script src="herinneringen.js?v=33"></script>
+  <script src="maatjes.js?v=33"></script>
 </body>
 </html>
