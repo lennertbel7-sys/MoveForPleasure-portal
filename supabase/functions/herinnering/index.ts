@@ -18,6 +18,7 @@
 // aanmaakt en in de Supabase Vault bewaart (niemand hoeft iets te plakken).
 //
 // Andere aanroepen:
+//   { "aanmoediging": id }          -> melding "👏 Lotte moedigt je aan!" (seint de database)
 //   { "test": true } + login-token  -> testmelding naar je eigen toestellen
 //   { "init": true }                -> sleutels aanmaken (eenmalig)
 // Geheimen: RESEND_API_KEY (zelfde als de andere mails)
@@ -106,9 +107,20 @@ async function stuurPush(endpoint: string): Promise<"ok" | "weg" | "fout"> {
   }
 }
 
-// Naar alle toestellen van een lid; verdwenen toestellen ruimen we op
-async function pushNaarLid(userId: string) {
-  const { data: toestellen } = await db.from("push_abonnementen").select("id, endpoint").eq("user_id", userId);
+// Naar alle toestellen van een lid; verdwenen toestellen ruimen we op.
+// melding = tekst die het toestel ophaalt via zijn "brievenbus" (null = de
+// app toont zelf de tekst uit je planning). Met een melding sturen we alleen
+// naar toestellen die een brievenbus hebben.
+async function pushNaarLid(userId: string, melding: { titel: string; tekst: string } | null = null) {
+  if (melding) {
+    await db.from("push_abonnementen").update({ melding, melding_tijd: new Date().toISOString() })
+      .eq("user_id", userId).not("toestel_sleutel", "is", null);
+  } else {
+    await db.from("push_abonnementen").update({ melding: null }).eq("user_id", userId);
+  }
+  let vraag = db.from("push_abonnementen").select("id, endpoint").eq("user_id", userId);
+  if (melding) vraag = vraag.not("toestel_sleutel", "is", null);
+  const { data: toestellen } = await vraag;
   let gelukt = 0;
   for (const t of toestellen ?? []) {
     const r = await stuurPush(t.endpoint);
@@ -232,6 +244,20 @@ Deno.serve(async (req) => {
 
   // Eenmalig: sleutels aanmaken
   if (body.init) { await vapid(); return antwoord("sleutels klaar"); }
+
+  // Een beweegmaatje stuurde een aanmoediging (de database seint ons met het id).
+  // We verwerken elke aanmoediging maar één keer, en alleen als ze vers is.
+  if (Number.isInteger(body.aanmoediging)) {
+    const vijfMin = new Date(Date.now() - 5 * 60_000).toISOString();
+    const { data: a } = await db.from("aanmoedigingen").update({ gemeld: true })
+      .eq("id", body.aanmoediging).eq("gemeld", false).gt("tijd", vijfMin)
+      .select("van, naar, emoji").maybeSingle();
+    if (!a) return antwoord("niets te doen");
+    const { data: p } = await db.from("gebruikersdata").select("waarde").eq("user_id", a.van).eq("sleutel", "profiel").maybeSingle();
+    const naam = ((p?.waarde as { naam?: string } | null)?.naam || "").trim() || "Je beweegmaatje";
+    const aantal = await pushNaarLid(a.naar, { titel: `${a.emoji} ${naam} moedigt je aan!`, tekst: "Tik om te zien hoe jullie week loopt. 🧡" });
+    return antwoord(JSON.stringify({ toestellen: aantal }));
+  }
 
   // Testmelding naar je eigen toestellen (met je login)
   if (body.test) {

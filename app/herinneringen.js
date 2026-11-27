@@ -74,8 +74,7 @@ async function pushAanzetten() {
     if (error || !sleutel) throw new Error("geen sleutel");
     const abonnement = (await reg.pushManager.getSubscription())
       || await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: sleutelNaarBytes(sleutel) });
-    const { error: fout } = await db.from("push_abonnementen").insert({ endpoint: abonnement.endpoint });
-    if (fout && fout.code !== "23505") throw fout; // 23505 = stond er al
+    await registreerToestel(abonnement);
     await bewaarHerinneringTeksten();
     toonToast("📲 Meldingen staan aan op dit toestel!");
   } catch (e) {
@@ -87,6 +86,33 @@ async function pushAanzetten() {
   }
 }
 
+// Dit toestel bij ons registreren, met een geheime "brievenbus"-sleutel.
+// Via die sleutel haalt de app de tekst van een melding op (bv. een
+// aanmoediging van je maatje), zonder dat er inhoud via de pushdienst gaat.
+async function registreerToestel(abonnement) {
+  const bytes = crypto.getRandomValues(new Uint8Array(16));
+  const toestelSleutel = [...bytes].map(b => b.toString(16).padStart(2, "0")).join("");
+  // Eventuele oude registratie van dit toestel vervangen
+  await db.from("push_abonnementen").delete().eq("endpoint", abonnement.endpoint);
+  const { error } = await db.from("push_abonnementen").insert({ endpoint: abonnement.endpoint, toestel_sleutel: toestelSleutel });
+  if (error) throw error;
+  const cache = await caches.open("mfp-instellingen");
+  await cache.put("toestel.json", new Response(JSON.stringify({ sleutel: toestelSleutel, url: SUPABASE_URL, key: SUPABASE_KEY })));
+}
+
+// Toestellen die meldingen al aanhadden van vóór de brievenbus: één keer opnieuw registreren
+let toestelGecontroleerd = false;
+async function controleerToestel() {
+  if (toestelGecontroleerd || !PUSH_MOGELIJK || !db || !gebruiker || Notification.permission !== "granted") return;
+  toestelGecontroleerd = true;
+  try {
+    const abonnement = await huidigAbonnement();
+    if (!abonnement) return;
+    const cache = await caches.open("mfp-instellingen");
+    if (!(await cache.match("toestel.json"))) await registreerToestel(abonnement);
+  } catch (e) { console.warn("Toestel controleren mislukt", e); }
+}
+
 // Bij uitloggen: dit toestel afmelden, zodat de volgende gebruiker
 // hier niet jouw herinneringen krijgt
 async function pushAfmelden() {
@@ -95,6 +121,7 @@ async function pushAfmelden() {
     if (!abonnement) return;
     if (db && gebruiker) await db.from("push_abonnementen").delete().eq("endpoint", abonnement.endpoint);
     await abonnement.unsubscribe();
+    await caches.delete("mfp-instellingen");
   } catch { /* niet erg */ }
 }
 
@@ -148,6 +175,7 @@ async function toonHerinneringen() {
 // Wordt aangeroepen via vernieuwAlles (app.js)
 function vernieuwHerinneringen() {
   toonHerinneringen();
+  controleerToestel();
   if (herinneringInstellingen().aan) bewaarHerinneringTeksten();
 }
 

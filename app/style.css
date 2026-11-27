@@ -873,3 +873,11 @@ input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 3px
   .maatje { flex-wrap: wrap; }
   .maatje-acties { width: 100%; grid-template-columns: repeat(5, 1fr); }
 }
+
+/* ===== Akkoord, voorwaarden, geen medisch advies ===== */
+.account-akkoord { display: flex; gap: 10px; align-items: flex-start; margin: 2px 0 14px; font-size: 0.85rem; line-height: 1.45; color: #d9c6d2; cursor: pointer; }
+.account-akkoord[hidden] { display: none; }
+.account-akkoord input { width: 20px; height: 20px; margin: 1px 0 0; flex-shrink: 0; accent-color: #ff7a3d; }
+.account-akkoord a, .juridische-links a, .welkom-medisch a { color: #ff9a6b; }
+.welkom-medisch { margin-top: 14px; font-size: 0.8rem; color: #a8919f; line-height: 1.45; }
+.juridische-links { text-align: center; font-size: 0.82rem; margin: 6px 0 20px; line-height: 1.7; }

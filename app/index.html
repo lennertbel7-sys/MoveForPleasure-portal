@@ -8,7 +8,7 @@
   <link rel="manifest" href="manifest.json">
   <link rel="icon" href="../icon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="../apple-touch-icon.png">
-  <link rel="stylesheet" href="style.css?v=33">
+  <link rel="stylesheet" href="style.css?v=34">
 </head>
 <body>
   <!-- ===== Welkomstscherm: eerst (gratis) account maken of inloggen (account.js) ===== -->
@@ -28,6 +28,11 @@
           <input type="email" id="account-email" required autocomplete="email" placeholder="jij@voorbeeld.be">
           <label class="veld-label" for="account-wachtwoord">Wachtwoord</label>
           <input type="password" id="account-wachtwoord" required minlength="8" autocomplete="new-password" placeholder="Minstens 8 tekens">
+          <!-- Alleen bij "Account aanmaken" (account.js zet dit aan/uit) -->
+          <label class="account-akkoord" id="account-akkoord-rij">
+            <input type="checkbox" id="account-akkoord" required>
+            <span>Ik ben 13 jaar of ouder en ga akkoord met de <a href="../voorwaarden.html" target="_blank" rel="noopener">gebruiksvoorwaarden</a> en de <a href="../privacy.html" target="_blank" rel="noopener">privacyverklaring</a>.</span>
+          </label>
           <button type="submit" id="account-verstuur">Account aanmaken</button>
         </form>
         <button type="button" id="account-vergeten" class="link-knop" hidden>Wachtwoord vergeten?</button>
@@ -39,6 +44,7 @@
         <li>☁️ Je beweging veilig bewaard, op al je toestellen</li>
         <li>🔒 Je trainingen zijn privé, we verkopen nooit iets door. <a href="../privacy.html">Privacy</a></li>
       </ul>
+      <p class="welkom-medisch">MoveForPleasure geeft geen medisch advies. Twijfel je of bewegen voor jou veilig is? Overleg dan eerst met je huisarts.</p>
     </div>
   </div>
 
@@ -461,6 +467,10 @@
         <p class="gedempt">Download een back-up van al je trainingen, je gewicht en je profiel.</p>
         <button type="button" id="exporteer-knop" class="knop-rand-app">⬇️ Back-up downloaden</button>
       </div>
+      <p class="juridische-links gedempt">
+        MoveForPleasure geeft geen medisch advies.<br>
+        <a href="../voorwaarden.html">Gebruiksvoorwaarden</a> · <a href="../privacy.html">Privacyverklaring</a>
+      </p>
     </section>
   </main>
 
@@ -581,27 +591,27 @@
     <button class="nav-knop" data-tab="vooruitgang">📈<span>Vooruitgang</span></button>
   </nav>
 
-  <!-- ?v=33 achter onze eigen bestanden: verhoog dit getal bij elke update
+  <!-- ?v=34 achter onze eigen bestanden: verhoog dit getal bij elke update
        (samen met CACHE_NAAM in sw.js), zodat telefoons alles tegelijk vernieuwen. -->
-  <script src="../config.js?v=33"></script>
+  <script src="../config.js?v=34"></script>
   <!-- Foutmeldingen automatisch doorsturen (laadt als eerste) -->
-  <script src="fouten.js?v=33"></script>
+  <script src="fouten.js?v=34"></script>
   <!-- Supabase (inloggen + online opslag). Lukt dit niet (offline), dan werkt de app gewoon lokaal verder. -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.119.2/dist/umd/supabase.js" integrity="sha256-iBavBNmRXbuhiC1vhPC0AtxAJoBjpj2cZtJPUvNxwmM=" crossorigin="anonymous"></script>
-  <script src="data.js?v=33"></script>
-  <script src="../weetjes.js?v=33"></script>
-  <script src="motivatie.js?v=33"></script>
-  <script src="berichten.js?v=33"></script>
-  <script src="profiel.js?v=33"></script>
-  <script src="cardio.js?v=33"></script>
-  <script src="planning.js?v=33"></script>
-  <script src="agenda.js?v=33"></script>
-  <script src="beweging.js?v=33"></script>
-  <script src="app.js?v=33"></script>
-  <script src="account.js?v=33"></script>
-  <script src="chat.js?v=33"></script>
-  <script src="onboarding.js?v=33"></script>
-  <script src="herinneringen.js?v=33"></script>
-  <script src="maatjes.js?v=33"></script>
+  <script src="data.js?v=34"></script>
+  <script src="../weetjes.js?v=34"></script>
+  <script src="motivatie.js?v=34"></script>
+  <script src="berichten.js?v=34"></script>
+  <script src="profiel.js?v=34"></script>
+  <script src="cardio.js?v=34"></script>
+  <script src="planning.js?v=34"></script>
+  <script src="agenda.js?v=34"></script>
+  <script src="beweging.js?v=34"></script>
+  <script src="app.js?v=34"></script>
+  <script src="account.js?v=34"></script>
+  <script src="chat.js?v=34"></script>
+  <script src="onboarding.js?v=34"></script>
+  <script src="herinneringen.js?v=34"></script>
+  <script src="maatjes.js?v=34"></script>
 </body>
 </html>

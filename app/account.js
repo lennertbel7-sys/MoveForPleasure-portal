@@ -233,6 +233,9 @@ function zetModus(nieuweModus) {
   el("account-verstuur").textContent = modus === "nieuw" ? "Account aanmaken" : "Inloggen";
   el("account-wachtwoord").autocomplete = modus === "nieuw" ? "new-password" : "current-password";
   el("account-vergeten").hidden = modus !== "in";
+  // Akkoord met voorwaarden + 13+ is alleen nodig bij een nieuw account
+  el("account-akkoord-rij").hidden = modus !== "nieuw";
+  el("account-akkoord").required = modus === "nieuw";
   toonMelding("");
 }
 
@@ -308,7 +311,11 @@ if (db) {
 
     let melding = "", soort = "fout";
     if (modus === "nieuw") {
-      const { data, error } = await db.auth.signUp({ email, password: wachtwoord, options: { emailRedirectTo: terugAdres } });
+      // Het akkoord (13+, voorwaarden, privacy) bewaren we bij het account, met datum en versie
+      const { data, error } = await db.auth.signUp({ email, password: wachtwoord, options: {
+        emailRedirectTo: terugAdres,
+        data: { akkoord_voorwaarden: new Date().toISOString(), voorwaarden_versie: "2026-11-27", leeftijd_13_plus: true },
+      } });
       if (error) melding = vertaalFout(error);
       else if (data.user && data.user.identities && data.user.identities.length === 0) melding = "Er bestaat al een account met dit e-mailadres. Kies 'Inloggen'.";
       else if (!data.session) {

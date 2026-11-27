@@ -15,7 +15,7 @@
 // Nieuwe release? Verhoog VERSIE hier ÉN de ?v=… in index.html.
 // ============================================================
 
-const VERSIE = 33;
+const VERSIE = 34;
 const CACHE_NAAM = "sportlog-v" + VERSIE;
 const WACHTTIJD_MS = 4000;
 
@@ -58,6 +58,26 @@ self.addEventListener("push", (gebeurtenis) => {
     let tekst = "Zin om even te bewegen? Elke minuut telt. 🧡";
     try {
       const cache = await caches.open(INSTELLINGEN);
+      // 1. Ligt er een bericht klaar in de "brievenbus" van dit toestel?
+      //    (bv. "👏 Lotte moedigt je aan!"). Zo ja: dat tonen.
+      const toestel = await cache.match("toestel.json");
+      if (toestel) {
+        const t = await toestel.json();
+        const r = await fetch(`${t.url}/rest/v1/rpc/push_melding_ophalen`, {
+          method: "POST",
+          headers: { apikey: t.key, "Content-Type": "application/json" },
+          body: JSON.stringify({ sleutel: t.sleutel }),
+        });
+        const melding = r.ok ? await r.json() : null;
+        if (melding && melding.titel) {
+          await self.registration.showNotification(melding.titel, {
+            body: melding.tekst || "", icon: "../logo/icon-192.png", badge: "../logo/icon-192.png",
+            tag: "aanmoediging", data: { url: "./" },
+          });
+          return;
+        }
+      }
+      // 2. Anders: testmelding of herinnering uit je planning
       const test = await cache.match("test.json");
       if (test && (await test.json()).tot > Date.now()) {
         titel = "🔔 Het werkt!";
